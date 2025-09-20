@@ -9,8 +9,10 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('CashTracker API')
     .setDescription(
-      'Ez az első nestJS projektem, ezzel a projektel gyakorlom és ismerem meg a nestJS-t, a projekt során a [nestJS hivatalos dokumentációját](https://docs.nestjs.com/) fogom végigkövetni, és próbálom a legkevesebb AI-t segítséget használni.',
+      'Ez az első nestJS projektem, ezzel a projekttel gyakorlom és ismerem meg a nestJS-t, a projekt során a [nestJS hivatalos dokumentációját](https://docs.nestjs.com/) fogom végigkövetni, és próbálom a legkevesebb AI-t segítséget használni.',
     )
+    .setOpenAPIVersion('3.1.1')
+    .setLicense('MIT licensz', 'https://opensource.org/license/mit')
     .setVersion('0.1')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);

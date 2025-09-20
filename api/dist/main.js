@@ -7,7 +7,9 @@ async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule, { abortOnError: false });
     const config = new swagger_1.DocumentBuilder()
         .setTitle('CashTracker API')
-        .setDescription('Ez az első nestJS projektem, ezzel a projektel gyakorlom és ismerem meg a nestJS-t, a projekt során a [nestJS hivatalos dokumentációját](https://docs.nestjs.com/) fogom végigkövetni, és próbálom a legkevesebb AI-t segítséget használni.')
+        .setDescription('Ez az első nestJS projektem, ezzel a projekttel gyakorlom és ismerem meg a nestJS-t, a projekt során a [nestJS hivatalos dokumentációját](https://docs.nestjs.com/) fogom végigkövetni, és próbálom a legkevesebb AI-t segítséget használni.')
+        .setOpenAPIVersion('3.1.1')
+        .setLicense('MIT licensz', 'https://opensource.org/license/mit')
         .setVersion('0.1')
         .build();
     const documentFactory = () => swagger_1.SwaggerModule.createDocument(app, config);
