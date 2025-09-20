@@ -1,4 +1,4 @@
-[-] Mindenek elött egy adatbázis kapcsolatot kell csinálnunk: PostgresSQL + TypeORM segitségével
+[-] Mindenek elött egy adatbázis kapcsolatot kell csinálnunk: PostgresSQL + TypeORM segitségével (elsőnek elég a mysql is)
     - yarn add --save @nestjs/typeorm typeorm pg
     - TypeORM: https://typeorm.io/docs/entity/entities
     - PG: https://www.postgresql.org/docs/18/index.html
