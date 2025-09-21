@@ -5,4 +5,6 @@
 [] Majd az autentikációt kell implementálni, middleware-l ellátva az API végpontokat 
         - JWT Token alapú legyen az autentikáció
         - Lejárati idő: 1 óra, refresh tokennel
+        - Refresh token lejárata: 4 nap
+        - Refresh tokenben: - UserId - TokenId - ExpiryDate - IsRevoked - UserAgent
         - A tokenben lesz tárolva a UserId
