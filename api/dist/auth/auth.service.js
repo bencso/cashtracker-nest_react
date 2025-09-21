@@ -9,22 +9,26 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateUserDto = void 0;
-const class_validator_1 = require("class-validator");
-class CreateUserDto {
-}
-exports.CreateUserDto = CreateUserDto;
-__decorate([
-    (0, class_validator_1.IsEmail)(),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "email", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.Length)(5, 20),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "username", void 0);
-__decorate([
-    (0, class_validator_1.IsStrongPassword)(),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "password", void 0);
-//# sourceMappingURL=create-user.dto.js.map
+exports.AuthService = void 0;
+const common_1 = require("@nestjs/common");
+const users_controller_1 = require("../users/users.controller");
+let AuthService = class AuthService {
+    constructor(usersService) {
+        this.usersService = usersService;
+    }
+    async singIn(username, password) {
+        return {
+            message: 'Sucessfull',
+            statusCode: 200,
+            data: {
+                username,
+            },
+        };
+    }
+};
+exports.AuthService = AuthService;
+exports.AuthService = AuthService = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [users_controller_1.UsersController])
+], AuthService);
+//# sourceMappingURL=auth.service.js.map
