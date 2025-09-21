@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { UsersController } from 'src/users/users.controller';
+import { UsersService } from '../users/users.service';
 import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(private usersService: UsersController) {}
+  constructor(private readonly usersService: UsersService) {}
 
-  async singIn(username: string, password: string): Promise<LoginDto> {
+  async signIn(username: string, password: string): Promise<LoginDto> {
     return {
-      message: 'Sucessfull',
+      message: ['Successful login'],
       statusCode: 200,
       data: {
         username,

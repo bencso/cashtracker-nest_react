@@ -11,14 +11,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
-const users_controller_1 = require("../users/users.controller");
+const users_service_1 = require("../users/users.service");
 let AuthService = class AuthService {
     constructor(usersService) {
         this.usersService = usersService;
     }
-    async singIn(username, password) {
+    async signIn(username, password) {
         return {
-            message: 'Sucessfull',
+            message: ['Successful login'],
             statusCode: 200,
             data: {
                 username,
@@ -29,6 +29,6 @@ let AuthService = class AuthService {
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [users_controller_1.UsersController])
+    __metadata("design:paramtypes", [users_service_1.UsersService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

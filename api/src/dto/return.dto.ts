@@ -1,4 +1,4 @@
 export class ReturnDto {
-  message: string;
+  message: [string];
   statusCode: number;
 }
