@@ -12,6 +12,7 @@ const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const typeorm_1 = require("@nestjs/typeorm");
 const config_1 = require("@nestjs/config");
+const users_module_1 = require("./users/users.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -20,15 +21,17 @@ exports.AppModule = AppModule = __decorate([
         imports: [
             config_1.ConfigModule.forRoot(),
             typeorm_1.TypeOrmModule.forRoot({
-                type: 'mysql',
+                type: 'postgres',
                 host: process.env.DB_HOST,
-                port: Number(process.env.DB_PORT),
+                port: +process.env.DB_PORT,
                 username: process.env.DB_USERNAME,
                 password: process.env.DB_PASSWORD,
                 database: process.env.DB_NAME,
-                entities: ['**/*.entity{.ts,.js}'],
+                entities: ['**/*.entities{.ts,.js}'],
+                migrations: ['**/*.migration{.ts,.js}'],
                 synchronize: true,
             }),
+            users_module_1.UsersModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

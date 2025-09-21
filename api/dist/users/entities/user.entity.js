@@ -19,14 +19,26 @@ __decorate([
     __metadata("design:type", Number)
 ], User.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)('varchar'),
+    (0, typeorm_1.Column)('varchar(255)'),
     __metadata("design:type", String)
-], User.prototype, "firstName", void 0);
+], User.prototype, "email", void 0);
+__decorate([
+    (0, typeorm_1.Column)('varchar(150)'),
+    __metadata("design:type", String)
+], User.prototype, "username", void 0);
+__decorate([
+    (0, typeorm_1.Column)('varchar(150)'),
+    __metadata("design:type", String)
+], User.prototype, "password", void 0);
 __decorate([
     (0, typeorm_1.Column)('boolean', { default: true }),
     __metadata("design:type", Boolean)
-], User.prototype, "active", void 0);
+], User.prototype, "isActive", void 0);
+__decorate([
+    (0, typeorm_1.CreateDateColumn)(),
+    __metadata("design:type", Date)
+], User.prototype, "createdAt", void 0);
 exports.User = User = __decorate([
-    (0, typeorm_1.Entity)()
+    (0, typeorm_1.Entity)({ name: 'user' })
 ], User);
-//# sourceMappingURL=User.entity.js.map
+//# sourceMappingURL=user.entity.js.map
