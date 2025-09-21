@@ -1,12 +1,12 @@
 import { Body, Injectable, Post } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ReturnDto } from 'src/dto/return.dto';
+import { User } from './entities/user.entity';
+import { ReturnUserDto, ReturnUserPassDto } from './dto/return.dto';
 
 @Injectable()
 export class UsersService {
-  @Post()
-  async create(@Body() createUserDto: CreateUserDto): Promise<ReturnDto> {
+  async create(@Body() createUserDto: CreateUserDto) {
     return {
       message: [
         `Email: ${createUserDto.email},Pwd: ${createUserDto.password},Uname: ${createUserDto.username}`,
@@ -21,6 +21,15 @@ export class UsersService {
 
   findOne(id: number) {
     return `This action returns a #${id} user`;
+  }
+
+  //TODO: Logikát majd ide beirni, csak utána kell nézni hogy müködik pontosan ezaz ORM
+  async findUser(username: string): Promise<ReturnUserPassDto> {
+    return {
+      id: 1,
+      username: 'KisJakab',
+      password: 'Password',
+    };
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

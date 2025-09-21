@@ -30,6 +30,13 @@ let UsersService = class UsersService {
     findOne(id) {
         return `This action returns a #${id} user`;
     }
+    async findUser(username) {
+        return {
+            id: 1,
+            username: 'KisJakab',
+            password: 'Password',
+        };
+    }
     update(id, updateUserDto) {
         return `This action updates a #${id} user`;
     }
@@ -39,7 +46,6 @@ let UsersService = class UsersService {
 };
 exports.UsersService = UsersService;
 __decorate([
-    (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto]),

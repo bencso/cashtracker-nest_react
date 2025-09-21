@@ -12,23 +12,38 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const users_service_1 = require("../users/users.service");
+const jwt_1 = require("@nestjs/jwt");
 let AuthService = class AuthService {
-    constructor(usersService) {
+    constructor(usersService, jwtService) {
         this.usersService = usersService;
+        this.jwtService = jwtService;
     }
     async signIn(username, password) {
+        const user = await this.usersService.findUser(username);
+        if (password != user.password)
+            throw new common_1.UnauthorizedException({
+                message: 'Érvénytelen bejelentkezési adat(ok)',
+            });
+        const payload = { id: user.id, username: user.username };
+        const jwt = this.jwtService.signAsync(payload);
         return {
-            message: ['Successful login'],
+            message: ['Sikeres bejelentkezés'],
             statusCode: 200,
-            data: {
-                username,
-            },
+            data: { jwt: await jwt },
         };
     }
 };
 exports.AuthService = AuthService;
+__decorate([
+    (0, common_1.Post)('login'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], AuthService.prototype, "signIn", null);
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [users_service_1.UsersService])
+    __metadata("design:paramtypes", [users_service_1.UsersService,
+        jwt_1.JwtService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

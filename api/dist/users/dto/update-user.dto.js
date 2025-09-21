@@ -17,19 +17,34 @@ class UpdateUserDto extends (0, swagger_1.PartialType)(create_user_dto_1.CreateU
 }
 exports.UpdateUserDto = UpdateUserDto;
 __decorate([
-    (0, class_validator_1.IsEmail)(),
+    (0, swagger_1.ApiPropertyOptional)(),
+    (0, class_validator_1.IsEmail)({}, {
+        message: 'Kérjük, érvényes e-mail cím formátumot adjon meg. (kisbela@pelda.hu)',
+    }),
     __metadata("design:type", String)
 ], UpdateUserDto.prototype, "email", void 0);
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)(),
     (0, class_validator_1.IsString)(),
-    (0, class_validator_1.Length)(5, 20),
+    (0, class_validator_1.Length)(5, 15, {
+        message: 'A felhasználó név legalább 8 és maximum 15 karakter hosszúnak kell lennie.',
+    }),
     __metadata("design:type", String)
 ], UpdateUserDto.prototype, "username", void 0);
 class UpdatePasswordDto extends UpdateUserDto {
 }
 exports.UpdatePasswordDto = UpdatePasswordDto;
 __decorate([
-    (0, class_validator_1.IsStrongPassword)(),
+    (0, swagger_1.ApiPropertyOptional)(),
+    (0, class_validator_1.IsStrongPassword)({
+        minLength: 8,
+        minLowercase: 1,
+        minUppercase: 1,
+        minNumbers: 1,
+        minSymbols: 1,
+    }, {
+        message: 'A jelszónak legalább 8 karakter hosszúnak kell lennie, tartalmaznia kell kis- és nagybetűt, számot, valamint speciális karaktert.',
+    }),
     __metadata("design:type", String)
 ], UpdatePasswordDto.prototype, "password", void 0);
 //# sourceMappingURL=update-user.dto.js.map

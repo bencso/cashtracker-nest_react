@@ -5,5 +5,5 @@ export class LoginDto extends ReturnDto {
 }
 
 class ReturnData {
-  username: string;
+  jwt: string;
 }

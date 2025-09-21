@@ -3,6 +3,6 @@ export declare class LoginDto extends ReturnDto {
     data: ReturnData;
 }
 declare class ReturnData {
-    username: string;
+    jwt: string;
 }
 export {};
