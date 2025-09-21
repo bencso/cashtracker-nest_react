@@ -34,13 +34,6 @@ let AuthService = class AuthService {
     }
 };
 exports.AuthService = AuthService;
-__decorate([
-    (0, common_1.Post)('login'),
-    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
-    __metadata("design:returntype", Promise)
-], AuthService.prototype, "signIn", null);
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [users_service_1.UsersService,
