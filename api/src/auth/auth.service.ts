@@ -11,14 +11,15 @@ export class AuthService {
   ) {}
 
   async signIn(
-    username: string,
+    email: string,
     password: string,
   ): Promise<LoginDto | UnauthorizedException> {
-    const user = await this.usersService.findUser(username);
+    const user = await this.usersService.findUser(email);
     if (password != user.password)
       throw new UnauthorizedException({
         message: 'Érvénytelen bejelentkezési adat(ok)',
       });
+    //TODO: Majd a TODO.md-ben leírt 6-10. sorig leirtak megvalósítása
     const payload = { id: user.id, username: user.username };
     const jwt = this.jwtService.signAsync(payload);
 

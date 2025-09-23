@@ -18,7 +18,7 @@ exports.BodyLogin = BodyLogin;
 __decorate([
     (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
-], BodyLogin.prototype, "username", void 0);
+], BodyLogin.prototype, "email", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)

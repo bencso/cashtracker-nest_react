@@ -21,7 +21,7 @@ let AuthController = class AuthController {
         this.authService = authService;
     }
     login(body) {
-        return this.authService.signIn(body.username, body.password);
+        return this.authService.signIn(body.email, body.password);
     }
 };
 exports.AuthController = AuthController;

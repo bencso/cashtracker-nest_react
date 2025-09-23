@@ -15,7 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
 const create_user_dto_1 = require("./dto/create-user.dto");
+const user_entity_1 = require("./entities/user.entity");
+const typeorm_1 = require("typeorm");
 let UsersService = class UsersService {
+    constructor(dataSource) {
+        this.dataSource = dataSource;
+    }
     async create(createUserDto) {
         return {
             message: [
@@ -30,7 +35,13 @@ let UsersService = class UsersService {
     findOne(id) {
         return `This action returns a #${id} user`;
     }
-    async findUser(username) {
+    async findUser(email) {
+        const user = await this.dataSource
+            .getRepository(user_entity_1.User)
+            .createQueryBuilder('user')
+            .where('user.email = :email', { email: email })
+            .getOne();
+        console.log(user);
         return {
             id: 1,
             username: 'KisJakab',
@@ -52,6 +63,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersService.prototype, "create", null);
 exports.UsersService = UsersService = __decorate([
-    (0, common_1.Injectable)()
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [typeorm_1.DataSource])
 ], UsersService);
 //# sourceMappingURL=users.service.js.map

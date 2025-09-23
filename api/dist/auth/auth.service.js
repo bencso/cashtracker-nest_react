@@ -18,8 +18,8 @@ let AuthService = class AuthService {
         this.usersService = usersService;
         this.jwtService = jwtService;
     }
-    async signIn(username, password) {
-        const user = await this.usersService.findUser(username);
+    async signIn(email, password) {
+        const user = await this.usersService.findUser(email);
         if (password != user.password)
             throw new common_1.UnauthorizedException({
                 message: 'Érvénytelen bejelentkezési adat(ok)',

@@ -6,5 +6,5 @@ export declare class AuthService {
     private readonly usersService;
     private readonly jwtService;
     constructor(usersService: UsersService, jwtService: JwtService);
-    signIn(username: string, password: string): Promise<LoginDto | UnauthorizedException>;
+    signIn(email: string, password: string): Promise<LoginDto | UnauthorizedException>;
 }

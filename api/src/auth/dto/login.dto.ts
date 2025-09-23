@@ -3,7 +3,7 @@ import { ReturnDto } from 'src/dto/return.dto';
 
 export class BodyLogin {
   @ApiProperty()
-  username: string;
+  email: string;
 
   @ApiProperty()
   password: string;
