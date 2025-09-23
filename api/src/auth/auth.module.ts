@@ -3,19 +3,23 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UsersModule } from 'src/users/users.module';
 import { JwtModule } from '@nestjs/jwt';
-
+import { ConfigModule, ConfigService } from '@nestjs/config';
 @Module({
-  imports: [
-    UsersModule,
-    //!FIXÁLNI kell
-    //!ERROR: [Nest] 91096  - 09/21/2025, 4:20:33 PM: ERROR [ExceptionsHandler] secretOrPrivateKey must have a value
-    JwtModule.register({
-      global: true,
-      secret: process.env.JWT_TOKEN_SECRET,
-      signOptions: { expiresIn: '60s' },
-    }),
-  ],
+  imports: [UsersModule, jwtModuleSection()],
   controllers: [AuthController],
   providers: [AuthService],
 })
 export class AuthModule {}
+
+function jwtModuleSection() {
+  return JwtModule.registerAsync({
+    imports: [ConfigModule],
+    global: true,
+    //! ENV-es megoldásra ez volt a megoldás, dokumentáció és copilot segitségével megtaláltam!
+    useFactory: async (config: ConfigService) => ({
+      secret: config.get<string>('JWT_TOKEN_SECRET'),
+      signOptions: { expiresIn: '60s' },
+    }),
+    inject: [ConfigService],
+  });
+}
