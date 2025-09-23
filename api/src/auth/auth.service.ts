@@ -27,6 +27,7 @@ export class AuthService {
       const payload = { id: user.id, username: user.username };
       const getToken = this.jwtService.signAsync(payload);
 
+      //TODO: IDE MAJD MÉG KELL EGY REFRESH TOKEN
       return {
         message: ['Sikeres bejelentkezés'],
         statusCode: 200,
@@ -40,6 +41,7 @@ export class AuthService {
     }
   }
 
+  //TODO: Regisztráció implementálása
   async registration(body: BodyRegistration): Promise<RegistrationDto | ConflictException> {
 
     return {
