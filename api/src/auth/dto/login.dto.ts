@@ -10,7 +10,7 @@ export class BodyLogin {
 }
 
 export class LoginDto extends ReturnDto {
-  data: ReturnData;
+  data?: ReturnData;
 }
 
 class ReturnData {

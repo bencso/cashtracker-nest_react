@@ -5,9 +5,8 @@ export declare class BodyRegistration {
     password: string;
 }
 export declare class RegistrationDto extends ReturnDto {
-    data: ReturnData;
+    data?: ReturnData;
 }
 declare class ReturnData {
-    jwt: string;
 }
 export {};

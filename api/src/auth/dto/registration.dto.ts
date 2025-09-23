@@ -39,9 +39,9 @@ export class BodyRegistration {
 }
 
 export class RegistrationDto extends ReturnDto {
-  data: ReturnData;
+  data?: ReturnData;
 }
 
 class ReturnData {
-  jwt: string;
+
 }

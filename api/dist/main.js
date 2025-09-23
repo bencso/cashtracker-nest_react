@@ -5,7 +5,9 @@ const app_module_1 = require("./app.module");
 const swagger_1 = require("@nestjs/swagger");
 const common_1 = require("@nestjs/common");
 async function bootstrap() {
-    const app = await core_1.NestFactory.create(app_module_1.AppModule, { abortOnError: false });
+    const app = await core_1.NestFactory.create(app_module_1.AppModule, {
+        abortOnError: false,
+    });
     const config = new swagger_1.DocumentBuilder()
         .setTitle('CashTracker API')
         .setDescription('Ez az első nestJS projektem, ezzel a projekttel gyakorlom és ismerem meg a nestJS-t, a projekt során a [nestJS hivatalos dokumentációját](https://docs.nestjs.com/) fogom végigkövetni, és próbálom a legkevesebb AI-t segítséget használni.')

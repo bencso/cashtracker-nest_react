@@ -4,7 +4,7 @@ export declare class BodyLogin {
     password: string;
 }
 export declare class LoginDto extends ReturnDto {
-    data: ReturnData;
+    data?: ReturnData;
 }
 declare class ReturnData {
     jwt: string;

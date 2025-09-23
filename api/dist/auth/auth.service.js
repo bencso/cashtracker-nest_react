@@ -19,17 +19,33 @@ let AuthService = class AuthService {
         this.jwtService = jwtService;
     }
     async signIn(email, password) {
-        const user = await this.usersService.findUser(email);
-        if (password != user.password)
-            throw new common_1.UnauthorizedException({
-                message: 'Érvénytelen bejelentkezési adat(ok)',
-            });
-        const payload = { id: user.id, username: user.username };
-        const jwt = this.jwtService.signAsync(payload);
+        try {
+            const user = await this.usersService.findUser(email);
+            if (password != user.password)
+                throw new common_1.UnauthorizedException({
+                    message: 'Érvénytelen bejelentkezési adat(ok)',
+                    status: 401
+                });
+            const payload = { id: user.id, username: user.username };
+            const getToken = this.jwtService.signAsync(payload);
+            return {
+                message: ['Sikeres bejelentkezés'],
+                statusCode: 200,
+                data: { jwt: await getToken },
+            };
+        }
+        catch (err) {
+            return {
+                message: [err.message],
+                statusCode: err.status,
+            };
+        }
+    }
+    async registration(body) {
         return {
-            message: ['Sikeres bejelentkezés'],
-            statusCode: 200,
-            data: { jwt: await jwt },
+            message: ['Sikeres regisztrációs!'],
+            statusCode: 201,
+            data: {}
         };
     }
 };

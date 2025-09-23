@@ -13,12 +13,14 @@ const app_service_1 = require("./app.service");
 const typeorm_1 = require("@nestjs/typeorm");
 const config_1 = require("@nestjs/config");
 const auth_module_1 = require("./auth/auth.module");
+const nestjs_pino_1 = require("nestjs-pino");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            nestjs_pino_1.LoggerModule.forRoot(),
             config_1.ConfigModule.forRoot({
                 envFilePath: '.env',
             }),
