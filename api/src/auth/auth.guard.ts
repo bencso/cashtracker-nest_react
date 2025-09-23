@@ -1,11 +1,9 @@
 import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
-import { Observable } from "rxjs";
 
-
-// @UseGuards(AuthGuard) - igy lehet majd használni a guardot, tulajdonképpen ha jól értem a 
-//! guard = middleware
+// @UseGuards(AuthGuard) - igy lehet majd használni a guardot, tulajdonképpen a Guard az egy őr, aki azt nézi hogy hozzáférhet-e az adott user a végponthoz.
+//! Ha jól értem: nest guard = express middleware
 @Injectable()
 export class AuthGuard implements CanActivate {
     constructor(private jwtService: JwtService, private config: ConfigService) { }
