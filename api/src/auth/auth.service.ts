@@ -7,8 +7,7 @@ import { UsersService } from '../users/users.service';
 import { LoginDto } from './dto/login.dto';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { BodyRegistration, RegistrationDto } from './dto/registration.dto';
-import { Logger, LoggerModule } from 'nestjs-pino';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
