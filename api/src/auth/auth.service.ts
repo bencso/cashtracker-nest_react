@@ -8,6 +8,7 @@ import { LoginDto } from './dto/login.dto';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { BodyRegistration, RegistrationDto } from './dto/registration.dto';
 import { ConfigService } from '@nestjs/config';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -23,35 +24,37 @@ export class AuthService {
   ): Promise<LoginDto | UnauthorizedException> {
     try {
       const user = await this.usersService.findUser(email);
-      if (password != user.password)
+      const compared = await bcrypt.compare(password, user.password);
+      if (!compared) {
         throw new UnauthorizedException({
           message: 'Érvénytelen bejelentkezési adat(ok)',
           status: 401,
         });
+      } else {
+        const payload = { id: user.id, username: user.username };
+        const getAcessToken = this.jwtService.signAsync(payload, {
+          expiresIn: this.config.get<string>('JWT_TOKEN_TIME'),
+        } as JwtSignOptions);
+        const getRefreshToken = this.jwtService.signAsync(
+          { username: user.username },
+          {
+            secret: this.config.get<string>('JWT_REFRESH_SECRET'),
+            expiresIn: this.config.get<string>('JWT_REFRESH_TIME'),
+          } as JwtSignOptions,
+        );
 
-      const payload = { id: user.id, username: user.username };
-      const getAcessToken = this.jwtService.signAsync(payload, {
-        expiresIn: this.config.get<string>('JWT_TOKEN_TIME'),
-      } as JwtSignOptions);
-      const getRefreshToken = this.jwtService.signAsync(
-        { username: user.username },
-        {
-          secret: this.config.get<string>('JWT_REFRESH_SECRET'),
-          expiresIn: this.config.get<string>('JWT_REFRESH_TIME'),
-        } as JwtSignOptions,
-      );
+        const access = await getAcessToken;
 
-      const access = await getAcessToken;
-
-      return {
-        message: ['Sikeres bejelentkezés'],
-        statusCode: 200,
-        data: { access },
-        tokens: {
-          refresh: await getRefreshToken,
-          access,
-        },
-      };
+        return {
+          message: ['Sikeres bejelentkezés'],
+          statusCode: 200,
+          data: { access },
+          tokens: {
+            refresh: await getRefreshToken,
+            access,
+          },
+        };
+      }
     } catch (err) {
       return {
         message: [err.message],
@@ -60,14 +63,41 @@ export class AuthService {
     }
   }
 
-  //TODO: Regisztráció implementálása
   async registration(
     body: BodyRegistration,
   ): Promise<RegistrationDto | ConflictException> {
-    return {
-      message: ['Sikeres regisztrációs!'],
-      statusCode: 201,
-      data: {},
-    };
+    const salt = 10;
+    try {
+      const hashedPassword = await bcrypt.hash(body.password, salt);
+      await this.usersService
+        .create({
+          email: body.email,
+          username: body.username,
+          password: hashedPassword,
+        })
+        .then((value) => {
+          if (+value.statusCode === 200) {
+            return {
+              message: ['Sikeres regisztrációs!'],
+              statusCode: 200,
+              data: {},
+            };
+          } else if (String(value.message).includes('ER_DUP_ENTRY')) {
+            throw new ConflictException(
+              'Ez az email cím már regisztrálva van!',
+            );
+          } else {
+            throw new ConflictException(value);
+          }
+        })
+        .catch((error) => {
+          throw new ConflictException(error);
+        });
+    } catch (err) {
+      return {
+        message: [err.message],
+        statusCode: err.status,
+      };
+    }
   }
 }

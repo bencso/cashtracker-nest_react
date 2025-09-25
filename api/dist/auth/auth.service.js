@@ -14,6 +14,7 @@ const common_1 = require("@nestjs/common");
 const users_service_1 = require("../users/users.service");
 const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
+const bcrypt = require("bcrypt");
 let AuthService = class AuthService {
     constructor(usersService, jwtService, config) {
         this.usersService = usersService;
@@ -23,24 +24,33 @@ let AuthService = class AuthService {
     async signIn(email, password) {
         try {
             const user = await this.usersService.findUser(email);
-            if (password != user.password)
+            const compared = await bcrypt.compare(password, user.password);
+            if (!compared) {
                 throw new common_1.UnauthorizedException({
                     message: 'Érvénytelen bejelentkezési adat(ok)',
                     status: 401,
                 });
-            const payload = { id: user.id, username: user.username };
-            const getAcessToken = this.jwtService.signAsync(payload, {
-                expiresIn: this.config.get('JWT_TOKEN_TIME'),
-            });
-            const getRefreshToken = this.jwtService.signAsync({ username: user.username }, {
-                secret: this.config.get('JWT_REFRESH_SECRET'),
-                expiresIn: this.config.get('JWT_REFRESH_TIME'),
-            });
-            return {
-                message: ['Sikeres bejelentkezés'],
-                statusCode: 200,
-                data: { jwt: await getAcessToken },
-            };
+            }
+            else {
+                const payload = { id: user.id, username: user.username };
+                const getAcessToken = this.jwtService.signAsync(payload, {
+                    expiresIn: this.config.get('JWT_TOKEN_TIME'),
+                });
+                const getRefreshToken = this.jwtService.signAsync({ username: user.username }, {
+                    secret: this.config.get('JWT_REFRESH_SECRET'),
+                    expiresIn: this.config.get('JWT_REFRESH_TIME'),
+                });
+                const access = await getAcessToken;
+                return {
+                    message: ['Sikeres bejelentkezés'],
+                    statusCode: 200,
+                    data: { access },
+                    tokens: {
+                        refresh: await getRefreshToken,
+                        access,
+                    },
+                };
+            }
         }
         catch (err) {
             return {
@@ -50,11 +60,40 @@ let AuthService = class AuthService {
         }
     }
     async registration(body) {
-        return {
-            message: ['Sikeres regisztrációs!'],
-            statusCode: 201,
-            data: {},
-        };
+        const salt = 10;
+        try {
+            const hashedPassword = await bcrypt.hash(body.password, salt);
+            await this.usersService
+                .create({
+                email: body.email,
+                username: body.username,
+                password: hashedPassword,
+            })
+                .then((value) => {
+                if (+value.statusCode === 200) {
+                    return {
+                        message: ['Sikeres regisztrációs!'],
+                        statusCode: 200,
+                        data: {},
+                    };
+                }
+                else if (String(value.message).includes('ER_DUP_ENTRY')) {
+                    throw new common_1.ConflictException('Ez az email cím már regisztrálva van!');
+                }
+                else {
+                    throw new common_1.ConflictException(value);
+                }
+            })
+                .catch((error) => {
+                throw new common_1.ConflictException(error);
+            });
+        }
+        catch (err) {
+            return {
+                message: [err.message],
+                statusCode: err.status,
+            };
+        }
     }
 };
 exports.AuthService = AuthService;

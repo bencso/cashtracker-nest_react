@@ -6,8 +6,8 @@ export declare class UsersService {
     dataSource: DataSource;
     constructor(dataSource: DataSource);
     create(createUserDto: CreateUserDto): Promise<{
-        message: string[];
-        statusCode: number;
+        message: any;
+        statusCode: any;
     }>;
     findAll(): string;
     findOne(id: number): string;

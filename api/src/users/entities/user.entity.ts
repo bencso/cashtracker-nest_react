@@ -11,14 +11,14 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('varchar(255)')
+  @Column({ type: 'varchar', length: 255 })
   @Index({ unique: true })
   email: string;
 
-  @Column('varchar(150)')
+  @Column({ type: 'varchar', length: 150 })
   username: string;
 
-  @Column('varchar(150)')
+  @Column({ type: 'varchar', length: 255 })
   password: string;
 
   @Column('boolean', { default: true })

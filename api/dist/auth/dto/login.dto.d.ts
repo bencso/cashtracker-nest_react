@@ -5,8 +5,13 @@ export declare class BodyLogin {
 }
 export declare class LoginDto extends ReturnDto {
     data?: ReturnData;
+    tokens?: TokenData;
 }
 declare class ReturnData {
-    jwt: string;
+    access: string;
+}
+declare class TokenData {
+    refresh: string;
+    access: string;
 }
 export {};

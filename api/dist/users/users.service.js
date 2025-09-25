@@ -22,12 +22,30 @@ let UsersService = class UsersService {
         this.dataSource = dataSource;
     }
     async create(createUserDto) {
-        return {
-            message: [
-                `Email: ${createUserDto.email},Pwd: ${createUserDto.password},Uname: ${createUserDto.username}`,
-            ],
-            statusCode: 200,
-        };
+        try {
+            await this.dataSource
+                .createQueryBuilder()
+                .insert()
+                .into(user_entity_1.User)
+                .values([
+                {
+                    email: createUserDto.email,
+                    password: createUserDto.password,
+                    username: createUserDto.username,
+                },
+            ])
+                .execute();
+            return {
+                message: [`Sikeres regisztráció!`],
+                statusCode: 200,
+            };
+        }
+        catch (err) {
+            return {
+                message: err.message,
+                statusCode: err.statusCode,
+            };
+        }
     }
     findAll() {
         return `This action returns all users`;
@@ -41,11 +59,10 @@ let UsersService = class UsersService {
             .createQueryBuilder('user')
             .where('user.email = :email', { email: email })
             .getOne();
-        console.log(user);
         return {
-            id: 1,
-            username: 'KisJakab',
-            password: 'Password',
+            id: user.id,
+            username: user.username,
+            password: user.password,
         };
     }
     update(id, updateUserDto) {

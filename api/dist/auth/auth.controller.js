@@ -17,12 +17,37 @@ const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
 const login_dto_1 = require("./dto/login.dto");
 const registration_dto_1 = require("./dto/registration.dto");
+const config_1 = require("@nestjs/config");
 let AuthController = class AuthController {
-    constructor(authService) {
+    constructor(authService, config) {
         this.authService = authService;
+        this.config = config;
     }
-    login(body) {
-        return this.authService.signIn(body.email, body.password);
+    async login(body, response) {
+        try {
+            const token = (await this.authService.signIn(body.email, body.password));
+            if (token.tokens) {
+                response.cookie('accessToken', token.tokens.access, {
+                    maxAge: +this.config.get('JWT_TOKEN_TIME'),
+                    httpOnly: true,
+                    sameSite: 'none',
+                    secure: true,
+                });
+                return response.json({ token: token.tokens.refresh });
+            }
+            else {
+                throw new common_1.UnauthorizedException({
+                    message: 'Érvénytelen bejelentkezési adat(ok)',
+                    status: 401,
+                });
+            }
+        }
+        catch (error) {
+            throw new common_1.ConflictException({
+                message: [error.message],
+                statusCode: error.status,
+            });
+        }
     }
     registration(body) {
         return this.authService.registration(body);
@@ -33,9 +58,10 @@ __decorate([
     (0, common_1.Post)('login'),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [login_dto_1.BodyLogin]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [login_dto_1.BodyLogin, Object]),
+    __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
 __decorate([
     (0, common_1.Post)('registration'),
@@ -47,6 +73,7 @@ __decorate([
 ], AuthController.prototype, "registration", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
-    __metadata("design:paramtypes", [auth_service_1.AuthService])
+    __metadata("design:paramtypes", [auth_service_1.AuthService,
+        config_1.ConfigService])
 ], AuthController);
 //# sourceMappingURL=auth.controller.js.map

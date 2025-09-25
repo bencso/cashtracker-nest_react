@@ -28,4 +28,6 @@ class LoginDto extends return_dto_1.ReturnDto {
 exports.LoginDto = LoginDto;
 class ReturnData {
 }
+class TokenData {
+}
 //# sourceMappingURL=login.dto.js.map

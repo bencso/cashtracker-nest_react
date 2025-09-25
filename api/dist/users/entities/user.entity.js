@@ -19,16 +19,16 @@ __decorate([
     __metadata("design:type", Number)
 ], User.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)('varchar(255)'),
+    (0, typeorm_1.Column)({ type: 'varchar', length: 255 }),
     (0, typeorm_1.Index)({ unique: true }),
     __metadata("design:type", String)
 ], User.prototype, "email", void 0);
 __decorate([
-    (0, typeorm_1.Column)('varchar(150)'),
+    (0, typeorm_1.Column)({ type: 'varchar', length: 150 }),
     __metadata("design:type", String)
 ], User.prototype, "username", void 0);
 __decorate([
-    (0, typeorm_1.Column)('varchar(150)'),
+    (0, typeorm_1.Column)({ type: 'varchar', length: 255 }),
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
 __decorate([

@@ -5,8 +5,8 @@ export declare class UsersController {
     private readonly usersService;
     constructor(usersService: UsersService);
     create(createUserDto: CreateUserDto): Promise<{
-        message: string[];
-        statusCode: number;
+        message: any;
+        statusCode: any;
     }>;
     findAll(): string;
     findOne(id: string): string;

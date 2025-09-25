@@ -42,6 +42,4 @@ export class RegistrationDto extends ReturnDto {
   data?: ReturnData;
 }
 
-class ReturnData {
-
-}
+class ReturnData {}

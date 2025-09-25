@@ -9,12 +9,29 @@ import { DataSource } from 'typeorm';
 export class UsersService {
   constructor(public dataSource: DataSource) {}
   async create(@Body() createUserDto: CreateUserDto) {
-    return {
-      message: [
-        `Email: ${createUserDto.email},Pwd: ${createUserDto.password},Uname: ${createUserDto.username}`,
-      ],
-      statusCode: 200,
-    };
+    try {
+      await this.dataSource
+        .createQueryBuilder()
+        .insert()
+        .into(User)
+        .values([
+          {
+            email: createUserDto.email,
+            password: createUserDto.password,
+            username: createUserDto.username,
+          },
+        ])
+        .execute();
+      return {
+        message: [`Sikeres regisztráció!`],
+        statusCode: 200,
+      };
+    } catch (err) {
+      return {
+        message: err.message,
+        statusCode: err.statusCode,
+      };
+    }
   }
 
   findAll() {
@@ -32,11 +49,10 @@ export class UsersService {
       .createQueryBuilder('user')
       .where('user.email = :email', { email: email })
       .getOne();
-    console.log(user);
     return {
-      id: 1,
-      username: 'KisJakab',
-      password: 'Password',
+      id: user.id,
+      username: user.username,
+      password: user.password,
     };
   }
 

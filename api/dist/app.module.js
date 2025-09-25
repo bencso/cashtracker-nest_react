@@ -25,20 +25,21 @@ exports.AppModule = AppModule = __decorate([
                 envFilePath: '.env',
             }),
             typeorm_1.TypeOrmModule.forRoot({
-                type: 'postgres',
+                type: 'mysql',
                 host: process.env.DB_HOST,
                 port: +process.env.DB_PORT,
                 username: process.env.DB_USERNAME,
                 password: process.env.DB_PASSWORD,
                 database: process.env.DB_NAME,
-                entities: ['**/*.entity{.ts}'],
-                migrations: ['**/*.migration{.ts}'],
+                entities: [__dirname + '/**/entities/*.entity{.ts,.js}'],
                 synchronize: true,
+                logging: true,
             }),
             auth_module_1.AuthModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
+        exports: [typeorm_1.TypeOrmModule],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

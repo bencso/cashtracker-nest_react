@@ -24,24 +24,24 @@ let AuthGuard = class AuthGuard {
         if (!authorizationHeader)
             throw new common_1.UnauthorizedException({
                 message: 'Érvénytelen bejelentkezési adat(ok)',
-                status: 401
+                status: 401,
             });
         const token = authorizationHeader.split('Bearer ')[1];
         if (!token)
             throw new common_1.UnauthorizedException({
                 message: 'Érvénytelen bejelentkezési adat(ok)',
-                status: 401
+                status: 401,
             });
         try {
             const payload = await this.jwtService.verifyAsync(token, {
-                secret: this.config.get('JWT_TOKEN_SECRET')
+                secret: this.config.get('JWT_TOKEN_SECRET'),
             });
             request['user'] = payload;
         }
         catch {
             throw new common_1.UnauthorizedException({
                 message: 'Érvénytelen bejelentkezési adat(ok)',
-                status: 401
+                status: 401,
             });
         }
         return true;
@@ -50,6 +50,7 @@ let AuthGuard = class AuthGuard {
 exports.AuthGuard = AuthGuard;
 exports.AuthGuard = AuthGuard = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [jwt_1.JwtService, config_1.ConfigService])
+    __metadata("design:paramtypes", [jwt_1.JwtService,
+        config_1.ConfigService])
 ], AuthGuard);
 //# sourceMappingURL=auth.guard.js.map
