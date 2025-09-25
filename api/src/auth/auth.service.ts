@@ -42,7 +42,6 @@ export class AuthService {
         } as JwtSignOptions,
       );
 
-      //TODO: IDE MAJD MÉG KELL EGY REFRESH TOKEN
       return {
         message: ['Sikeres bejelentkezés'],
         statusCode: 200,
