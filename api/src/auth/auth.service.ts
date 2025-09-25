@@ -42,13 +42,15 @@ export class AuthService {
         } as JwtSignOptions,
       );
 
+      const access = await getAcessToken;
+
       return {
         message: ['Sikeres bejelentkezés'],
         statusCode: 200,
-        data: { access: await getAcessToken },
+        data: { access },
         tokens: {
           refresh: await getRefreshToken,
-          access: await getAcessToken,
+          access,
         },
       };
     } catch (err) {
