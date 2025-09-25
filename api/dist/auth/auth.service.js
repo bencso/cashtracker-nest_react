@@ -13,10 +13,12 @@ exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const users_service_1 = require("../users/users.service");
 const jwt_1 = require("@nestjs/jwt");
+const config_1 = require("@nestjs/config");
 let AuthService = class AuthService {
-    constructor(usersService, jwtService) {
+    constructor(usersService, jwtService, config) {
         this.usersService = usersService;
         this.jwtService = jwtService;
+        this.config = config;
     }
     async signIn(email, password) {
         try {
@@ -24,14 +26,20 @@ let AuthService = class AuthService {
             if (password != user.password)
                 throw new common_1.UnauthorizedException({
                     message: 'Érvénytelen bejelentkezési adat(ok)',
-                    status: 401
+                    status: 401,
                 });
             const payload = { id: user.id, username: user.username };
-            const getToken = this.jwtService.signAsync(payload);
+            const getAcessToken = this.jwtService.signAsync(payload, {
+                expiresIn: this.config.get('JWT_TOKEN_TIME'),
+            });
+            const getRefreshToken = this.jwtService.signAsync({ username: user.username }, {
+                secret: this.config.get('JWT_REFRESH_SECRET'),
+                expiresIn: this.config.get('JWT_REFRESH_TIME'),
+            });
             return {
                 message: ['Sikeres bejelentkezés'],
                 statusCode: 200,
-                data: { jwt: await getToken },
+                data: { jwt: await getAcessToken },
             };
         }
         catch (err) {
@@ -45,7 +53,7 @@ let AuthService = class AuthService {
         return {
             message: ['Sikeres regisztrációs!'],
             statusCode: 201,
-            data: {}
+            data: {},
         };
     }
 };
@@ -53,6 +61,7 @@ exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [users_service_1.UsersService,
-        jwt_1.JwtService])
+        jwt_1.JwtService,
+        config_1.ConfigService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

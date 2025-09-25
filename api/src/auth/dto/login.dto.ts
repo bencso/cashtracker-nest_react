@@ -11,8 +11,14 @@ export class BodyLogin {
 
 export class LoginDto extends ReturnDto {
   data?: ReturnData;
+  tokens?: TokenData;
 }
 
 class ReturnData {
-  jwt: string;
+  access: string;
+}
+
+class TokenData {
+  refresh: string;
+  access: string;
 }

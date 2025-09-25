@@ -18,7 +18,6 @@ function jwtModuleSection() {
     //! ENV-es megoldásra ez volt a megoldás, dokumentáció és copilot segitségével megtaláltam!
     useFactory: async (config: ConfigService) => ({
       secret: config.get<string>('JWT_TOKEN_SECRET'),
-      signOptions: { expiresIn: '60s' },
     }),
     inject: [ConfigService],
   });

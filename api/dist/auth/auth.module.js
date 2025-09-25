@@ -29,7 +29,6 @@ function jwtModuleSection() {
         global: true,
         useFactory: async (config) => ({
             secret: config.get('JWT_TOKEN_SECRET'),
-            signOptions: { expiresIn: '60s' },
         }),
         inject: [config_1.ConfigService],
     });
