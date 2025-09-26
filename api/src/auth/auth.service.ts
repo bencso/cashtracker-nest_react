@@ -76,23 +76,24 @@ export class AuthService {
           password: hashedPassword,
         })
         .then((value) => {
-          if (+value.statusCode === 200) {
-            return {
-              message: ['Sikeres regisztrációs!'],
-              statusCode: 200,
-              data: {},
-            };
-          } else if (String(value.message).includes('ER_DUP_ENTRY')) {
-            throw new ConflictException(
-              'Ez az email cím már regisztrálva van!',
-            );
-          } else {
-            throw new ConflictException(value);
-          }
+          if (value.statusCode !== 200)
+            if (String(value.message).includes('ER_DUP_ENTRY')) {
+              throw new ConflictException(
+                'Ez az email cím már regisztrálva van!',
+              );
+            } else {
+              throw new ConflictException(value);
+            }
         })
         .catch((error) => {
           throw new ConflictException(error);
         });
+
+      return {
+        message: ['Sikeres regisztrációs!'],
+        statusCode: 200,
+        data: {},
+      };
     } catch (err) {
       return {
         message: [err.message],
