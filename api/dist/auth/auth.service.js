@@ -132,6 +132,16 @@ let AuthService = class AuthService {
             const refreshToken = String(request.headers['cookie'])
                 .split('refreshToken=')[1]
                 .split(';')[0];
+            await this.jwtService
+                .verifyAsync(refreshToken, {
+                secret: this.config.get('JWT_REFRESH_SECRET'),
+            })
+                .then((value) => {
+                console.log(value);
+            })
+                .catch((err) => {
+                return new common_1.ConflictException(err);
+            });
             return {
                 message: refreshToken,
             };

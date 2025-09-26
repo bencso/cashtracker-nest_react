@@ -141,6 +141,22 @@ export class AuthService {
       const refreshToken = String(request.headers['cookie'])
         .split('refreshToken=')[1]
         .split(';')[0];
+
+      await this.jwtService
+        .verifyAsync(refreshToken, {
+          secret: this.config.get('JWT_REFRESH_SECRET'),
+        })
+        .then((value) => {
+          console.log(value);
+          // const payload = { id: user.id, username: user.username };
+
+          // const getAcessToken = this.jwtService.signAsync(payload, {
+          //   expiresIn: this.config.get<string>('JWT_TOKEN_TIME'),
+          // } as JwtSignOptions);
+        })
+        .catch((err) => {
+          return new ConflictException(err);
+        });
       return {
         message: refreshToken,
       };
