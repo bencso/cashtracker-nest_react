@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Req,
   Res,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -57,5 +58,11 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   registration(@Body() body: BodyRegistration) {
     return this.authService.registration(body);
+  }
+
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  refreshToken(@Req() request: Request) {
+    return this.authService.refresh(request);
   }
 }

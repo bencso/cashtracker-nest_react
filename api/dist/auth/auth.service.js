@@ -94,6 +94,24 @@ let AuthService = class AuthService {
             };
         }
     }
+    async refresh(request) {
+        if (request &&
+            request.headers &&
+            request.headers['cookie'] &&
+            String(request.headers['cookie']).includes('refreshToken=')) {
+            const refreshToken = String(request.headers['cookie'])
+                .split('refreshToken=')[1]
+                .split(';')[0];
+            return {
+                message: refreshToken,
+            };
+        }
+        else
+            throw new common_1.UnauthorizedException({
+                message: 'Érvénytelen bejelentkezési adat(ok)',
+                status: 401,
+            });
+    }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([

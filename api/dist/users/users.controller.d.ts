@@ -8,7 +8,6 @@ export declare class UsersController {
         message: any;
         statusCode: any;
     }>;
-    findAll(): string;
     findOne(id: string): string;
     update(id: string, updateUserDto: UpdateUserDto): string;
     remove(id: string): string;

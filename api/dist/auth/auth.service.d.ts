@@ -11,4 +11,7 @@ export declare class AuthService {
     constructor(usersService: UsersService, jwtService: JwtService, config: ConfigService);
     signIn(email: string, password: string): Promise<LoginDto | UnauthorizedException>;
     registration(body: BodyRegistration): Promise<RegistrationDto | ConflictException>;
+    refresh(request: Request): Promise<{
+        message: string;
+    }>;
 }

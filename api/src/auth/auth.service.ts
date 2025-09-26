@@ -101,4 +101,24 @@ export class AuthService {
       };
     }
   }
+
+  async refresh(request: Request) {
+    if (
+      request &&
+      request.headers &&
+      request.headers['cookie'] &&
+      String(request.headers['cookie']).includes('refreshToken=')
+    ) {
+      const refreshToken = String(request.headers['cookie'])
+        .split('refreshToken=')[1]
+        .split(';')[0];
+      return {
+        message: refreshToken,
+      };
+    } else
+      throw new UnauthorizedException({
+        message: 'Érvénytelen bejelentkezési adat(ok)',
+        status: 401,
+      });
+  }
 }

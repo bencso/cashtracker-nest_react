@@ -52,6 +52,9 @@ let AuthController = class AuthController {
     registration(body) {
         return this.authService.registration(body);
     }
+    refreshToken(request) {
+        return this.authService.refresh(request);
+    }
 };
 exports.AuthController = AuthController;
 __decorate([
@@ -71,6 +74,14 @@ __decorate([
     __metadata("design:paramtypes", [registration_dto_1.BodyRegistration]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "registration", null);
+__decorate([
+    (0, common_1.Post)('refresh'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Request]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "refreshToken", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService,

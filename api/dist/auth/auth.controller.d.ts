@@ -10,4 +10,7 @@ export declare class AuthController {
     constructor(authService: AuthService, config: ConfigService);
     login(body: BodyLogin, response: Response): Promise<Response<any, Record<string, any>>>;
     registration(body: BodyRegistration): Promise<import("./dto/registration.dto").RegistrationDto | ConflictException>;
+    refreshToken(request: Request): Promise<{
+        message: string;
+    }>;
 }
