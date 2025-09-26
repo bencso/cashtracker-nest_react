@@ -1,14 +1,17 @@
 import {
+  Body,
   ConflictException,
   Injectable,
+  Res,
   UnauthorizedException,
 } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
-import { LoginDto } from './dto/login.dto';
+import { BodyLogin, LoginDto } from './dto/login.dto';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { BodyRegistration, RegistrationDto } from './dto/registration.dto';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -17,6 +20,32 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
   ) {}
+
+  async login(@Body() body: BodyLogin, @Res() response: Response) {
+    try {
+      const token = (await this.signIn(body.email, body.password)) as LoginDto;
+
+      if (token.tokens) {
+        response.cookie('accessToken', token.tokens.access, {
+          maxAge: +this.config.get<string>('JWT_TOKEN_TIME'),
+          httpOnly: true,
+          sameSite: 'none',
+          secure: true,
+        });
+        return response.json({ token: token.tokens.refresh });
+      } else {
+        throw new UnauthorizedException({
+          message: 'Érvénytelen bejelentkezési adat(ok)',
+          status: 401,
+        });
+      }
+    } catch (error) {
+      throw new ConflictException({
+        message: [error.message],
+        statusCode: error.status,
+      });
+    }
+  }
 
   async signIn(
     email: string,

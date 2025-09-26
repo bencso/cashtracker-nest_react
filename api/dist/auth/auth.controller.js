@@ -24,30 +24,7 @@ let AuthController = class AuthController {
         this.config = config;
     }
     async login(body, response) {
-        try {
-            const token = (await this.authService.signIn(body.email, body.password));
-            if (token.tokens) {
-                response.cookie('accessToken', token.tokens.access, {
-                    maxAge: +this.config.get('JWT_TOKEN_TIME'),
-                    httpOnly: true,
-                    sameSite: 'none',
-                    secure: true,
-                });
-                return response.json({ token: token.tokens.refresh });
-            }
-            else {
-                throw new common_1.UnauthorizedException({
-                    message: 'Érvénytelen bejelentkezési adat(ok)',
-                    status: 401,
-                });
-            }
-        }
-        catch (error) {
-            throw new common_1.ConflictException({
-                message: [error.message],
-                statusCode: error.status,
-            });
-        }
+        return this.authService.login(body, response);
     }
     registration(body) {
         return this.authService.registration(body);

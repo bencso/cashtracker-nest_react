@@ -1,4 +1,3 @@
-import { ConflictException } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { BodyLogin } from './dto/login.dto';
@@ -9,7 +8,7 @@ export declare class AuthController {
     private readonly config;
     constructor(authService: AuthService, config: ConfigService);
     login(body: BodyLogin, response: Response): Promise<Response<any, Record<string, any>>>;
-    registration(body: BodyRegistration): Promise<import("./dto/registration.dto").RegistrationDto | ConflictException>;
+    registration(body: BodyRegistration): Promise<import("./dto/registration.dto").RegistrationDto | import("@nestjs/common").ConflictException>;
     refreshToken(request: Request): Promise<{
         message: string;
     }>;
