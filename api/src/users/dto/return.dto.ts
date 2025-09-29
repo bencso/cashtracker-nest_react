@@ -1,6 +1,6 @@
 export class ReturnUserDto {
   id: number;
-  username: string;
+  email: string;
 }
 
 export class ReturnUserPassDto extends ReturnUserDto {

@@ -25,9 +25,9 @@ let AuthService = class AuthService {
         this.jwtService = jwtService;
         this.config = config;
     }
-    async login(body, response) {
+    async login(body, request, response) {
         try {
-            const token = (await this.signIn(body.email, body.password));
+            const token = (await this.signIn(body.email, body.password, request));
             if (token.tokens) {
                 response.cookie('accessToken', token.tokens.access, {
                     maxAge: +this.config.get('JWT_TOKEN_TIME'),
@@ -51,7 +51,7 @@ let AuthService = class AuthService {
             });
         }
     }
-    async signIn(email, password) {
+    async signIn(email, password, request) {
         try {
             const user = await this.usersService.findUser(email);
             const compared = await bcrypt.compare(password, user.password);
@@ -62,21 +62,15 @@ let AuthService = class AuthService {
                 });
             }
             else {
-                const payload = { id: user.id, username: user.username };
-                const getAcessToken = this.jwtService.signAsync(payload, {
-                    expiresIn: this.config.get('JWT_TOKEN_TIME'),
-                });
-                const getRefreshToken = this.jwtService.signAsync({ username: user.username }, {
-                    secret: this.config.get('JWT_REFRESH_SECRET'),
-                    expiresIn: this.config.get('JWT_REFRESH_TIME'),
-                });
+                const getAcessToken = await this.createAccessToken(user);
+                const getRefreshToken = await this.createRefreshToken(user, request);
                 const access = await getAcessToken;
                 return {
                     message: ['Sikeres bejelentkezés'],
                     statusCode: 200,
                     data: { access },
                     tokens: {
-                        refresh: await getRefreshToken,
+                        refresh: getRefreshToken,
                         access,
                     },
                 };
@@ -124,27 +118,45 @@ let AuthService = class AuthService {
             };
         }
     }
+    async createAccessToken(user) {
+        const payload = { id: user.id, email: user.email };
+        return this.jwtService.signAsync(payload, {
+            expiresIn: this.config.get('JWT_TOKEN_TIME'),
+        });
+    }
+    async createRefreshToken(user, request) {
+        return this.jwtService.signAsync({
+            email: user.email,
+            useragent: request.headers['user-agent'],
+        }, {
+            secret: this.config.get('JWT_REFRESH_SECRET'),
+            expiresIn: this.config.get('JWT_REFRESH_TIME'),
+        });
+    }
     async refresh(request) {
         if (request &&
             request.headers &&
-            request.headers['cookie'] &&
-            String(request.headers['cookie']).includes('refreshToken=')) {
-            const refreshToken = String(request.headers['cookie'])
-                .split('refreshToken=')[1]
-                .split(';')[0];
-            await this.jwtService
-                .verifyAsync(refreshToken, {
-                secret: this.config.get('JWT_REFRESH_SECRET'),
-            })
-                .then((value) => {
-                console.log(value);
-            })
-                .catch((err) => {
-                return new common_1.ConflictException(err);
-            });
-            return {
-                message: refreshToken,
-            };
+            request?.headers?.cookie &&
+            request?.cookies?.refreshToken) {
+            const refreshToken = request?.cookies?.refreshToken;
+            try {
+                const verifiedToken = await this.jwtService.verifyAsync(refreshToken, {
+                    secret: this.config.get('JWT_REFRESH_SECRET'),
+                });
+                if (verifiedToken.useragent !== request.headers['user-agent']) {
+                    throw new common_1.UnauthorizedException('Érvénytelen bejelentkezési token');
+                }
+                const newRefreshToken = await this.createRefreshToken({ email: verifiedToken.email }, request);
+                const user = await this.usersService.findUser(verifiedToken.email);
+                const newAccessToken = await this.createAccessToken({
+                    email: verifiedToken.email,
+                    id: user.id,
+                });
+                return { refreshToken: newRefreshToken, accessToken: newAccessToken };
+            }
+            catch (error) {
+                throw new common_1.UnauthorizedException('Érvénytelen vagy lejárt refresh token: ' + error);
+            }
         }
         else
             throw new common_1.UnauthorizedException({
@@ -156,9 +168,10 @@ let AuthService = class AuthService {
 exports.AuthService = AuthService;
 __decorate([
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Res)()),
+    __param(1, (0, common_1.Req)()),
+    __param(2, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [login_dto_1.BodyLogin, Object]),
+    __metadata("design:paramtypes", [login_dto_1.BodyLogin, Object, Object]),
     __metadata("design:returntype", Promise)
 ], AuthService.prototype, "login", null);
 exports.AuthService = AuthService = __decorate([

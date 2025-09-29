@@ -7,7 +7,7 @@ import {
   Req,
   Res,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { BodyLogin } from './dto/login.dto';
 import { BodyRegistration } from './dto/registration.dto';
@@ -23,8 +23,12 @@ export class AuthController {
   //TODO: Utána nézni a passthrough után
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  async login(@Body() body: BodyLogin, @Res() response: Response) {
-    return this.authService.login(body, response);
+  async login(
+    @Body() body: BodyLogin,
+    @Req() request: Request,
+    @Res() response: Response,
+  ) {
+    return this.authService.login(body, request, response);
   }
 
   @Post('registration')

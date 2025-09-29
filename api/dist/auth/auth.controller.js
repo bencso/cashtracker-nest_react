@@ -23,8 +23,8 @@ let AuthController = class AuthController {
         this.authService = authService;
         this.config = config;
     }
-    async login(body, response) {
-        return this.authService.login(body, response);
+    async login(body, request, response) {
+        return this.authService.login(body, request, response);
     }
     registration(body) {
         return this.authService.registration(body);
@@ -38,9 +38,10 @@ __decorate([
     (0, common_1.Post)('login'),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Res)()),
+    __param(1, (0, common_1.Req)()),
+    __param(2, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [login_dto_1.BodyLogin, Object]),
+    __metadata("design:paramtypes", [login_dto_1.BodyLogin, Object, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
 __decorate([
@@ -56,7 +57,7 @@ __decorate([
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Request]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "refreshToken", null);
 exports.AuthController = AuthController = __decorate([

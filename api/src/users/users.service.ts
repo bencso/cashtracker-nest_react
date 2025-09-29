@@ -51,7 +51,7 @@ export class UsersService {
       .getOne();
     return {
       id: user.id,
-      username: user.username,
+      email: user.email,
       password: user.password,
     };
   }

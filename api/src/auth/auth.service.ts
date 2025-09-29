@@ -2,6 +2,7 @@ import {
   Body,
   ConflictException,
   Injectable,
+  Req,
   Res,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -11,7 +12,8 @@ import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { BodyRegistration, RegistrationDto } from './dto/registration.dto';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
-import { Response } from 'express';
+import { Request, Response } from 'express';
+import { ReturnUserDto } from 'src/users/dto/return.dto';
 
 @Injectable()
 export class AuthService {
@@ -21,9 +23,17 @@ export class AuthService {
     private readonly config: ConfigService,
   ) {}
 
-  async login(@Body() body: BodyLogin, @Res() response: Response) {
+  async login(
+    @Body() body: BodyLogin,
+    @Req() request: Request,
+    @Res() response: Response,
+  ) {
     try {
-      const token = (await this.signIn(body.email, body.password)) as LoginDto;
+      const token = (await this.signIn(
+        body.email,
+        body.password,
+        request,
+      )) as LoginDto;
 
       if (token.tokens) {
         response.cookie('accessToken', token.tokens.access, {
@@ -50,6 +60,7 @@ export class AuthService {
   async signIn(
     email: string,
     password: string,
+    request: Request,
   ): Promise<LoginDto | UnauthorizedException> {
     try {
       const user = await this.usersService.findUser(email);
@@ -60,17 +71,8 @@ export class AuthService {
           status: 401,
         });
       } else {
-        const payload = { id: user.id, username: user.username };
-        const getAcessToken = this.jwtService.signAsync(payload, {
-          expiresIn: this.config.get<string>('JWT_TOKEN_TIME'),
-        } as JwtSignOptions);
-        const getRefreshToken = this.jwtService.signAsync(
-          { username: user.username },
-          {
-            secret: this.config.get<string>('JWT_REFRESH_SECRET'),
-            expiresIn: this.config.get<string>('JWT_REFRESH_TIME'),
-          } as JwtSignOptions,
-        );
+        const getAcessToken = await this.createAccessToken(user);
+        const getRefreshToken = await this.createRefreshToken(user, request);
 
         const access = await getAcessToken;
 
@@ -79,7 +81,7 @@ export class AuthService {
           statusCode: 200,
           data: { access },
           tokens: {
-            refresh: await getRefreshToken,
+            refresh: getRefreshToken,
             access,
           },
         };
@@ -131,35 +133,60 @@ export class AuthService {
     }
   }
 
+  async createAccessToken(user: ReturnUserDto) {
+    const payload = { id: user.id, email: user.email };
+    return this.jwtService.signAsync(payload, {
+      expiresIn: this.config.get<string>('JWT_TOKEN_TIME'),
+    } as JwtSignOptions);
+  }
+
+  async createRefreshToken(user: ReturnUserDto, request: Request) {
+    return this.jwtService.signAsync(
+      {
+        email: user.email,
+        useragent: request.headers['user-agent'],
+      },
+      {
+        secret: this.config.get<string>('JWT_REFRESH_SECRET'),
+        expiresIn: this.config.get<string>('JWT_REFRESH_TIME'),
+      } as JwtSignOptions,
+    );
+  }
+
   async refresh(request: Request) {
     if (
       request &&
       request.headers &&
-      request.headers['cookie'] &&
-      String(request.headers['cookie']).includes('refreshToken=')
+      request?.headers?.cookie &&
+      request?.cookies?.refreshToken
     ) {
-      const refreshToken = String(request.headers['cookie'])
-        .split('refreshToken=')[1]
-        .split(';')[0];
-
-      await this.jwtService
-        .verifyAsync(refreshToken, {
-          secret: this.config.get('JWT_REFRESH_SECRET'),
-        })
-        .then((value) => {
-          console.log(value);
-          // const payload = { id: user.id, username: user.username };
-
-          // const getAcessToken = this.jwtService.signAsync(payload, {
-          //   expiresIn: this.config.get<string>('JWT_TOKEN_TIME'),
-          // } as JwtSignOptions);
-        })
-        .catch((err) => {
-          return new ConflictException(err);
+      const refreshToken = request?.cookies?.refreshToken;
+      try {
+        const verifiedToken = await this.jwtService.verifyAsync(refreshToken, {
+          secret: this.config.get<string>('JWT_REFRESH_SECRET'),
         });
-      return {
-        message: refreshToken,
-      };
+        if (verifiedToken.useragent !== request.headers['user-agent']) {
+          throw new UnauthorizedException('Érvénytelen bejelentkezési token');
+        }
+
+        const newRefreshToken = await this.createRefreshToken(
+          { email: verifiedToken.email } as ReturnUserDto,
+          request,
+        );
+
+        const user = await this.usersService.findUser(verifiedToken.email);
+
+        const newAccessToken = await this.createAccessToken({
+          email: verifiedToken.email,
+          id: user.id,
+        } as ReturnUserDto);
+
+        return { refreshToken: newRefreshToken, accessToken: newAccessToken };
+      } catch (error) {
+        throw new UnauthorizedException(
+          'Érvénytelen vagy lejárt refresh token: ' + error,
+        );
+      }
     } else
       throw new UnauthorizedException({
         message: 'Érvénytelen bejelentkezési adat(ok)',
