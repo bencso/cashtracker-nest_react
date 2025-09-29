@@ -15,6 +15,10 @@ import * as bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
 import { ReturnUserDto } from 'src/users/dto/return.dto';
 
+/*
+ * TODO: Majd iP-t is lehet nézni, nem csak user-agent (ugyanugy lehet hamisitani meg minden...,
+ * csak az a baj hogy user-agenttel is hogy ha már más gépen használja kilőve a token és ujra jelentkezhet be)
+ */
 @Injectable()
 export class AuthService {
   constructor(
