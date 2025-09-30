@@ -64,7 +64,7 @@ let AuthService = class AuthService {
             else {
                 const getAcessToken = await this.createAccessToken(user);
                 const getRefreshToken = await this.createRefreshToken(user, request);
-                const access = await getAcessToken;
+                const access = getAcessToken;
                 return {
                     message: ['Sikeres bejelentkezés'],
                     statusCode: 200,
