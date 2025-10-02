@@ -19,6 +19,7 @@ const login_dto_1 = require("./dto/login.dto");
 const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
 const bcrypt = require("bcrypt");
+const crypto_1 = require("crypto");
 let AuthService = class AuthService {
     constructor(usersService, jwtService, config) {
         this.usersService = usersService;
@@ -62,8 +63,8 @@ let AuthService = class AuthService {
                 });
             }
             else {
-                const getAcessToken = await this.createAccessToken(user);
-                const getRefreshToken = await this.createRefreshToken(user, request);
+                const getAcessToken = await this.createAccessToken(user, request);
+                const getRefreshToken = await this.createRefreshToken(user);
                 const access = getAcessToken;
                 return {
                     message: ['Sikeres bejelentkezés'],
@@ -118,17 +119,24 @@ let AuthService = class AuthService {
             };
         }
     }
-    async createAccessToken(user) {
-        const payload = { id: user.id, email: user.email };
+    async createAccessToken(user, request) {
+        const payload = {
+            email: user.email,
+            user_data: {
+                ip: request.ip,
+                user_agent: request.headers['user-agent']
+            }
+        };
         return this.jwtService.signAsync(payload, {
             expiresIn: this.config.get('JWT_TOKEN_TIME'),
         });
     }
-    async createRefreshToken(user, request) {
-        return this.jwtService.signAsync({
-            email: user.email,
-            useragent: request.headers['user-agent'],
-        }, {
+    async createRefreshToken(user) {
+        const payload = {
+            sub: user.id,
+            tokenId: (0, crypto_1.randomUUID)()
+        };
+        return this.jwtService.signAsync(payload, {
             secret: this.config.get('JWT_REFRESH_SECRET'),
             expiresIn: this.config.get('JWT_REFRESH_TIME'),
         });
@@ -146,12 +154,13 @@ let AuthService = class AuthService {
                 if (verifiedToken.useragent !== request.headers['user-agent']) {
                     throw new common_1.UnauthorizedException('Érvénytelen bejelentkezési token');
                 }
-                const newRefreshToken = await this.createRefreshToken({ email: verifiedToken.email }, request);
+                const newRefreshToken = await this.createRefreshToken({ email: verifiedToken.email });
                 const user = await this.usersService.findUser(verifiedToken.email);
-                const newAccessToken = await this.createAccessToken({
+                const userData = {
                     email: verifiedToken.email,
                     id: user.id,
-                });
+                };
+                const newAccessToken = await this.createAccessToken(userData, request);
                 return { refreshToken: newRefreshToken, accessToken: newAccessToken };
             }
             catch (error) {

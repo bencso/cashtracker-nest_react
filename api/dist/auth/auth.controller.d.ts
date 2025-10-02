@@ -8,7 +8,7 @@ export declare class AuthController {
     private readonly config;
     constructor(authService: AuthService, config: ConfigService);
     login(body: BodyLogin, request: Request, response: Response): Promise<Response<any, Record<string, any>>>;
-    registration(body: BodyRegistration): Promise<import("@nestjs/common").ConflictException | import("./dto/registration.dto").RegistrationDto>;
+    registration(body: BodyRegistration): Promise<import("./dto/registration.dto").RegistrationDto | import("@nestjs/common").ConflictException>;
     refreshToken(request: Request): Promise<{
         refreshToken: string;
         accessToken: string;

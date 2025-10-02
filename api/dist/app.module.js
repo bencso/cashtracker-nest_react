@@ -15,6 +15,9 @@ const config_1 = require("@nestjs/config");
 const auth_module_1 = require("./auth/auth.module");
 const nestjs_pino_1 = require("nestjs-pino");
 const sessions_controller_1 = require("./sessions/sessions.controller");
+const sessions_service_1 = require("./sessions/sessions.service");
+const users_service_1 = require("./users/users.service");
+const users_controller_1 = require("./users/users.controller");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -38,8 +41,8 @@ exports.AppModule = AppModule = __decorate([
             }),
             auth_module_1.AuthModule,
         ],
-        controllers: [app_controller_1.AppController, sessions_controller_1.SessionsController],
-        providers: [app_service_1.AppService],
+        controllers: [app_controller_1.AppController, sessions_controller_1.SessionsController, users_controller_1.UsersController],
+        providers: [app_service_1.AppService, sessions_service_1.SessionService, users_service_1.UsersService],
         exports: [typeorm_1.TypeOrmModule],
     })
 ], AppModule);

@@ -6,6 +6,9 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { LoggerModule } from 'nestjs-pino';
 import { SessionsController } from './sessions/sessions.controller';
+import { SessionService } from './sessions/sessions.service';
+import { UsersService } from './users/users.service';
+import { UsersController } from './users/users.controller';
 
 @Module({
   imports: [
@@ -26,8 +29,8 @@ import { SessionsController } from './sessions/sessions.controller';
     }),
     AuthModule,
   ],
-  controllers: [AppController, SessionsController],
-  providers: [AppService],
+  controllers: [AppController, SessionsController, UsersController],
+  providers: [AppService, SessionService, UsersService],
   exports: [TypeOrmModule],
 })
-export class AppModule {}
+export class AppModule { }

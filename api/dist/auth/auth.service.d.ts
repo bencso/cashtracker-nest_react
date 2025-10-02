@@ -14,8 +14,8 @@ export declare class AuthService {
     login(body: BodyLogin, request: Request, response: Response): Promise<Response<any, Record<string, any>>>;
     signIn(email: string, password: string, request: Request): Promise<LoginDto | UnauthorizedException>;
     registration(body: BodyRegistration): Promise<RegistrationDto | ConflictException>;
-    createAccessToken(user: ReturnUserDto): Promise<string>;
-    createRefreshToken(user: ReturnUserDto, request: Request): Promise<string>;
+    createAccessToken(user: ReturnUserDto, request: Request): Promise<string>;
+    createRefreshToken(user: ReturnUserDto): Promise<string>;
     refresh(request: Request): Promise<{
         refreshToken: string;
         accessToken: string;

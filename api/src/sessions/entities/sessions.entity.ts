@@ -8,13 +8,15 @@ import {
   PrimaryColumn,
 } from 'typeorm';
 
+class UserData {
+  user_agent: String
+  ip: String
+}
+
 @Entity({ name: 'sessions' })
 export class Sessions {
   @PrimaryColumn({ type: 'varchar', unique: true })
-  token: string;
-
-  @Column({ type: 'varchar' })
-  ip: string;
+  session_id: string;
 
   @ManyToOne(() => User, {
     cascade: true,
@@ -23,7 +25,10 @@ export class Sessions {
   user: User;
 
   @Column({ type: 'text' })
-  user_agent: string;
+  user_data: UserData;
+
+  @Column({ type: 'text' })
+  token: string;
 
   @CreateDateColumn()
   createdAt: Date;

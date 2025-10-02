@@ -12,17 +12,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Sessions = void 0;
 const user_entity_1 = require("../../users/entities/user.entity");
 const typeorm_1 = require("typeorm");
+class UserData {
+}
 let Sessions = class Sessions {
 };
 exports.Sessions = Sessions;
 __decorate([
     (0, typeorm_1.PrimaryColumn)({ type: 'varchar', unique: true }),
     __metadata("design:type", String)
-], Sessions.prototype, "token", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ type: 'varchar' }),
-    __metadata("design:type", String)
-], Sessions.prototype, "ip", void 0);
+], Sessions.prototype, "session_id", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => user_entity_1.User, {
         cascade: true,
@@ -32,8 +30,12 @@ __decorate([
 ], Sessions.prototype, "user", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'text' }),
+    __metadata("design:type", UserData)
+], Sessions.prototype, "user_data", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'text' }),
     __metadata("design:type", String)
-], Sessions.prototype, "user_agent", void 0);
+], Sessions.prototype, "token", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)

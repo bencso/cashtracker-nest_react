@@ -14,6 +14,7 @@ import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
 import { ReturnUserDto } from 'src/users/dto/return.dto';
+import { randomUUID } from 'crypto';
 
 /*
  * TODO: Majd iP-t is lehet nézni, nem csak user-agent (ugyanugy lehet hamisitani meg minden...,
@@ -25,7 +26,7 @@ export class AuthService {
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
-  ) {}
+  ) { }
 
   async login(
     @Body() body: BodyLogin,
@@ -75,8 +76,8 @@ export class AuthService {
           status: 401,
         });
       } else {
-        const getAcessToken = await this.createAccessToken(user);
-        const getRefreshToken = await this.createRefreshToken(user, request);
+        const getAcessToken = await this.createAccessToken(user, request);
+        const getRefreshToken = await this.createRefreshToken(user);
 
         const access = getAcessToken;
 
@@ -137,19 +138,26 @@ export class AuthService {
     }
   }
 
-  async createAccessToken(user: ReturnUserDto) {
-    const payload = { id: user.id, email: user.email };
+  async createAccessToken(user: ReturnUserDto, request: Request) {
+    const payload = {
+      email: user.email,
+      user_data: {
+        ip: request.ip,
+        user_agent: request.headers['user-agent']
+      }
+    };
     return this.jwtService.signAsync(payload, {
       expiresIn: this.config.get<string>('JWT_TOKEN_TIME'),
     } as JwtSignOptions);
   }
 
-  async createRefreshToken(user: ReturnUserDto, request: Request) {
+  async createRefreshToken(user: ReturnUserDto) {
+    const payload = {
+      sub: user.id,
+      tokenId: randomUUID()
+    };
     return this.jwtService.signAsync(
-      {
-        email: user.email,
-        useragent: request.headers['user-agent'],
-      },
+      payload,
       {
         secret: this.config.get<string>('JWT_REFRESH_SECRET'),
         expiresIn: this.config.get<string>('JWT_REFRESH_TIME'),
@@ -175,15 +183,16 @@ export class AuthService {
 
         const newRefreshToken = await this.createRefreshToken(
           { email: verifiedToken.email } as ReturnUserDto,
-          request,
         );
 
         const user = await this.usersService.findUser(verifiedToken.email);
 
-        const newAccessToken = await this.createAccessToken({
+        const userData = {
           email: verifiedToken.email,
           id: user.id,
-        } as ReturnUserDto);
+        };
+
+        const newAccessToken = await this.createAccessToken(userData, request);
 
         return { refreshToken: newRefreshToken, accessToken: newAccessToken };
       } catch (error) {
