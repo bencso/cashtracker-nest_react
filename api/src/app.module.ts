@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { LoggerModule } from 'nestjs-pino';
 import { SessionsController } from './sessions/sessions.controller';
@@ -33,4 +33,4 @@ import { UsersController } from './users/users.controller';
   providers: [AppService, SessionService, UsersService],
   exports: [TypeOrmModule],
 })
-export class AppModule { }
+export class AppModule {}

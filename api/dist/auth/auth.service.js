@@ -40,8 +40,8 @@ let AuthService = class AuthService {
                 });
                 return response.json({
                     message: token.message,
-                    statusCode: token.statusCode,
-                    data: token.data
+                    statusCode: token.statusCode || 404,
+                    data: token.data || null,
                 });
             }
             else {
@@ -60,7 +60,7 @@ let AuthService = class AuthService {
     }
     async signIn(email, password, request) {
         try {
-            const user = await this.usersService.findUser(email);
+            const user = (await this.usersService.findUser(email));
             const compared = await bcrypt.compare(password, user.password);
             if (!compared) {
                 throw new common_1.UnauthorizedException({
@@ -69,25 +69,14 @@ let AuthService = class AuthService {
                 });
             }
             else {
-                const payload = {
-                    sub: user.id,
-                    tokenId: (0, crypto_1.randomUUID)()
-                };
-                const user_data = {
-                    ip: request.ip,
-                    user_agent: request.headers['user-agent']
-                };
-                const getAcessToken = await this.createAccessToken(user, request, user_data);
-                const getRefreshToken = await this.createRefreshToken(payload);
-                const access = getAcessToken;
-                await this.sessionsService.createSessionInDb(payload.sub, access, user_data, payload.tokenId);
+                const tokens = await this.createTokens(user, request);
                 return {
                     message: ['Sikeres bejelentkezés'],
                     statusCode: 200,
-                    data: { access },
+                    data: { access: tokens.access },
                     tokens: {
-                        refresh: getRefreshToken,
-                        access,
+                        refresh: tokens.refresh,
+                        access: tokens.access,
                     },
                 };
             }
@@ -134,10 +123,33 @@ let AuthService = class AuthService {
             };
         }
     }
-    async createAccessToken(user, request, user_data) {
+    async refresh(request) {
+        if (request && request.headers && request?.headers.authorization) {
+            const refreshToken = request?.headers.authorization.split('Bearer ')[1];
+            try {
+                const verifiedToken = await this.jwtService.verifyAsync(refreshToken, {
+                    secret: this.config.get('JWT_REFRESH_SECRET'),
+                });
+                const user = await this.usersService.findOne(verifiedToken.sub);
+                if (!this.sessionsService.sessionsIsValid(request))
+                    throw new common_1.UnauthorizedException('Érvénytelen bejelentkezési adatok');
+                const tokens = await this.createTokens(user, request);
+                return { refreshToken: tokens.refresh, accessToken: tokens.access };
+            }
+            catch (error) {
+                throw new common_1.UnauthorizedException('Érvénytelen vagy lejárt refresh token: ' + error);
+            }
+        }
+        else
+            throw new common_1.UnauthorizedException({
+                message: 'Érvénytelen bejelentkezési adat(ok)',
+                status: 401,
+            });
+    }
+    async createAccessToken(user, user_data) {
         const payload = {
             email: user.email,
-            user_data: user_data
+            user_data: user_data,
         };
         return this.jwtService.signAsync(payload, {
             expiresIn: this.config.get('JWT_TOKEN_TIME'),
@@ -149,40 +161,21 @@ let AuthService = class AuthService {
             expiresIn: this.config.get('JWT_REFRESH_TIME'),
         });
     }
-    async refresh(request) {
-        if (request &&
-            request.headers &&
-            request?.headers.authorization) {
-            const refreshToken = request?.headers.authorization.split('Bearer ')[1];
-            try {
-                const verifiedToken = await this.jwtService.verifyAsync(refreshToken, {
-                    secret: this.config.get('JWT_REFRESH_SECRET'),
-                });
-                const user = await this.usersService.findOne(verifiedToken.sub);
-                if (!this.sessionsService.sessionsIsValid(request)) {
-                    throw new common_1.UnauthorizedException('Érvénytelen bejelentkezési adatok');
-                }
-                const payload = {
-                    sub: user.id,
-                    tokenId: (0, crypto_1.randomUUID)()
-                };
-                const user_data = {
-                    ip: request.ip,
-                    user_agent: request.headers['user-agent']
-                };
-                const newRefreshToken = await this.createRefreshToken(payload);
-                const newAccessToken = await this.createAccessToken(user, request, user_data);
-                return { refreshToken: newRefreshToken, accessToken: newAccessToken };
-            }
-            catch (error) {
-                throw new common_1.UnauthorizedException('Érvénytelen vagy lejárt refresh token: ' + error);
-            }
-        }
-        else
-            throw new common_1.UnauthorizedException({
-                message: 'Érvénytelen bejelentkezési adat(ok)',
-                status: 401,
-            });
+    async createTokens(user, request) {
+        const payload = {
+            sub: user.id,
+            tokenId: (0, crypto_1.randomUUID)(),
+        };
+        const user_data = {
+            ip: request.ip,
+            user_agent: request.headers['user-agent'],
+        };
+        const accessToken = await this.createAccessToken(user, user_data);
+        await this.sessionsService.createSessionInDb(payload.sub, accessToken, user_data, payload.tokenId);
+        return {
+            refresh: await this.createRefreshToken(payload),
+            access: accessToken,
+        };
     }
 };
 exports.AuthService = AuthService;

@@ -6,13 +6,12 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SessionModule } from 'src/sessions/sessions.module';
 import { SessionService } from 'src/sessions/sessions.service';
-import { UsersService } from 'src/users/users.service';
 @Module({
   imports: [UsersModule, jwtModuleSection(), ConfigModule, SessionModule],
   controllers: [AuthController],
   providers: [AuthService, SessionService],
 })
-export class AuthModule { }
+export class AuthModule {}
 
 function jwtModuleSection() {
   return JwtModule.registerAsync({

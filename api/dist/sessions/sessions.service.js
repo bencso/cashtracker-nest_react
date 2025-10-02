@@ -8,9 +8,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SessionService = void 0;
 const common_1 = require("@nestjs/common");
@@ -27,77 +24,93 @@ let SessionService = class SessionService {
         this.userService = userService;
     }
     async sessionsIsValid(req) {
-        const authorizationHeader = req.header('Authorization');
-        if (!authorizationHeader)
+        try {
+            const authorizationHeader = req.header('Authorization');
+            const token = authorizationHeader?.split('Bearer ')[1];
+            if (!token)
+                throw new common_1.UnauthorizedException({
+                    message: 'Érvénytelen vagy hiányzó hitelesítési token',
+                    status: 401,
+                });
+            const payload = await this.jwtService.verifyAsync(token, {
+                secret: this.config.get('JWT_REFRESH_SECRET'),
+            });
+            const dbData = await this.dataSource
+                .getRepository(sessions_entity_1.Sessions)
+                .createQueryBuilder('sessions')
+                .where('sessions.userId = :userId', { userId: payload.sub })
+                .getOne();
+            if (!dbData)
+                throw new common_1.UnauthorizedException({
+                    message: 'Érvénytelen munkamenet',
+                    status: 401,
+                });
+            const data = JSON.parse(dbData.user_data);
+            const requestDataValid = req.headers['user-agent'] === data.user_agent && data.ip === req.ip;
+            const validUser = requestDataValid && dbData.token === token;
+            return validUser;
+        }
+        catch (error) {
             throw new common_1.UnauthorizedException({
-                message: 'Érvénytelen bejelentkezési adat(ok)',
+                message: error || 'Érvénytelen munkamenet',
                 status: 401,
             });
-        const token = authorizationHeader.split('Bearer ')[1];
-        if (!token)
-            throw new common_1.UnauthorizedException({
-                message: 'Érvénytelen bejelentkezési adat(ok)',
-                status: 401,
-            });
-        const payload = await this.jwtService.verifyAsync(token, {
-            secret: this.config.get('JWT_REFRESH_SECRET'),
-        });
-        const dbData = await this.dataSource
-            .getRepository(sessions_entity_1.Sessions)
-            .createQueryBuilder('sessions')
-            .where('sessions.userId = :userId', { userId: payload.sub })
-            .getOne();
-        const requestUser = {
-            user_agent: req.headers['user-agent'],
-            ip: req.ip
-        };
-        const userData = JSON.stringify(dbData.user_data);
-        console.log(userData);
-        const validUser = userData === JSON.stringify(requestUser);
-        console.log(validUser);
-        console.log(req?.cookies?.refreshToken);
+        }
     }
     async createSessionInDb(sub, token, user_data, sessionId) {
-        const user = await this.userService.findOne(sub);
-        const isHave = await this.dataSource.getRepository(sessions_entity_1.Sessions)
+        const user = (await this.userService.findOne(sub));
+        const isHave = await this.dataSource
+            .getRepository(sessions_entity_1.Sessions)
             .createQueryBuilder()
             .select()
             .where({
-            user: user
-        }).getCount();
+            user: user,
+        })
+            .getCount();
         console.log(isHave);
         if (isHave > 0) {
-            await this.dataSource.createQueryBuilder()
+            await this.dataSource
+                .createQueryBuilder()
                 .update(sessions_entity_1.Sessions)
                 .set({
                 token: token,
                 session_id: sessionId,
-                user_data: JSON.stringify({ ip: user_data.ip, user_agent: user_data.user_agent }),
+                user_data: JSON.stringify({
+                    ip: user_data.ip,
+                    user_agent: user_data.user_agent,
+                }),
             })
                 .where({
-                user: user
+                user: user,
             })
                 .execute();
         }
         else {
-            await this.dataSource.createQueryBuilder().insert().into(sessions_entity_1.Sessions).values([{
+            await this.dataSource
+                .createQueryBuilder()
+                .insert()
+                .into(sessions_entity_1.Sessions)
+                .values([
+                {
                     token: token,
-                    user_data: JSON.stringify({ ip: user_data.ip, user_agent: user_data.user_agent }),
+                    user_data: JSON.stringify({
+                        ip: user_data.ip,
+                        user_agent: user_data.user_agent,
+                    }),
                     session_id: sessionId,
-                    user: user
-                }]).execute();
+                    user: user,
+                },
+            ])
+                .execute();
         }
     }
 };
 exports.SessionService = SessionService;
-__decorate([
-    __param(0, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], SessionService.prototype, "sessionsIsValid", null);
 exports.SessionService = SessionService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeorm_1.DataSource, jwt_1.JwtService, config_1.ConfigService, users_service_1.UsersService])
+    __metadata("design:paramtypes", [typeorm_1.DataSource,
+        jwt_1.JwtService,
+        config_1.ConfigService,
+        users_service_1.UsersService])
 ], SessionService);
 //# sourceMappingURL=sessions.service.js.map
