@@ -1,8 +1,25 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Req } from '@nestjs/common';
+import { DataSource } from 'typeorm';
+import { Sessions } from './entities/sessions.entity';
+import { Request } from 'express';
 
 @Injectable()
 export class SessionService {
-    getHello(): string {
-        return 'Hello World!';
+    constructor(public dataSource: DataSource) { }
+    async getSessionByUserId(userId: Number, @Req() req: Request) {
+        const dbData = await this.dataSource
+            .getRepository(Sessions)
+            .createQueryBuilder('sessions')
+            .where('sessions.userId = :userId', { userId: userId })
+            .getOne();
+
+        const requestUser = {
+            user_agent: req.headers['user-agent'],
+            ip: req.ip
+        };
+
+        const validUser = dbData.user_data === requestUser;
+        console.log(validUser);
+        console.log(req?.cookies?.refreshToken);
     }
 }
