@@ -15,7 +15,7 @@ import * as bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
 import { ReturnUserDto } from 'src/users/dto/return.dto';
 import { randomUUID } from 'crypto';
-
+import { SessionService } from 'src/sessions/sessions.service';
 /*
  * TODO: Majd iP-t is lehet nézni, nem csak user-agent (ugyanugy lehet hamisitani meg minden...,
  * csak az a baj hogy user-agenttel is hogy ha már más gépen használja kilőve a token és ujra jelentkezhet be)
@@ -26,6 +26,7 @@ export class AuthService {
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
+    private readonly sessionsService: SessionService
   ) { }
 
   async login(
@@ -177,22 +178,15 @@ export class AuthService {
         const verifiedToken = await this.jwtService.verifyAsync(refreshToken, {
           secret: this.config.get<string>('JWT_REFRESH_SECRET'),
         });
-        if (verifiedToken.useragent !== request.headers['user-agent']) {
-          throw new UnauthorizedException('Érvénytelen bejelentkezési token');
-        }
-
-        const newRefreshToken = await this.createRefreshToken(
-          { email: verifiedToken.email } as ReturnUserDto,
-        );
 
         const user = await this.usersService.findUser(verifiedToken.email);
 
-        const userData = {
-          email: verifiedToken.email,
-          id: user.id,
-        };
+        if (!this.sessionsService.sessionsIsValid(user.id, request)) {
+          throw new UnauthorizedException('Érvénytelen bejelentkezési adatok');
+        }
 
-        const newAccessToken = await this.createAccessToken(userData, request);
+        const newRefreshToken = await this.createRefreshToken(user);
+        const newAccessToken = await this.createAccessToken(user, request);
 
         return { refreshToken: newRefreshToken, accessToken: newAccessToken };
       } catch (error) {

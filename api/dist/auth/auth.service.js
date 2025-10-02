@@ -20,11 +20,13 @@ const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
 const bcrypt = require("bcrypt");
 const crypto_1 = require("crypto");
+const sessions_service_1 = require("../sessions/sessions.service");
 let AuthService = class AuthService {
-    constructor(usersService, jwtService, config) {
+    constructor(usersService, jwtService, config, sessionsService) {
         this.usersService = usersService;
         this.jwtService = jwtService;
         this.config = config;
+        this.sessionsService = sessionsService;
     }
     async login(body, request, response) {
         try {
@@ -151,16 +153,12 @@ let AuthService = class AuthService {
                 const verifiedToken = await this.jwtService.verifyAsync(refreshToken, {
                     secret: this.config.get('JWT_REFRESH_SECRET'),
                 });
-                if (verifiedToken.useragent !== request.headers['user-agent']) {
-                    throw new common_1.UnauthorizedException('Érvénytelen bejelentkezési token');
-                }
-                const newRefreshToken = await this.createRefreshToken({ email: verifiedToken.email });
                 const user = await this.usersService.findUser(verifiedToken.email);
-                const userData = {
-                    email: verifiedToken.email,
-                    id: user.id,
-                };
-                const newAccessToken = await this.createAccessToken(userData, request);
+                if (!this.sessionsService.sessionsIsValid(user.id, request)) {
+                    throw new common_1.UnauthorizedException('Érvénytelen bejelentkezési adatok');
+                }
+                const newRefreshToken = await this.createRefreshToken(user);
+                const newAccessToken = await this.createAccessToken(user, request);
                 return { refreshToken: newRefreshToken, accessToken: newAccessToken };
             }
             catch (error) {
@@ -187,6 +185,7 @@ exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [users_service_1.UsersService,
         jwt_1.JwtService,
-        config_1.ConfigService])
+        config_1.ConfigService,
+        sessions_service_1.SessionService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map
