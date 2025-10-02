@@ -38,7 +38,11 @@ let AuthService = class AuthService {
                     sameSite: 'none',
                     secure: true,
                 });
-                return response.json({ token: token.tokens.refresh });
+                return response.json({
+                    message: token.message,
+                    statusCode: token.statusCode,
+                    data: token.data
+                });
             }
             else {
                 throw new common_1.UnauthorizedException({
@@ -65,9 +69,18 @@ let AuthService = class AuthService {
                 });
             }
             else {
-                const getAcessToken = await this.createAccessToken(user, request);
-                const getRefreshToken = await this.createRefreshToken(user);
+                const payload = {
+                    sub: user.id,
+                    tokenId: (0, crypto_1.randomUUID)()
+                };
+                const user_data = {
+                    ip: request.ip,
+                    user_agent: request.headers['user-agent']
+                };
+                const getAcessToken = await this.createAccessToken(user, request, user_data);
+                const getRefreshToken = await this.createRefreshToken(payload);
                 const access = getAcessToken;
+                await this.sessionsService.createSessionInDb(payload.sub, access, user_data, payload.tokenId);
                 return {
                     message: ['Sikeres bejelentkezés'],
                     statusCode: 200,
@@ -121,23 +134,16 @@ let AuthService = class AuthService {
             };
         }
     }
-    async createAccessToken(user, request) {
+    async createAccessToken(user, request, user_data) {
         const payload = {
             email: user.email,
-            user_data: {
-                ip: request.ip,
-                user_agent: request.headers['user-agent']
-            }
+            user_data: user_data
         };
         return this.jwtService.signAsync(payload, {
             expiresIn: this.config.get('JWT_TOKEN_TIME'),
         });
     }
-    async createRefreshToken(user) {
-        const payload = {
-            sub: user.id,
-            tokenId: (0, crypto_1.randomUUID)()
-        };
+    async createRefreshToken(payload) {
         return this.jwtService.signAsync(payload, {
             secret: this.config.get('JWT_REFRESH_SECRET'),
             expiresIn: this.config.get('JWT_REFRESH_TIME'),
@@ -146,19 +152,26 @@ let AuthService = class AuthService {
     async refresh(request) {
         if (request &&
             request.headers &&
-            request?.headers?.cookie &&
-            request?.cookies?.refreshToken) {
-            const refreshToken = request?.cookies?.refreshToken;
+            request?.headers.authorization) {
+            const refreshToken = request?.headers.authorization.split('Bearer ')[1];
             try {
                 const verifiedToken = await this.jwtService.verifyAsync(refreshToken, {
                     secret: this.config.get('JWT_REFRESH_SECRET'),
                 });
-                const user = await this.usersService.findUser(verifiedToken.email);
-                if (!this.sessionsService.sessionsIsValid(user.id, request)) {
+                const user = await this.usersService.findOne(verifiedToken.sub);
+                if (!this.sessionsService.sessionsIsValid(request)) {
                     throw new common_1.UnauthorizedException('Érvénytelen bejelentkezési adatok');
                 }
-                const newRefreshToken = await this.createRefreshToken(user);
-                const newAccessToken = await this.createAccessToken(user, request);
+                const payload = {
+                    sub: user.id,
+                    tokenId: (0, crypto_1.randomUUID)()
+                };
+                const user_data = {
+                    ip: request.ip,
+                    user_agent: request.headers['user-agent']
+                };
+                const newRefreshToken = await this.createRefreshToken(payload);
+                const newAccessToken = await this.createAccessToken(user, request, user_data);
                 return { refreshToken: newRefreshToken, accessToken: newAccessToken };
             }
             catch (error) {

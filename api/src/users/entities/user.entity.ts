@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+//TODO: Van olyan egyébként az ORM-ben hogy @BeforeInsert() majd igy is lehetne a passwordot hashelni .) 
 @Entity({ name: 'user' })
 export class User {
   @PrimaryGeneratedColumn()

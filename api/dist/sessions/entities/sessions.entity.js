@@ -9,11 +9,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Sessions = void 0;
+exports.Sessions = exports.UserData = void 0;
 const user_entity_1 = require("../../users/entities/user.entity");
 const typeorm_1 = require("typeorm");
 class UserData {
 }
+exports.UserData = UserData;
 let Sessions = class Sessions {
 };
 exports.Sessions = Sessions;
@@ -30,7 +31,7 @@ __decorate([
 ], Sessions.prototype, "user", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'text' }),
-    __metadata("design:type", UserData)
+    __metadata("design:type", String)
 ], Sessions.prototype, "user_data", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'text' }),

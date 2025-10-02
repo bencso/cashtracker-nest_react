@@ -10,11 +10,14 @@ exports.SessionModule = void 0;
 const common_1 = require("@nestjs/common");
 const sessions_service_1 = require("./sessions.service");
 const sessions_controller_1 = require("./sessions.controller");
+const config_1 = require("@nestjs/config");
+const users_module_1 = require("../users/users.module");
 let SessionModule = class SessionModule {
 };
 exports.SessionModule = SessionModule;
 exports.SessionModule = SessionModule = __decorate([
     (0, common_1.Module)({
+        imports: [config_1.ConfigModule, users_module_1.UsersModule],
         controllers: [sessions_controller_1.SessionsController],
         providers: [sessions_service_1.SessionService],
         exports: [sessions_service_1.SessionService],

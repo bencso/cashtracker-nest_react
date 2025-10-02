@@ -50,8 +50,12 @@ let UsersService = class UsersService {
     findAll() {
         return `This action returns all users`;
     }
-    findOne(id) {
-        return `This action returns a #${id} user`;
+    async findOne(id) {
+        return await this.dataSource
+            .getRepository(user_entity_1.User)
+            .createQueryBuilder('user')
+            .where('user.id = :id', { id: id })
+            .getOne();
     }
     async findUser(email) {
         const user = await this.dataSource

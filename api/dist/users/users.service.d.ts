@@ -1,5 +1,6 @@
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from './entities/user.entity';
 import { ReturnUserPassDto } from './dto/return.dto';
 import { DataSource } from 'typeorm';
 export declare class UsersService {
@@ -10,7 +11,7 @@ export declare class UsersService {
         statusCode: any;
     }>;
     findAll(): string;
-    findOne(id: number): string;
+    findOne(id: number): Promise<User>;
     findUser(email: string): Promise<ReturnUserPassDto>;
     update(id: number, updateUserDto: UpdateUserDto): string;
     remove(id: number): string;

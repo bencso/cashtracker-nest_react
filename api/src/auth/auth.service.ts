@@ -16,6 +16,8 @@ import { Request, Response } from 'express';
 import { ReturnUserDto } from 'src/users/dto/return.dto';
 import { randomUUID } from 'crypto';
 import { SessionService } from 'src/sessions/sessions.service';
+import { DataSource } from 'typeorm';
+import { Sessions, UserData } from 'src/sessions/entities/sessions.entity';
 /*
  * TODO: Majd iP-t is lehet nézni, nem csak user-agent (ugyanugy lehet hamisitani meg minden...,
  * csak az a baj hogy user-agenttel is hogy ha már más gépen használja kilőve a token és ujra jelentkezhet be)
@@ -26,7 +28,7 @@ export class AuthService {
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
-    private readonly sessionsService: SessionService
+    private readonly sessionsService: SessionService,
   ) { }
 
   async login(
@@ -48,7 +50,11 @@ export class AuthService {
           sameSite: 'none',
           secure: true,
         });
-        return response.json({ token: token.tokens.refresh });
+        return response.json({
+          message: token.message,
+          statusCode: token.statusCode,
+          data: token.data
+        });
       } else {
         throw new UnauthorizedException({
           message: 'Érvénytelen bejelentkezési adat(ok)',
@@ -77,10 +83,22 @@ export class AuthService {
           status: 401,
         });
       } else {
-        const getAcessToken = await this.createAccessToken(user, request);
-        const getRefreshToken = await this.createRefreshToken(user);
+        const payload = {
+          sub: user.id,
+          tokenId: randomUUID()
+        };
+
+        const user_data = {
+          ip: request.ip,
+          user_agent: request.headers['user-agent']
+        } as UserData;
+
+        const getAcessToken = await this.createAccessToken(user, request, user_data);
+        const getRefreshToken = await this.createRefreshToken(payload);
 
         const access = getAcessToken;
+
+        await this.sessionsService.createSessionInDb(payload.sub, access, user_data, payload.tokenId)
 
         return {
           message: ['Sikeres bejelentkezés'],
@@ -139,24 +157,17 @@ export class AuthService {
     }
   }
 
-  async createAccessToken(user: ReturnUserDto, request: Request) {
+  async createAccessToken(user: ReturnUserDto, request: Request, user_data: UserData) {
     const payload = {
       email: user.email,
-      user_data: {
-        ip: request.ip,
-        user_agent: request.headers['user-agent']
-      }
+      user_data: user_data
     };
     return this.jwtService.signAsync(payload, {
       expiresIn: this.config.get<string>('JWT_TOKEN_TIME'),
     } as JwtSignOptions);
   }
 
-  async createRefreshToken(user: ReturnUserDto) {
-    const payload = {
-      sub: user.id,
-      tokenId: randomUUID()
-    };
+  async createRefreshToken(payload: any) {
     return this.jwtService.signAsync(
       payload,
       {
@@ -170,23 +181,32 @@ export class AuthService {
     if (
       request &&
       request.headers &&
-      request?.headers?.cookie &&
-      request?.cookies?.refreshToken
+      request?.headers.authorization
     ) {
-      const refreshToken = request?.cookies?.refreshToken;
+      const refreshToken = request?.headers.authorization.split('Bearer ')[1];
       try {
         const verifiedToken = await this.jwtService.verifyAsync(refreshToken, {
           secret: this.config.get<string>('JWT_REFRESH_SECRET'),
         });
 
-        const user = await this.usersService.findUser(verifiedToken.email);
+        const user = await this.usersService.findOne(verifiedToken.sub);
 
-        if (!this.sessionsService.sessionsIsValid(user.id, request)) {
+        if (!this.sessionsService.sessionsIsValid(request)) {
           throw new UnauthorizedException('Érvénytelen bejelentkezési adatok');
         }
 
-        const newRefreshToken = await this.createRefreshToken(user);
-        const newAccessToken = await this.createAccessToken(user, request);
+        const payload = {
+          sub: user.id,
+          tokenId: randomUUID()
+        };
+
+        const user_data = {
+          ip: request.ip,
+          user_agent: request.headers['user-agent']
+        } as UserData;
+
+        const newRefreshToken = await this.createRefreshToken(payload);
+        const newAccessToken = await this.createAccessToken(user, request, user_data);
 
         return { refreshToken: newRefreshToken, accessToken: newAccessToken };
       } catch (error) {

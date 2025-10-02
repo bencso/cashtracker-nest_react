@@ -13,30 +13,22 @@ exports.AuthGuard = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const jwt_1 = require("@nestjs/jwt");
+const sessions_service_1 = require("../sessions/sessions.service");
 let AuthGuard = class AuthGuard {
-    constructor(jwtService, config) {
+    constructor(jwtService, config, sessionService) {
         this.jwtService = jwtService;
         this.config = config;
+        this.sessionService = sessionService;
     }
     async canActivate(context) {
         const request = context.switchToHttp().getRequest();
-        const authorizationHeader = request.header('Authorization');
-        if (!authorizationHeader)
-            throw new common_1.UnauthorizedException({
-                message: 'Érvénytelen bejelentkezési adat(ok)',
-                status: 401,
-            });
-        const token = authorizationHeader.split('Bearer ')[1];
-        if (!token)
-            throw new common_1.UnauthorizedException({
-                message: 'Érvénytelen bejelentkezési adat(ok)',
-                status: 401,
-            });
         try {
-            const payload = await this.jwtService.verifyAsync(token, {
-                secret: this.config.get('JWT_TOKEN_SECRET'),
-            });
-            request['user'] = payload;
+            if (!this.sessionService.sessionsIsValid(request)) {
+                throw new common_1.UnauthorizedException({
+                    message: 'Érvénytelen bejelentkezési adat(ok)',
+                    status: 401,
+                });
+            }
         }
         catch {
             throw new common_1.UnauthorizedException({
@@ -51,6 +43,7 @@ exports.AuthGuard = AuthGuard;
 exports.AuthGuard = AuthGuard = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [jwt_1.JwtService,
-        config_1.ConfigService])
+        config_1.ConfigService,
+        sessions_service_1.SessionService])
 ], AuthGuard);
 //# sourceMappingURL=auth.guard.js.map

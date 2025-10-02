@@ -7,7 +7,7 @@ import { DataSource } from 'typeorm';
 
 @Injectable()
 export class UsersService {
-  constructor(public dataSource: DataSource) {}
+  constructor(public dataSource: DataSource) { }
   async create(@Body() createUserDto: CreateUserDto) {
     try {
       await this.dataSource
@@ -38,8 +38,12 @@ export class UsersService {
     return `This action returns all users`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number) {
+    return await this.dataSource
+      .getRepository(User)
+      .createQueryBuilder('user')
+      .where('user.id = :id', { id: id })
+      .getOne();
   }
 
   //TODO: Logikát majd ide beirni, csak utána kell nézni hogy müködik pontosan ezaz ORM

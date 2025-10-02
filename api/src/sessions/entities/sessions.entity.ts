@@ -8,7 +8,7 @@ import {
   PrimaryColumn,
 } from 'typeorm';
 
-class UserData {
+export class UserData {
   user_agent: String
   ip: String
 }
@@ -25,7 +25,7 @@ export class Sessions {
   user: User;
 
   @Column({ type: 'text' })
-  user_data: UserData;
+  user_data: string;
 
   @Column({ type: 'text' })
   token: string;
