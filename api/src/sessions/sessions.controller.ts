@@ -7,7 +7,7 @@ export class SessionsController {
     constructor(private readonly sessionService: SessionService) { }
 
     @Get()
-    getSessionByUserId(userId: Number, @Req() req: Request) {
-        return this.sessionService.getSessionByUserId(userId, req);
+    sessionsIsValid(userId: Number, @Req() req: Request) {
+        return this.sessionService.sessionsIsValid(userId, req);
     }
 }

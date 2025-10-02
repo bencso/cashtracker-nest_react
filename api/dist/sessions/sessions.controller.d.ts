@@ -3,5 +3,5 @@ import { Request } from 'express';
 export declare class SessionsController {
     private readonly sessionService;
     constructor(sessionService: SessionService);
-    getSessionByUserId(userId: Number, req: Request): Promise<void>;
+    sessionsIsValid(userId: Number, req: Request): Promise<void>;
 }

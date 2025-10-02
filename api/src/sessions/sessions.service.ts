@@ -6,7 +6,7 @@ import { Request } from 'express';
 @Injectable()
 export class SessionService {
     constructor(public dataSource: DataSource) { }
-    async getSessionByUserId(userId: Number, @Req() req: Request) {
+    async sessionsIsValid(userId: Number, @Req() req: Request) {
         const dbData = await this.dataSource
             .getRepository(Sessions)
             .createQueryBuilder('sessions')

@@ -19,8 +19,8 @@ let SessionsController = class SessionsController {
     constructor(sessionService) {
         this.sessionService = sessionService;
     }
-    getSessionByUserId(userId, req) {
-        return this.sessionService.getSessionByUserId(userId, req);
+    sessionsIsValid(userId, req) {
+        return this.sessionService.sessionsIsValid(userId, req);
     }
 };
 exports.SessionsController = SessionsController;
@@ -30,7 +30,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", void 0)
-], SessionsController.prototype, "getSessionByUserId", null);
+], SessionsController.prototype, "sessionsIsValid", null);
 exports.SessionsController = SessionsController = __decorate([
     (0, common_1.Controller)('sessions'),
     __metadata("design:paramtypes", [sessions_service_1.SessionService])

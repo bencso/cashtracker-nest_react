@@ -20,7 +20,7 @@ let SessionService = class SessionService {
     constructor(dataSource) {
         this.dataSource = dataSource;
     }
-    async getSessionByUserId(userId, req) {
+    async sessionsIsValid(userId, req) {
         const dbData = await this.dataSource
             .getRepository(sessions_entity_1.Sessions)
             .createQueryBuilder('sessions')
@@ -41,7 +41,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)
-], SessionService.prototype, "getSessionByUserId", null);
+], SessionService.prototype, "sessionsIsValid", null);
 exports.SessionService = SessionService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [typeorm_1.DataSource])
