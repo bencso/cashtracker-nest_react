@@ -32,7 +32,7 @@ export class AuthService {
     @Body() body: BodyLogin,
     @Req() request: Request,
     @Res() response: Response,
-  ): Promise<ReturnDataDto | UnauthorizedException> {
+  ): Promise<Response<ReturnDataDto> | UnauthorizedException> {
     try {
       const token = (await this.signIn(
         body.email,
@@ -42,17 +42,17 @@ export class AuthService {
 
       if (token.tokens) {
         response.cookie('accessToken', token.tokens.access, {
-          maxAge: +this.config.get<string>('JWT_TOKEN_TIME'),
+          maxAge: Number(this.config.get<string>('JWT_TOKEN_TIME')),
           httpOnly: true,
           sameSite: 'none',
           secure: true,
         });
 
-        return {
+        return response.json({
           message: token.message,
           statusCode: token.statusCode || 404,
           data: token.data || null,
-        };
+        });
       } else {
         throw new UnauthorizedException({
           message: 'Érvénytelen bejelentkezési adat(ok)',

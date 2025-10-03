@@ -19,14 +19,14 @@ let AuthGuard = class AuthGuard {
     async canActivate(context) {
         const request = context.switchToHttp().getRequest();
         try {
-            if (!this.sessionService.sessionsIsValid(request)) {
+            const isValid = !this.sessionService.sessionsIsValid(request);
+            if (!isValid)
                 throw new common_1.UnauthorizedException({
                     message: 'Érvénytelen bejelentkezési adat(ok)',
                     status: 401,
                 });
-            }
             else
-                return true;
+                return isValid;
         }
         catch {
             throw new common_1.UnauthorizedException({

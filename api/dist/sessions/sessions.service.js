@@ -50,11 +50,8 @@ let SessionService = class SessionService {
             const validUser = requestDataValid && dbData.token === token;
             return validUser;
         }
-        catch (error) {
-            throw new common_1.UnauthorizedException({
-                message: error || 'Érvénytelen munkamenet',
-                status: 401,
-            });
+        catch {
+            return false;
         }
     }
     async createSessionInDb(sub, token, user_data, sessionId) {
@@ -67,7 +64,23 @@ let SessionService = class SessionService {
             user: user,
         })
             .getCount();
-        console.log(isHave);
+        const clientLogged = await this.dataSource
+            .getRepository(sessions_entity_1.Sessions)
+            .createQueryBuilder()
+            .select()
+            .where({
+            user_data: JSON.stringify(user_data),
+        })
+            .getCount();
+        if (clientLogged > 0)
+            await this.dataSource
+                .createQueryBuilder()
+                .delete()
+                .from(sessions_entity_1.Sessions)
+                .where({
+                user_data: JSON.stringify(user_data),
+            })
+                .execute();
         if (isHave > 0) {
             await this.dataSource
                 .createQueryBuilder()

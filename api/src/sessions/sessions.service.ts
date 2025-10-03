@@ -69,7 +69,25 @@ export class SessionService {
       })
       .getCount();
 
-    console.log(isHave);
+    const clientLogged = await this.dataSource
+      .getRepository(Sessions)
+      .createQueryBuilder()
+      .select()
+      .where({
+        user_data: JSON.stringify(user_data),
+      })
+      .getCount();
+
+    if (clientLogged > 0)
+      await this.dataSource
+        .createQueryBuilder()
+        .delete()
+        .from(Sessions)
+        .where({
+          user_data: JSON.stringify(user_data),
+        })
+        .execute();
+
     if (isHave > 0) {
       await this.dataSource
         .createQueryBuilder()

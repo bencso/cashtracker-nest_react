@@ -17,11 +17,9 @@ const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
 const login_dto_1 = require("./dto/login.dto");
 const registration_dto_1 = require("./dto/registration.dto");
-const config_1 = require("@nestjs/config");
 let AuthController = class AuthController {
-    constructor(authService, config) {
+    constructor(authService) {
         this.authService = authService;
-        this.config = config;
     }
     async login(body, request, response) {
         return this.authService.login(body, request, response);
@@ -62,7 +60,6 @@ __decorate([
 ], AuthController.prototype, "refreshToken", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
-    __metadata("design:paramtypes", [auth_service_1.AuthService,
-        config_1.ConfigService])
+    __metadata("design:paramtypes", [auth_service_1.AuthService])
 ], AuthController);
 //# sourceMappingURL=auth.controller.js.map

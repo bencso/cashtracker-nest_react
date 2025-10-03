@@ -33,7 +33,7 @@ let AuthService = class AuthService {
             const token = (await this.signIn(body.email, body.password, request));
             if (token.tokens) {
                 response.cookie('accessToken', token.tokens.access, {
-                    maxAge: +this.config.get('JWT_TOKEN_TIME'),
+                    maxAge: Number(this.config.get('JWT_TOKEN_TIME')),
                     httpOnly: true,
                     sameSite: 'none',
                     secure: true,
