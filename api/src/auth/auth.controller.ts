@@ -33,6 +33,7 @@ export class AuthController {
     return this.authService.registration(body);
   }
 
+  //TODO: Majd itt valami hibakezelést kell
   @Post('refresh')
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
