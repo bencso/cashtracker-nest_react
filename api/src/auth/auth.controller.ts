@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
@@ -35,6 +36,12 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   refreshToken(@Req() request: Request) {
     return this.authService.refresh(request);
+  }
+
+  @Get('valid')
+  @HttpCode(HttpStatus.OK)
+  validUser(@Req() request: Request) {
+    return this.authService.validation(request);
   }
 
   @Post('logout')

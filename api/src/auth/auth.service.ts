@@ -241,4 +241,27 @@ export class AuthService {
       });
     }
   }
+
+  async validation(request: Request): Promise<ReturnDataDto> {
+    try {
+      const valid = this.sessionsService.sessionsIsValid(request);
+      if (!valid)
+        throw new UnauthorizedException('Nem érvényes bejelentkezési tokenek!');
+      return {
+        message: ['Érvényes felhasználó'],
+        statusCode: 200,
+        data: {
+          valid: valid,
+        },
+      };
+    } catch {
+      return {
+        message: ['Nem érvényes felhasználó'],
+        statusCode: 401,
+        data: {
+          valid: false,
+        },
+      };
+    }
+  }
 }
