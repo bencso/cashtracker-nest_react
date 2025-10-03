@@ -177,6 +177,34 @@ let AuthService = class AuthService {
             access: accessToken,
         };
     }
+    async logout(response, request) {
+        try {
+            const token = request.cookies?.accessToken;
+            const userAgent = request.headers['user-agent'];
+            const userIp = request.ip;
+            const userData = {
+                user_agent: userAgent,
+                ip: userIp,
+            };
+            if (token) {
+                await this.sessionsService.deleteSessionInDb(token, userData);
+            }
+            response.clearCookie('accessToken', {
+                httpOnly: true,
+                secure: true,
+            });
+            return response.json({
+                message: ['Sikeres kijelentkezés'],
+                statusCode: 200,
+            });
+        }
+        catch {
+            throw new common_1.UnauthorizedException({
+                message: 'Hiba történt kijelentkezés során!',
+                status: 401,
+            });
+        }
+    }
 };
 exports.AuthService = AuthService;
 __decorate([

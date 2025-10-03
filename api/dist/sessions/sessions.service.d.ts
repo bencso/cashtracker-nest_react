@@ -12,4 +12,5 @@ export declare class SessionService {
     constructor(dataSource: DataSource, jwtService: JwtService, config: ConfigService, userService: UsersService);
     sessionsIsValid(req: Request): Promise<boolean>;
     createSessionInDb(sub: number, token: string, user_data: UserData, sessionId: string): Promise<void>;
+    deleteSessionInDb(token: string, user_data: UserData): Promise<void>;
 }

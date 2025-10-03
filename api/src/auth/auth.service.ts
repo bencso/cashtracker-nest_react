@@ -18,7 +18,8 @@ import { randomUUID } from 'crypto';
 import { SessionService } from 'src/sessions/sessions.service';
 import { UserData } from 'src/sessions/entities/sessions.entity';
 import { User } from 'src/users/entities/user.entity';
-import { ReturnDataDto } from 'src/dto/return.dto';
+import { ReturnDataDto, ReturnDto } from 'src/dto/return.dto';
+//TODO: Refaktorálni majd a logoutot, illetve átnézni a refresht
 @Injectable()
 export class AuthService {
   constructor(
@@ -207,5 +208,37 @@ export class AuthService {
       refresh: await this.createRefreshToken(payload),
       access: accessToken,
     };
+  }
+
+  async logout(
+    response: Response,
+    request: Request,
+  ): Promise<Response<ReturnDto>> {
+    try {
+      const token = request.cookies?.accessToken;
+      const userAgent = request.headers['user-agent'];
+      const userIp = request.ip;
+      const userData = {
+        user_agent: userAgent,
+        ip: userIp,
+      };
+      if (token) {
+        await this.sessionsService.deleteSessionInDb(token, userData);
+      }
+      response.clearCookie('accessToken', {
+        httpOnly: true,
+        secure: true,
+      });
+
+      return response.json({
+        message: ['Sikeres kijelentkezés'],
+        statusCode: 200,
+      });
+    } catch {
+      throw new UnauthorizedException({
+        message: 'Hiba történt kijelentkezés során!',
+        status: 401,
+      });
+    }
   }
 }

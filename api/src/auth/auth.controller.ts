@@ -36,4 +36,10 @@ export class AuthController {
   refreshToken(@Req() request: Request) {
     return this.authService.refresh(request);
   }
+
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  logout(@Res() response: Response, @Req() request: Request) {
+    return this.authService.logout(response, request);
+  }
 }

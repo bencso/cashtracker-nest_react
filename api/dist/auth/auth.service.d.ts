@@ -9,7 +9,7 @@ import { ReturnUserDto } from 'src/users/dto/return.dto';
 import { SessionService } from 'src/sessions/sessions.service';
 import { UserData } from 'src/sessions/entities/sessions.entity';
 import { User } from 'src/users/entities/user.entity';
-import { ReturnDataDto } from 'src/dto/return.dto';
+import { ReturnDataDto, ReturnDto } from 'src/dto/return.dto';
 export declare class AuthService {
     private readonly usersService;
     private readonly jwtService;
@@ -26,4 +26,5 @@ export declare class AuthService {
         refresh: string;
         access: string;
     }>;
+    logout(response: Response, request: Request): Promise<Response<ReturnDto>>;
 }

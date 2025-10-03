@@ -123,4 +123,26 @@ export class SessionService {
         .execute();
     }
   }
+
+  async deleteSessionInDb(token: string, user_data: UserData) {
+    const clientLogged = await this.dataSource
+      .getRepository(Sessions)
+      .createQueryBuilder()
+      .select()
+      .where({
+        user_data: JSON.stringify(user_data),
+        token: token,
+      })
+      .getCount();
+
+    if (clientLogged > 0)
+      await this.dataSource
+        .createQueryBuilder()
+        .delete()
+        .from(Sessions)
+        .where({
+          user_data: JSON.stringify(user_data),
+        })
+        .execute();
+  }
 }

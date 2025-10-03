@@ -117,6 +117,26 @@ let SessionService = class SessionService {
                 .execute();
         }
     }
+    async deleteSessionInDb(token, user_data) {
+        const clientLogged = await this.dataSource
+            .getRepository(sessions_entity_1.Sessions)
+            .createQueryBuilder()
+            .select()
+            .where({
+            user_data: JSON.stringify(user_data),
+            token: token,
+        })
+            .getCount();
+        if (clientLogged > 0)
+            await this.dataSource
+                .createQueryBuilder()
+                .delete()
+                .from(sessions_entity_1.Sessions)
+                .where({
+                user_data: JSON.stringify(user_data),
+            })
+                .execute();
+    }
 };
 exports.SessionService = SessionService;
 exports.SessionService = SessionService = __decorate([
