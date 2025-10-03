@@ -18,16 +18,15 @@ export class SessionService {
   async sessionsIsValid(req: Request): Promise<boolean> {
     try {
       const authorizationHeader = req.header('Authorization');
-      const token = authorizationHeader?.split('Bearer ')[1];
+      const token = authorizationHeader
+        ? authorizationHeader?.split('Bearer ')[1]
+        : req?.cookies?.refreshToken;
 
-      if (!token)
-        throw new UnauthorizedException({
-          message: 'Érvénytelen vagy hiányzó hitelesítési token',
-          status: 401,
-        });
-
+      console.log(token);
       const payload = await this.jwtService.verifyAsync(token, {
-        secret: this.config.get<string>('JWT_REFRESH_SECRET'),
+        secret: authorizationHeader
+          ? this.config.get<string>('JWT_TOKEN_SECRET')
+          : this.config.get<string>('JWT_REFRESH_SECRET'),
       });
 
       const dbData = await this.dataSource

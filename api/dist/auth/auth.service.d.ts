@@ -27,4 +27,5 @@ export declare class AuthService {
         access: string;
     }>;
     logout(response: Response, request: Request): Promise<Response<ReturnDto>>;
+    validation(request: Request): Promise<ReturnDataDto>;
 }

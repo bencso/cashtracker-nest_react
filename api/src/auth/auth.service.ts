@@ -42,8 +42,9 @@ export class AuthService {
       )) as LoginDto;
 
       if (token.tokens) {
-        response.cookie('accessToken', token.tokens.access, {
-          maxAge: Number(this.config.get<string>('JWT_TOKEN_TIME')),
+        console.log(token.tokens.refresh);
+        response.cookie('refreshToken', token.tokens.refresh, {
+          maxAge: Number(this.config.get<string>('JWT_REFRESH_TIME')),
           httpOnly: true,
           sameSite: 'none',
           secure: true,
@@ -142,16 +143,16 @@ export class AuthService {
   }
 
   async refresh(request: Request): Promise<object | UnauthorizedException> {
-    if (request && request.headers && request?.headers.authorization) {
-      const refreshToken = request?.headers.authorization.split('Bearer ')[1];
+    if (request) {
       try {
+        const refreshToken = request?.cookies?.refreshToken;
+        console.log(refreshToken);
         const verifiedToken = await this.jwtService.verifyAsync(refreshToken, {
           secret: this.config.get<string>('JWT_REFRESH_SECRET'),
         });
 
         const user = await this.usersService.findOne(verifiedToken.sub);
-
-        if (!this.sessionsService.sessionsIsValid(request))
+        if (!(await this.sessionsService.sessionsIsValid(request)))
           throw new UnauthorizedException('Érvénytelen bejelentkezési adatok');
 
         const tokens = await this.createTokens(user, request);
@@ -197,15 +198,16 @@ export class AuthService {
     } as UserData;
 
     const accessToken = await this.createAccessToken(user, user_data);
+    const refreshToken = await this.createRefreshToken(payload);
     await this.sessionsService.createSessionInDb(
       payload.sub,
-      accessToken,
+      refreshToken,
       user_data,
       payload.tokenId,
     );
 
     return {
-      refresh: await this.createRefreshToken(payload),
+      refresh: refreshToken,
       access: accessToken,
     };
   }
@@ -225,7 +227,7 @@ export class AuthService {
       if (token) {
         await this.sessionsService.deleteSessionInDb(token, userData);
       }
-      response.clearCookie('accessToken', {
+      response.clearCookie('refreshToken', {
         httpOnly: true,
         secure: true,
       });
@@ -244,14 +246,14 @@ export class AuthService {
 
   async validation(request: Request): Promise<ReturnDataDto> {
     try {
-      const valid = this.sessionsService.sessionsIsValid(request);
+      const valid = await this.sessionsService.sessionsIsValid(request);
       if (!valid)
         throw new UnauthorizedException('Nem érvényes bejelentkezési tokenek!');
       return {
         message: ['Érvényes felhasználó'],
         statusCode: 200,
         data: {
-          valid: valid,
+          valid: Boolean(valid),
         },
       };
     } catch {

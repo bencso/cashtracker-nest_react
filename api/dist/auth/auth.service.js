@@ -32,8 +32,9 @@ let AuthService = class AuthService {
         try {
             const token = (await this.signIn(body.email, body.password, request));
             if (token.tokens) {
-                response.cookie('accessToken', token.tokens.access, {
-                    maxAge: Number(this.config.get('JWT_TOKEN_TIME')),
+                console.log(token.tokens.refresh);
+                response.cookie('refreshToken', token.tokens.refresh, {
+                    maxAge: Number(this.config.get('JWT_REFRESH_TIME')),
                     httpOnly: true,
                     sameSite: 'none',
                     secure: true,
@@ -124,14 +125,15 @@ let AuthService = class AuthService {
         }
     }
     async refresh(request) {
-        if (request && request.headers && request?.headers.authorization) {
-            const refreshToken = request?.headers.authorization.split('Bearer ')[1];
+        if (request) {
             try {
+                const refreshToken = request?.cookies?.refreshToken;
+                console.log(refreshToken);
                 const verifiedToken = await this.jwtService.verifyAsync(refreshToken, {
                     secret: this.config.get('JWT_REFRESH_SECRET'),
                 });
                 const user = await this.usersService.findOne(verifiedToken.sub);
-                if (!this.sessionsService.sessionsIsValid(request))
+                if (!(await this.sessionsService.sessionsIsValid(request)))
                     throw new common_1.UnauthorizedException('Érvénytelen bejelentkezési adatok');
                 const tokens = await this.createTokens(user, request);
                 return { refreshToken: tokens.refresh, accessToken: tokens.access };
@@ -171,9 +173,10 @@ let AuthService = class AuthService {
             user_agent: request.headers['user-agent'],
         };
         const accessToken = await this.createAccessToken(user, user_data);
-        await this.sessionsService.createSessionInDb(payload.sub, accessToken, user_data, payload.tokenId);
+        const refreshToken = await this.createRefreshToken(payload);
+        await this.sessionsService.createSessionInDb(payload.sub, refreshToken, user_data, payload.tokenId);
         return {
-            refresh: await this.createRefreshToken(payload),
+            refresh: refreshToken,
             access: accessToken,
         };
     }
@@ -189,7 +192,7 @@ let AuthService = class AuthService {
             if (token) {
                 await this.sessionsService.deleteSessionInDb(token, userData);
             }
-            response.clearCookie('accessToken', {
+            response.clearCookie('refreshToken', {
                 httpOnly: true,
                 secure: true,
             });
@@ -203,6 +206,29 @@ let AuthService = class AuthService {
                 message: 'Hiba történt kijelentkezés során!',
                 status: 401,
             });
+        }
+    }
+    async validation(request) {
+        try {
+            const valid = await this.sessionsService.sessionsIsValid(request);
+            if (!valid)
+                throw new common_1.UnauthorizedException('Nem érvényes bejelentkezési tokenek!');
+            return {
+                message: ['Érvényes felhasználó'],
+                statusCode: 200,
+                data: {
+                    valid: Boolean(valid),
+                },
+            };
+        }
+        catch {
+            return {
+                message: ['Nem érvényes felhasználó'],
+                statusCode: 401,
+                data: {
+                    valid: false,
+                },
+            };
         }
     }
 };
