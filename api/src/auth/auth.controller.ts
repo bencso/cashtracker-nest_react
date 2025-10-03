@@ -11,16 +11,10 @@ import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { BodyLogin } from './dto/login.dto';
 import { BodyRegistration } from './dto/registration.dto';
-import { ConfigService } from '@nestjs/config';
-
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private readonly authService: AuthService,
-    private readonly config: ConfigService,
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
-  //TODO: Utána nézni a passthrough után
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(
