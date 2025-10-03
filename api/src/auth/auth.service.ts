@@ -18,6 +18,7 @@ import { randomUUID } from 'crypto';
 import { SessionService } from 'src/sessions/sessions.service';
 import { UserData } from 'src/sessions/entities/sessions.entity';
 import { User } from 'src/users/entities/user.entity';
+import { ReturnDataDto } from 'src/dto/return.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -31,7 +32,7 @@ export class AuthService {
     @Body() body: BodyLogin,
     @Req() request: Request,
     @Res() response: Response,
-  ) {
+  ): Promise<ReturnDataDto | UnauthorizedException> {
     try {
       const token = (await this.signIn(
         body.email,
@@ -47,11 +48,11 @@ export class AuthService {
           secure: true,
         });
 
-        return response.json({
+        return {
           message: token.message,
           statusCode: token.statusCode || 404,
           data: token.data || null,
-        });
+        };
       } else {
         throw new UnauthorizedException({
           message: 'Érvénytelen bejelentkezési adat(ok)',
@@ -139,7 +140,7 @@ export class AuthService {
     }
   }
 
-  async refresh(request: Request) {
+  async refresh(request: Request): Promise<object | UnauthorizedException> {
     if (request && request.headers && request?.headers.authorization) {
       const refreshToken = request?.headers.authorization.split('Bearer ')[1];
       try {

@@ -15,7 +15,7 @@ export class SessionService {
     private config: ConfigService,
     private userService: UsersService,
   ) {}
-  async sessionsIsValid(req: Request) {
+  async sessionsIsValid(req: Request): Promise<boolean> {
     try {
       const authorizationHeader = req.header('Authorization');
       const token = authorizationHeader?.split('Bearer ')[1];
@@ -48,11 +48,8 @@ export class SessionService {
 
       const validUser = requestDataValid && dbData.token === token;
       return validUser;
-    } catch (error) {
-      throw new UnauthorizedException({
-        message: error || 'Érvénytelen munkamenet',
-        status: 401,
-      });
+    } catch {
+      return false;
     }
   }
 
