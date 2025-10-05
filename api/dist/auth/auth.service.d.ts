@@ -8,7 +8,6 @@ import { Request, Response } from 'express';
 import { ReturnUserDto } from 'src/users/dto/return.dto';
 import { SessionService } from 'src/sessions/sessions.service';
 import { UserData } from 'src/sessions/entities/sessions.entity';
-import { User } from 'src/users/entities/user.entity';
 import { ReturnDataDto, ReturnDto } from 'src/dto/return.dto';
 export declare class AuthService {
     private readonly usersService;
@@ -22,10 +21,6 @@ export declare class AuthService {
     refresh(request: Request): Promise<object | UnauthorizedException>;
     createAccessToken(user: ReturnUserDto, user_data: UserData): Promise<string>;
     createRefreshToken(payload: any): Promise<string>;
-    createTokens(user: User, request: Request): Promise<{
-        refresh: string;
-        access: string;
-    }>;
     logout(response: Response, request: Request): Promise<Response<ReturnDto>>;
     validation(request: Request): Promise<ReturnDataDto>;
 }

@@ -16,7 +16,7 @@ export class AuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     // Kiszedjük a tokent az authorizationből
     try {
-      const isValid = !this.sessionService.sessionsIsValid(request);
+      const isValid = !this.sessionService.validateAccessToken(request);
       if (!isValid)
         throw new UnauthorizedException({
           message: 'Érvénytelen bejelentkezési adat(ok)',

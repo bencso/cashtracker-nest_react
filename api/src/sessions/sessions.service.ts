@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { Sessions, UserData } from './entities/sessions.entity';
 import { Request } from 'express';
@@ -15,43 +15,6 @@ export class SessionService {
     private config: ConfigService,
     private userService: UsersService,
   ) {}
-  async sessionsIsValid(req: Request): Promise<boolean> {
-    try {
-      const authorizationHeader = req.header('Authorization');
-      const token = authorizationHeader
-        ? authorizationHeader?.split('Bearer ')[1]
-        : req?.cookies?.refreshToken;
-
-      console.log(token);
-      const payload = await this.jwtService.verifyAsync(token, {
-        secret: authorizationHeader
-          ? this.config.get<string>('JWT_TOKEN_SECRET')
-          : this.config.get<string>('JWT_REFRESH_SECRET'),
-      });
-
-      const dbData = await this.dataSource
-        .getRepository(Sessions)
-        .createQueryBuilder('sessions')
-        .where('sessions.userId = :userId', { userId: payload.sub })
-        .getOne();
-
-      if (!dbData)
-        throw new UnauthorizedException({
-          message: 'Érvénytelen munkamenet',
-          status: 401,
-        });
-
-      const data = JSON.parse(dbData.user_data) as UserData;
-      const requestDataValid =
-        req.headers['user-agent'] === data.user_agent && data.ip === req.ip;
-
-      const validUser = requestDataValid && dbData.token === token;
-      return validUser;
-    } catch {
-      return false;
-    }
-  }
-
   async createSessionInDb(
     sub: number,
     token: string,
@@ -143,5 +106,43 @@ export class SessionService {
           user_data: JSON.stringify(user_data),
         })
         .execute();
+  }
+
+  async validateAccessToken(req: Request): Promise<any> {
+    try {
+      const authHeader = req.headers.authorization;
+      const accessToken = authHeader?.split(' ')[1];
+
+      if (!accessToken) return null;
+
+      const payload = await this.jwtService.verifyAsync(accessToken, {
+        secret: this.config.get<string>('JWT_TOKEN_SECRET'),
+      });
+
+      return payload;
+    } catch {
+      return null;
+    }
+  }
+
+  async validateRefreshToken(refreshToken: string): Promise<boolean> {
+    try {
+      const payload = await this.jwtService.verifyAsync(refreshToken, {
+        secret: this.config.get<string>('JWT_REFRESH_SECRET'),
+      });
+
+      const dbData = await this.dataSource
+        .getRepository(Sessions)
+        .createQueryBuilder('sessions')
+        .where('sessions.userId = :userId AND sessions.token = :token', {
+          userId: payload.sub,
+          token: refreshToken,
+        })
+        .getOne();
+
+      return !!dbData;
+    } catch {
+      return false;
+    }
   }
 }

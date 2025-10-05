@@ -31,8 +31,8 @@ let AuthService = class AuthService {
     async login(body, request, response) {
         try {
             const token = (await this.signIn(body.email, body.password, request));
+            console.log(token.tokens);
             if (token.tokens) {
-                console.log(token.tokens.refresh);
                 response.cookie('refreshToken', token.tokens.refresh, {
                     maxAge: Number(this.config.get('JWT_REFRESH_TIME')),
                     httpOnly: true,
@@ -70,14 +70,24 @@ let AuthService = class AuthService {
                 });
             }
             else {
-                const tokens = await this.createTokens(user, request);
+                const payload = {
+                    sub: user.id,
+                    tokenId: (0, crypto_1.randomUUID)(),
+                };
+                const user_data = {
+                    ip: request.ip,
+                    user_agent: request.headers['user-agent'],
+                };
+                const accessToken = await this.createAccessToken(user, user_data);
+                const refreshToken = await this.createRefreshToken(payload);
+                await this.sessionsService.createSessionInDb(payload.sub, refreshToken, user_data, payload.tokenId);
                 return {
                     message: ['Sikeres bejelentkezés'],
                     statusCode: 200,
-                    data: { access: tokens.access },
+                    data: { access: accessToken },
                     tokens: {
-                        refresh: tokens.refresh,
-                        access: tokens.access,
+                        refresh: refreshToken,
+                        access: accessToken,
                     },
                 };
             }
@@ -128,15 +138,16 @@ let AuthService = class AuthService {
         if (request) {
             try {
                 const refreshToken = request?.cookies?.refreshToken;
-                console.log(refreshToken);
                 const verifiedToken = await this.jwtService.verifyAsync(refreshToken, {
                     secret: this.config.get('JWT_REFRESH_SECRET'),
                 });
                 const user = await this.usersService.findOne(verifiedToken.sub);
-                if (!(await this.sessionsService.sessionsIsValid(request)))
-                    throw new common_1.UnauthorizedException('Érvénytelen bejelentkezési adatok');
-                const tokens = await this.createTokens(user, request);
-                return { refreshToken: tokens.refresh, accessToken: tokens.access };
+                const user_data = {
+                    ip: request.ip,
+                    user_agent: request.headers['user-agent'],
+                };
+                const accessToken = await this.createAccessToken(user, user_data);
+                return { accessToken };
             }
             catch (error) {
                 throw new common_1.UnauthorizedException('Érvénytelen vagy lejárt refresh token: ' + error);
@@ -154,6 +165,7 @@ let AuthService = class AuthService {
             user_data: user_data,
         };
         return this.jwtService.signAsync(payload, {
+            secret: this.config.get('JWT_TOKEN_SECRET'),
             expiresIn: this.config.get('JWT_TOKEN_TIME'),
         });
     }
@@ -162,23 +174,6 @@ let AuthService = class AuthService {
             secret: this.config.get('JWT_REFRESH_SECRET'),
             expiresIn: this.config.get('JWT_REFRESH_TIME'),
         });
-    }
-    async createTokens(user, request) {
-        const payload = {
-            sub: user.id,
-            tokenId: (0, crypto_1.randomUUID)(),
-        };
-        const user_data = {
-            ip: request.ip,
-            user_agent: request.headers['user-agent'],
-        };
-        const accessToken = await this.createAccessToken(user, user_data);
-        const refreshToken = await this.createRefreshToken(payload);
-        await this.sessionsService.createSessionInDb(payload.sub, refreshToken, user_data, payload.tokenId);
-        return {
-            refresh: refreshToken,
-            access: accessToken,
-        };
     }
     async logout(response, request) {
         try {
@@ -194,6 +189,7 @@ let AuthService = class AuthService {
             }
             response.clearCookie('refreshToken', {
                 httpOnly: true,
+                sameSite: 'none',
                 secure: true,
             });
             return response.json({
@@ -210,9 +206,10 @@ let AuthService = class AuthService {
     }
     async validation(request) {
         try {
-            const valid = await this.sessionsService.sessionsIsValid(request);
+            const valid = await this.sessionsService.validateAccessToken(request);
+            console.log(valid);
             if (!valid)
-                throw new common_1.UnauthorizedException('Nem érvényes bejelentkezési tokenek!');
+                throw new common_1.UnauthorizedException('Nem érvényes bejelentkezési token!');
             return {
                 message: ['Érvényes felhasználó'],
                 statusCode: 200,

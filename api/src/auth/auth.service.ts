@@ -41,8 +41,9 @@ export class AuthService {
         request,
       )) as LoginDto;
 
+      console.log(token.tokens);
+
       if (token.tokens) {
-        console.log(token.tokens.refresh);
         response.cookie('refreshToken', token.tokens.refresh, {
           maxAge: Number(this.config.get<string>('JWT_REFRESH_TIME')),
           httpOnly: true,
@@ -83,15 +84,32 @@ export class AuthService {
           status: 401,
         });
       } else {
-        const tokens = await this.createTokens(user, request);
+        const payload = {
+          sub: user.id,
+          tokenId: randomUUID(),
+        };
+
+        const user_data = {
+          ip: request.ip,
+          user_agent: request.headers['user-agent'],
+        } as UserData;
+
+        const accessToken = await this.createAccessToken(user, user_data);
+        const refreshToken = await this.createRefreshToken(payload);
+        await this.sessionsService.createSessionInDb(
+          payload.sub,
+          refreshToken,
+          user_data,
+          payload.tokenId,
+        );
 
         return {
           message: ['Sikeres bejelentkezés'],
           statusCode: 200,
-          data: { access: tokens.access },
+          data: { access: accessToken },
           tokens: {
-            refresh: tokens.refresh,
-            access: tokens.access,
+            refresh: refreshToken,
+            access: accessToken,
           },
         };
       }
@@ -146,17 +164,19 @@ export class AuthService {
     if (request) {
       try {
         const refreshToken = request?.cookies?.refreshToken;
-        console.log(refreshToken);
         const verifiedToken = await this.jwtService.verifyAsync(refreshToken, {
           secret: this.config.get<string>('JWT_REFRESH_SECRET'),
         });
 
         const user = await this.usersService.findOne(verifiedToken.sub);
-        if (!(await this.sessionsService.sessionsIsValid(request)))
-          throw new UnauthorizedException('Érvénytelen bejelentkezési adatok');
 
-        const tokens = await this.createTokens(user, request);
-        return { refreshToken: tokens.refresh, accessToken: tokens.access };
+        const user_data = {
+          ip: request.ip,
+          user_agent: request.headers['user-agent'],
+        } as UserData;
+
+        const accessToken = await this.createAccessToken(user, user_data);
+        return { accessToken };
       } catch (error) {
         throw new UnauthorizedException(
           'Érvénytelen vagy lejárt refresh token: ' + error,
@@ -175,41 +195,16 @@ export class AuthService {
       user_data: user_data,
     };
     return this.jwtService.signAsync(payload, {
-      expiresIn: this.config.get<string>('JWT_TOKEN_TIME'),
+      secret: this.config.get<string>('JWT_TOKEN_SECRET'),
+      expiresIn: this.config.get<number>('JWT_TOKEN_TIME'),
     } as JwtSignOptions);
   }
 
   async createRefreshToken(payload: any) {
     return this.jwtService.signAsync(payload, {
       secret: this.config.get<string>('JWT_REFRESH_SECRET'),
-      expiresIn: this.config.get<string>('JWT_REFRESH_TIME'),
+      expiresIn: this.config.get<number>('JWT_REFRESH_TIME'),
     } as JwtSignOptions);
-  }
-
-  async createTokens(user: User, request: Request) {
-    const payload = {
-      sub: user.id,
-      tokenId: randomUUID(),
-    };
-
-    const user_data = {
-      ip: request.ip,
-      user_agent: request.headers['user-agent'],
-    } as UserData;
-
-    const accessToken = await this.createAccessToken(user, user_data);
-    const refreshToken = await this.createRefreshToken(payload);
-    await this.sessionsService.createSessionInDb(
-      payload.sub,
-      refreshToken,
-      user_data,
-      payload.tokenId,
-    );
-
-    return {
-      refresh: refreshToken,
-      access: accessToken,
-    };
   }
 
   async logout(
@@ -229,6 +224,7 @@ export class AuthService {
       }
       response.clearCookie('refreshToken', {
         httpOnly: true,
+        sameSite: 'none',
         secure: true,
       });
 
@@ -246,9 +242,10 @@ export class AuthService {
 
   async validation(request: Request): Promise<ReturnDataDto> {
     try {
-      const valid = await this.sessionsService.sessionsIsValid(request);
+      const valid = await this.sessionsService.validateAccessToken(request);
+      console.log(valid);
       if (!valid)
-        throw new UnauthorizedException('Nem érvényes bejelentkezési tokenek!');
+        throw new UnauthorizedException('Nem érvényes bejelentkezési token!');
       return {
         message: ['Érvényes felhasználó'],
         statusCode: 200,
