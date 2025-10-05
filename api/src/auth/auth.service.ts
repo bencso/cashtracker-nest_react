@@ -242,15 +242,15 @@ export class AuthService {
 
   async validation(request: Request): Promise<ReturnDataDto> {
     try {
-      const valid = await this.sessionsService.validateAccessToken(request);
-      console.log(valid);
-      if (!valid)
+      const user = await this.sessionsService.validateAccessToken(request);
+      if (!user)
         throw new UnauthorizedException('Nem érvényes bejelentkezési token!');
       return {
         message: ['Érvényes felhasználó'],
         statusCode: 200,
         data: {
-          valid: Boolean(valid),
+          user: user,
+          valid: !!user,
         },
       };
     } catch {
