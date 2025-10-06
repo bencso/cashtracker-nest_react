@@ -15,6 +15,7 @@ async function bootstrap() {
         .setOpenAPIVersion('3.1.1')
         .setLicense('MIT licensz', 'https://opensource.org/license/mit')
         .setVersion('0.1')
+        .addBearerAuth()
         .build();
     const documentFactory = () => swagger_1.SwaggerModule.createDocument(app, config);
     app.useGlobalPipes(new common_1.ValidationPipe());

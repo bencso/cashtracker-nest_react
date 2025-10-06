@@ -11,24 +11,22 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthGuard = void 0;
 const common_1 = require("@nestjs/common");
-const config_1 = require("@nestjs/config");
-const jwt_1 = require("@nestjs/jwt");
 const sessions_service_1 = require("../sessions/sessions.service");
 let AuthGuard = class AuthGuard {
-    constructor(jwtService, config, sessionService) {
-        this.jwtService = jwtService;
-        this.config = config;
+    constructor(sessionService) {
         this.sessionService = sessionService;
     }
     async canActivate(context) {
         const request = context.switchToHttp().getRequest();
         try {
-            if (!this.sessionService.sessionsIsValid(request)) {
+            const isValid = !this.sessionService.validateAccessToken(request);
+            if (!isValid)
                 throw new common_1.UnauthorizedException({
                     message: 'Érvénytelen bejelentkezési adat(ok)',
                     status: 401,
                 });
-            }
+            else
+                return isValid;
         }
         catch {
             throw new common_1.UnauthorizedException({
@@ -36,14 +34,11 @@ let AuthGuard = class AuthGuard {
                 status: 401,
             });
         }
-        return true;
     }
 };
 exports.AuthGuard = AuthGuard;
 exports.AuthGuard = AuthGuard = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [jwt_1.JwtService,
-        config_1.ConfigService,
-        sessions_service_1.SessionService])
+    __metadata("design:paramtypes", [sessions_service_1.SessionService])
 ], AuthGuard);
 //# sourceMappingURL=auth.guard.js.map

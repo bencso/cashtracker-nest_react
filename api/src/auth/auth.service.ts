@@ -16,12 +16,10 @@ import { Request, Response } from 'express';
 import { ReturnUserDto } from 'src/users/dto/return.dto';
 import { randomUUID } from 'crypto';
 import { SessionService } from 'src/sessions/sessions.service';
-import { DataSource } from 'typeorm';
-import { Sessions, UserData } from 'src/sessions/entities/sessions.entity';
-/*
- * TODO: Majd iP-t is lehet nézni, nem csak user-agent (ugyanugy lehet hamisitani meg minden...,
- * csak az a baj hogy user-agenttel is hogy ha már más gépen használja kilőve a token és ujra jelentkezhet be)
- */
+import { UserData } from 'src/sessions/entities/sessions.entity';
+import { User } from 'src/users/entities/user.entity';
+import { ReturnDataDto, ReturnDto } from 'src/dto/return.dto';
+//TODO: Refaktorálni majd a logoutot, illetve átnézni a refresht
 @Injectable()
 export class AuthService {
   constructor(
@@ -29,13 +27,13 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
     private readonly sessionsService: SessionService,
-  ) { }
+  ) {}
 
   async login(
     @Body() body: BodyLogin,
     @Req() request: Request,
     @Res() response: Response,
-  ) {
+  ): Promise<Response<ReturnDataDto> | UnauthorizedException> {
     try {
       const token = (await this.signIn(
         body.email,
@@ -43,17 +41,20 @@ export class AuthService {
         request,
       )) as LoginDto;
 
+      console.log(token.tokens);
+
       if (token.tokens) {
-        response.cookie('accessToken', token.tokens.access, {
-          maxAge: +this.config.get<string>('JWT_TOKEN_TIME'),
+        response.cookie('refreshToken', token.tokens.refresh, {
+          maxAge: Number(this.config.get<string>('JWT_REFRESH_TIME')),
           httpOnly: true,
           sameSite: 'none',
           secure: true,
         });
+
         return response.json({
           message: token.message,
-          statusCode: token.statusCode,
-          data: token.data
+          statusCode: token.statusCode || 404,
+          data: token.data || null,
         });
       } else {
         throw new UnauthorizedException({
@@ -75,7 +76,7 @@ export class AuthService {
     request: Request,
   ): Promise<LoginDto | UnauthorizedException> {
     try {
-      const user = await this.usersService.findUser(email);
+      const user = (await this.usersService.findUser(email)) as User;
       const compared = await bcrypt.compare(password, user.password);
       if (!compared) {
         throw new UnauthorizedException({
@@ -85,28 +86,30 @@ export class AuthService {
       } else {
         const payload = {
           sub: user.id,
-          tokenId: randomUUID()
+          tokenId: randomUUID(),
         };
 
         const user_data = {
           ip: request.ip,
-          user_agent: request.headers['user-agent']
+          user_agent: request.headers['user-agent'],
         } as UserData;
 
-        const getAcessToken = await this.createAccessToken(user, request, user_data);
-        const getRefreshToken = await this.createRefreshToken(payload);
-
-        const access = getAcessToken;
-
-        await this.sessionsService.createSessionInDb(payload.sub, access, user_data, payload.tokenId)
+        const accessToken = await this.createAccessToken(user, user_data);
+        const refreshToken = await this.createRefreshToken(payload);
+        await this.sessionsService.createSessionInDb(
+          payload.sub,
+          refreshToken,
+          user_data,
+          payload.tokenId,
+        );
 
         return {
           message: ['Sikeres bejelentkezés'],
           statusCode: 200,
-          data: { access },
+          data: { access: accessToken },
           tokens: {
-            refresh: getRefreshToken,
-            access,
+            refresh: refreshToken,
+            access: accessToken,
           },
         };
       }
@@ -157,58 +160,23 @@ export class AuthService {
     }
   }
 
-  async createAccessToken(user: ReturnUserDto, request: Request, user_data: UserData) {
-    const payload = {
-      email: user.email,
-      user_data: user_data
-    };
-    return this.jwtService.signAsync(payload, {
-      expiresIn: this.config.get<string>('JWT_TOKEN_TIME'),
-    } as JwtSignOptions);
-  }
-
-  async createRefreshToken(payload: any) {
-    return this.jwtService.signAsync(
-      payload,
-      {
-        secret: this.config.get<string>('JWT_REFRESH_SECRET'),
-        expiresIn: this.config.get<string>('JWT_REFRESH_TIME'),
-      } as JwtSignOptions,
-    );
-  }
-
-  async refresh(request: Request) {
-    if (
-      request &&
-      request.headers &&
-      request?.headers.authorization
-    ) {
-      const refreshToken = request?.headers.authorization.split('Bearer ')[1];
+  async refresh(request: Request): Promise<object | UnauthorizedException> {
+    if (request) {
       try {
+        const refreshToken = request?.cookies?.refreshToken;
         const verifiedToken = await this.jwtService.verifyAsync(refreshToken, {
           secret: this.config.get<string>('JWT_REFRESH_SECRET'),
         });
 
         const user = await this.usersService.findOne(verifiedToken.sub);
 
-        if (!this.sessionsService.sessionsIsValid(request)) {
-          throw new UnauthorizedException('Érvénytelen bejelentkezési adatok');
-        }
-
-        const payload = {
-          sub: user.id,
-          tokenId: randomUUID()
-        };
-
         const user_data = {
           ip: request.ip,
-          user_agent: request.headers['user-agent']
+          user_agent: request.headers['user-agent'],
         } as UserData;
 
-        const newRefreshToken = await this.createRefreshToken(payload);
-        const newAccessToken = await this.createAccessToken(user, request, user_data);
-
-        return { refreshToken: newRefreshToken, accessToken: newAccessToken };
+        const accessToken = await this.createAccessToken(user, user_data);
+        return { accessToken };
       } catch (error) {
         throw new UnauthorizedException(
           'Érvénytelen vagy lejárt refresh token: ' + error,
@@ -219,5 +187,80 @@ export class AuthService {
         message: 'Érvénytelen bejelentkezési adat(ok)',
         status: 401,
       });
+  }
+
+  async createAccessToken(user: ReturnUserDto, user_data: UserData) {
+    const payload = {
+      email: user.email,
+      user_data: user_data,
+    };
+    return this.jwtService.signAsync(payload, {
+      secret: this.config.get<string>('JWT_TOKEN_SECRET'),
+      expiresIn: this.config.get<number>('JWT_TOKEN_TIME'),
+    } as JwtSignOptions);
+  }
+
+  async createRefreshToken(payload: any) {
+    return this.jwtService.signAsync(payload, {
+      secret: this.config.get<string>('JWT_REFRESH_SECRET'),
+      expiresIn: this.config.get<number>('JWT_REFRESH_TIME'),
+    } as JwtSignOptions);
+  }
+
+  async logout(
+    response: Response,
+    request: Request,
+  ): Promise<Response<ReturnDto>> {
+    try {
+      const token = request.cookies?.accessToken;
+      const userAgent = request.headers['user-agent'];
+      const userIp = request.ip;
+      const userData = {
+        user_agent: userAgent,
+        ip: userIp,
+      };
+      if (token) {
+        await this.sessionsService.deleteSessionInDb(token, userData);
+      }
+      response.clearCookie('refreshToken', {
+        httpOnly: true,
+        sameSite: 'none',
+        secure: true,
+      });
+
+      return response.json({
+        message: ['Sikeres kijelentkezés'],
+        statusCode: 200,
+      });
+    } catch {
+      throw new UnauthorizedException({
+        message: 'Hiba történt kijelentkezés során!',
+        status: 401,
+      });
+    }
+  }
+
+  async validation(request: Request): Promise<ReturnDataDto> {
+    try {
+      const user = await this.sessionsService.validateAccessToken(request);
+      if (!user)
+        throw new UnauthorizedException('Nem érvényes bejelentkezési token!');
+      return {
+        message: ['Érvényes felhasználó'],
+        statusCode: 200,
+        data: {
+          user: user,
+          valid: !!user,
+        },
+      };
+    } catch {
+      return {
+        message: ['Nem érvényes felhasználó'],
+        statusCode: 401,
+        data: {
+          valid: false,
+        },
+      };
+    }
   }
 }

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
@@ -11,16 +12,11 @@ import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { BodyLogin } from './dto/login.dto';
 import { BodyRegistration } from './dto/registration.dto';
-import { ConfigService } from '@nestjs/config';
-
+import { ApiBearerAuth } from '@nestjs/swagger';
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private readonly authService: AuthService,
-    private readonly config: ConfigService,
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
-  //TODO: Utána nézni a passthrough után
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(
@@ -38,8 +34,22 @@ export class AuthController {
   }
 
   @Post('refresh')
+  @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   refreshToken(@Req() request: Request) {
     return this.authService.refresh(request);
+  }
+
+  @Get('valid')
+  @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth()
+  validUser(@Req() request: Request) {
+    return this.authService.validation(request);
+  }
+
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  logout(@Res() response: Response, @Req() request: Request) {
+    return this.authService.logout(response, request);
   }
 }

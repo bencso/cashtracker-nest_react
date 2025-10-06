@@ -10,6 +10,8 @@ export declare class SessionService {
     private config;
     private userService;
     constructor(dataSource: DataSource, jwtService: JwtService, config: ConfigService, userService: UsersService);
-    sessionsIsValid(req: Request): Promise<void>;
     createSessionInDb(sub: number, token: string, user_data: UserData, sessionId: string): Promise<void>;
+    deleteSessionInDb(token: string, user_data: UserData): Promise<void>;
+    validateAccessToken(req: Request): Promise<any>;
+    validateRefreshToken(refreshToken: string): Promise<boolean>;
 }
