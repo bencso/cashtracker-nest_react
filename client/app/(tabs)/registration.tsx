@@ -10,9 +10,9 @@ import {
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { Colors } from "@/constants/theme";
-import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { router } from "expo-router";
 
 export default function LoginScreen() {
   const colorScheme = useColorScheme() ?? "light";
@@ -99,7 +99,7 @@ export default function LoginScreen() {
     <ThemedView style={styles.mainContainer}>
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title" style={{ textTransform: "uppercase" }}>
-          {t("auth.welcome")}
+          {t("auth.welcomeRegistration")}
         </ThemedText>
       </ThemedView>
       <ThemedView>
@@ -140,25 +140,23 @@ export default function LoginScreen() {
                 textTransform: "uppercase",
               }}
             >
-              {t("auth.login")}
+              {t("auth.registration")}
             </Text>
           </Pressable>
           <View style={styles.notHaveAccount}>
             <Text style={{ color: Colors[colorScheme ?? "light"].text }}>
-              {t("auth.noAccount")}
+              {t("auth.haveAccount")}
             </Text>
-            <Pressable
-              onPress={() => {
-                router.replace("/registration");
-              }}
-            >
+            <Pressable onPress={() => {
+              router.replace("/(tabs)/login")
+            }}>
               <Text
                 style={{
                   color: Colors[colorScheme ?? "light"].button,
                   fontWeight: "bold",
                 }}
               >
-                {t("auth.register")}
+                {t("auth.loginCTA")}
               </Text>
             </Pressable>
           </View>

@@ -1,13 +1,34 @@
-import { Tabs } from "expo-router";
-import React from "react";
-
 import { HapticTab } from "@/components/haptic-tab";
-import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Colors } from "@/constants/theme";
 import { useColorScheme } from "@/hooks/use-color-scheme";
+import { Tabs } from "expo-router";
+import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
+import { t } from "i18next";
+import React from "react";
+import { Platform } from "react-native";
+import "../../i18n";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+
+  if (Platform.OS === "ios") {
+    return (
+      <NativeTabs>
+        <NativeTabs.Trigger name="index">
+          <Icon sf="house.fill" drawable="custom_home_drawable" />
+          <Label>{t("tabs.home")}</Label>
+        </NativeTabs.Trigger>
+        <NativeTabs.Trigger name="explore">
+          <Icon sf="paperplane.fill" drawable="custom_explore_drawable" />
+          <Label>{t("tabs.home")}</Label>
+        </NativeTabs.Trigger>
+        <NativeTabs.Trigger name="login">
+          <Icon sf="paperplane.fill" drawable="custom_login_drawable" />
+          <Label>{t("tabs.login")}</Label>
+        </NativeTabs.Trigger>
+      </NativeTabs>
+    );
+  }
 
   return (
     <Tabs
@@ -44,7 +65,8 @@ export default function TabLayout() {
         },
         tabBarLabelStyle: {
           marginTop: 4,
-          fontWeight: "600",
+          fontSize: 12,
+          fontFamily: "ZalandoSans_700Bold",
         },
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].background,
         tabBarInactiveTintColor: Colors[colorScheme ?? "light"].icon,
@@ -55,27 +77,27 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="house.fill" color={color} />
+          title: t("tabs.home"),
+          tabBarIcon: ({ color, size }) => (
+            <Icon sf="paperplane.fill" drawable="custom_login_drawable" />
           ),
         }}
       />
       <Tabs.Screen
         name="explore"
         options={{
-          title: "Explore",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="paperplane.fill" color={color} />
+          title: t("tabs.home"),
+          tabBarIcon: ({ color, size }) => (
+            <Icon sf="paperplane.fill" drawable="custom_login_drawable" />
           ),
         }}
       />
       <Tabs.Screen
         name="login"
         options={{
-          title: "Login",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="paperplane.fill" color={color} />
+          title: t("tabs.login"),
+          tabBarIcon: ({ color, size }) => (
+            <Icon sf="paperplane.fill" drawable="custom_login_drawable" />
           ),
         }}
       />

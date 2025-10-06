@@ -30,13 +30,18 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
+          "backgroundColor": "#11181C",
           "dark": {
-            "backgroundColor": "#000000"
+            "backgroundColor": "#11181C"
           }
+        }
+      ],
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "node_modules/@expo-google-fonts/zalando-sans/400Regular/ZalandoSans_400Regular.ttf"
+          ]
         }
       ]
     ],

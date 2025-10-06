@@ -3,13 +3,21 @@ import { Platform, StyleSheet } from "react-native";
 import Scrollview from "@/components/scrollview";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
+import { Fonts } from "@/constants/theme";
 import { Link } from "expo-router";
 
 export default function HomeScreen() {
   return (
     <Scrollview>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
+        <ThemedText
+          type="title"
+          style={{
+            fontFamily: Fonts.rounded,
+          }}
+        >
+          Üdvözlünk!
+        </ThemedText>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">Step 1: Try it</ThemedText>
