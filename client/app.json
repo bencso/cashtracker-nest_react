@@ -43,7 +43,8 @@
             "node_modules/@expo-google-fonts/zalando-sans/400Regular/ZalandoSans_400Regular.ttf"
           ]
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true,
