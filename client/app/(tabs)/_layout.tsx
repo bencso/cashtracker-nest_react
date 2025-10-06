@@ -14,17 +14,13 @@ export default function TabLayout() {
   if (Platform.OS === "ios") {
     return (
       <NativeTabs>
-        <NativeTabs.Trigger name="index">
-          <Icon sf="house.fill" drawable="custom_home_drawable" />
-          <Label>{t("tabs.home")}</Label>
-        </NativeTabs.Trigger>
-        <NativeTabs.Trigger name="explore">
-          <Icon sf="paperplane.fill" drawable="custom_explore_drawable" />
-          <Label>{t("tabs.home")}</Label>
-        </NativeTabs.Trigger>
         <NativeTabs.Trigger name="login">
-          <Icon sf="paperplane.fill" drawable="custom_login_drawable" />
+          <Icon sf="door.left.hand.open" drawable="custom_login_drawable" />
           <Label>{t("tabs.login")}</Label>
+        </NativeTabs.Trigger>
+        <NativeTabs.Trigger name="settings">
+          <Icon sf="gear" drawable="custom_setting_drawable" />
+          <Label>{t("tabs.settings")}</Label>
         </NativeTabs.Trigger>
       </NativeTabs>
     );
@@ -75,29 +71,20 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
-        options={{
-          title: t("tabs.home"),
-          tabBarIcon: ({ color, size }) => (
-            <Icon sf="paperplane.fill" drawable="custom_login_drawable" />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: t("tabs.home"),
-          tabBarIcon: ({ color, size }) => (
-            <Icon sf="paperplane.fill" drawable="custom_login_drawable" />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="login"
         options={{
           title: t("tabs.login"),
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: () => (
             <Icon sf="paperplane.fill" drawable="custom_login_drawable" />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: t("tabs.settings"),
+          tabBarIcon: () => (
+            <Icon sf="gear" drawable="custom_setting_drawable" />
           ),
         }}
       />

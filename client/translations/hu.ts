@@ -17,6 +17,16 @@ export default {
     },
     tabs: {
         login: "Bejelentkezés",
-        home: "Kezdőlap"
+        home: "Kezdőlap",
+        settings: "Beállítások"
+    },
+    settings: {
+        apperiance: "Általános",
+        languages: {
+            cta: "Nyelvbeállítás"
+        },
+        colortheme: {
+            cta: "Témaválasztó"
+        },
     }
 };
