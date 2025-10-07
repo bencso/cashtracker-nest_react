@@ -6,7 +6,6 @@ import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
 import { t } from "i18next";
 import React from "react";
 import { Platform } from "react-native";
-import "../../i18n";
 
 export default function TabLayout() {
   const { scheme } = useTheme();

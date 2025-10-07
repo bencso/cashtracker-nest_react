@@ -1,6 +1,8 @@
 import { Colors } from "@/constants/theme";
 import { LanguageProvider, useLanguage } from "@/contexts/language-context";
 import { ThemeProvider, useTheme } from "@/contexts/theme-context";
+import en from "@/translations/en";
+import hu from "@/translations/hu";
 import {
   useFonts,
   ZalandoSans_400Regular,
@@ -15,7 +17,9 @@ import {
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
+import i18next from "i18next";
 import { useEffect } from "react";
+import { initReactI18next } from "react-i18next";
 import { ActivityIndicator, Text, View } from "react-native";
 import "react-native-reanimated";
 
@@ -25,7 +29,24 @@ export const unstable_settings = {
 
 function AppContent() {
   const { scheme, isLoading: themeLoading } = useTheme();
-  const {isLoading : languageLoading} = useLanguage();
+  const {isLoading : languageLoading, Language} = useLanguage();
+
+  useEffect(() => {
+    // eslint-disable-next-line import/no-named-as-default-member
+    i18next
+      .use(initReactI18next)
+      .init({
+        resources: {
+          hu: { translation: hu },
+          en: { translation: en }
+        },
+        lng: Language,
+        fallbackLng: Language,
+        interpolation: {
+          escapeValue: false,
+        },
+      });
+  }, [Language]);
 
   const [loaded, error] = useFonts({
     ZalandoSans_400Regular,

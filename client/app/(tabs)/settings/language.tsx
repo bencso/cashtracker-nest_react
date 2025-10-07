@@ -3,11 +3,12 @@ import { ThemedView } from "@/components/themed-view";
 import { GbFlag } from "@/components/ui/flags/en";
 import { HuFlag } from "@/components/ui/flags/hu";
 import { Colors } from "@/constants/theme";
+import { useLanguage } from "@/contexts/language-context";
 import { useTheme } from "@/contexts/theme-context";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router, Stack } from "expo-router";
 import { t } from "i18next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   StyleSheet,
   TouchableOpacity,
@@ -16,7 +17,21 @@ import {
 
 export default function LanguageScreen() {
   const { scheme } = useTheme();
-    const [selectedLanguage, setSelectedLanguage] = useState<string>("hu");
+    const [selectedLanguage, setSelectedLanguage] = useState<string>();
+    const {Language, setLanguage} = useLanguage();
+
+  useEffect(() => {
+    if (selectedLanguage !== Language) {
+      setSelectedLanguage(Language);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [Language]);
+
+  const handleChange = (value: any) => {
+    setSelectedLanguage(value);
+    setLanguage(value ?? "en");
+  };
+
 
   const styles = StyleSheet.create({
     container: {
@@ -87,7 +102,7 @@ export default function LanguageScreen() {
               },
             ]}
             checkedValue={selectedLanguage}
-            onChange={setSelectedLanguage}
+            onChange={handleChange}
             colorScheme={scheme}
           />
         </View>

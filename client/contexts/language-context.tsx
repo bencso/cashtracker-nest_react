@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import i18next from "i18next";
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
 type LanguageContextType = {
@@ -19,6 +20,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
         const value = await AsyncStorage.getItem("userLanguage");
         if (value === 'hu' || value === 'en') {
           setLanguageState(value);
+          // eslint-disable-next-line import/no-named-as-default-member
+          await i18next.changeLanguage(value);
         }
       } catch (error) {
         console.log(error);
@@ -33,6 +36,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     try {
       await AsyncStorage.setItem("userLanguage", newLanguage);
       setLanguageState(newLanguage);
+      // eslint-disable-next-line import/no-named-as-default-member
+      await i18next.changeLanguage(newLanguage);
     } catch (error) {
       console.log(error);
     }
