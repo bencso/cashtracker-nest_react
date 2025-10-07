@@ -3,20 +3,19 @@ import { RadioButtons } from "@/components/radiobutton";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { Colors } from "@/constants/theme";
-import { useColorScheme } from "@/hooks/use-color-scheme";
+import { useTheme } from "@/contexts/theme-context";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { t } from "i18next";
 import { useEffect, useState } from "react";
 import {
-  Appearance,
   ColorSchemeName,
   StyleSheet,
-  View,
+  View
 } from "react-native";
 
 export default function SettingsScreen() {
-  const { scheme: colorScheme } = useColorScheme();
+  const { scheme: colorScheme } = useTheme();
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -73,7 +72,7 @@ export default function SettingsScreen() {
 //TODO: Memória tárolásba megoldani
 function ThemeButton() {
   const [selectedTheme, setSelectedTheme] = useState<ColorSchemeName>();
-  const { scheme: colorScheme } = useColorScheme();
+  const { scheme, setScheme } = useTheme();
   const styles = StyleSheet.create({
     icon: {
       marginRight: 12,
@@ -85,9 +84,9 @@ function ThemeButton() {
       paddingVertical: 16,
       paddingHorizontal: 16,
       borderWidth: 1,
-      borderColor: Colors[colorScheme ?? "light"].neutral + "CC",
+      borderColor: Colors[scheme ?? "light"].neutral + "CC",
       borderRadius: 12,
-      backgroundColor: `${Colors[colorScheme ?? "light"].primary}10`,
+      backgroundColor: `${Colors[scheme ?? "light"].primary}10`,
     },
     groupLeft: {
       flexDirection: "row",
@@ -103,13 +102,13 @@ function ThemeButton() {
     },
   });
 
-  useEffect(() => {
-    setSelectedTheme(colorScheme);
-  }, []);
+  useEffect(()=>{
+    setSelectedTheme(scheme);
+  }, [scheme]);
 
-  useEffect(() => {
-    Appearance.setColorScheme(selectedTheme);
-  }, [selectedTheme]);
+  useEffect(()=>{
+    setScheme(selectedTheme ?? "light");
+  }, [selectedTheme, setScheme]);
 
   return (
     <View style={styles.group}>
@@ -117,7 +116,7 @@ function ThemeButton() {
         <MaterialCommunityIcons
           name="theme-light-dark"
           size={24}
-          color={Colors[colorScheme ?? "light"].text}
+          color={Colors[scheme ?? "light"].text}
           style={styles.icon}
         />
         <ThemedText>{t("settings.colortheme.cta")}</ThemedText>
@@ -137,7 +136,7 @@ function ThemeButton() {
         ]}
         checkedValue={selectedTheme}
         onChange={setSelectedTheme}
-        colorScheme={colorScheme}
+        colorScheme={scheme}
       />
     </View>
   );

@@ -1,6 +1,6 @@
 import { HapticTab } from "@/components/haptic-tab";
 import { Colors } from "@/constants/theme";
-import { useColorScheme } from "@/hooks/use-color-scheme";
+import { useTheme } from "@/contexts/theme-context";
 import { Tabs } from "expo-router";
 import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
 import { t } from "i18next";
@@ -9,7 +9,7 @@ import { Platform } from "react-native";
 import "../../i18n";
 
 export default function TabLayout() {
-  const { scheme: colorScheme } = useColorScheme();
+  const { scheme } = useTheme();
 
   if (Platform.OS === "ios") {
     return (
@@ -30,7 +30,7 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarStyle: {
-          backgroundColor: Colors[colorScheme ?? "light"].neutral + "CC",
+          backgroundColor: Colors[scheme ?? "light"].neutral + "CC",
           bottom: 20,
           width: "95%",
           borderRadius: 28,
@@ -56,15 +56,15 @@ export default function TabLayout() {
           shadowRadius: 2,
           elevation: 3,
           borderWidth: 1,
-          borderColor: Colors[colorScheme ?? "light"].neutral + "40",
+          borderColor: Colors[scheme ?? "light"].neutral + "40",
         },
         tabBarLabelStyle: {
           marginTop: 4,
           fontSize: 12,
           fontFamily: "ZalandoSans_700Bold",
         },
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].background,
-        tabBarInactiveTintColor: Colors[colorScheme ?? "light"].icon,
+        tabBarActiveTintColor: Colors[scheme ?? "light"].background,
+        tabBarInactiveTintColor: Colors[scheme ?? "light"].icon,
         headerShown: false,
         tabBarButton: HapticTab,
       }}

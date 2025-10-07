@@ -3,7 +3,7 @@ import { ThemedView } from "@/components/themed-view";
 import { GbFlag } from "@/components/ui/flags/en";
 import { HuFlag } from "@/components/ui/flags/hu";
 import { Colors } from "@/constants/theme";
-import { useColorScheme } from "@/hooks/use-color-scheme";
+import { useTheme } from "@/contexts/theme-context";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router, Stack } from "expo-router";
 import { t } from "i18next";
@@ -15,7 +15,7 @@ import {
 } from "react-native";
 
 export default function LanguageScreen() {
-  const { scheme: colorScheme } = useColorScheme();
+  const { scheme } = useTheme();
     const [selectedLanguage, setSelectedLanguage] = useState<string>("hu");
 
   const styles = StyleSheet.create({
@@ -37,9 +37,9 @@ export default function LanguageScreen() {
       paddingVertical: 16,
       paddingHorizontal: 16,
       borderWidth: 1,
-      borderColor: Colors[colorScheme ?? "light"].neutral + "CC",
+      borderColor: Colors[scheme ?? "light"].neutral + "CC",
       borderRadius: 12,
-      backgroundColor: `${Colors[colorScheme ?? "light"].primary}10`,
+      backgroundColor: `${Colors[scheme ?? "light"].primary}10`,
     },
   });
 
@@ -63,7 +63,7 @@ export default function LanguageScreen() {
                 <MaterialCommunityIcons
                   name="chevron-left"
                   size={24}
-                  color={Colors[colorScheme ?? "light"].text}
+                  color={Colors[scheme ?? "light"].text}
                 />
               </TouchableOpacity>
             );
@@ -88,7 +88,7 @@ export default function LanguageScreen() {
             ]}
             checkedValue={selectedLanguage}
             onChange={setSelectedLanguage}
-            colorScheme={colorScheme}
+            colorScheme={scheme}
           />
         </View>
       </ThemedView>

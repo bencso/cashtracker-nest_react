@@ -3,19 +3,19 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  useColorScheme,
-  View,
+  View
 } from "react-native";
 
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { Colors } from "@/constants/theme";
+import { useTheme } from "@/contexts/theme-context";
 import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export default function LoginScreen() {
-  const colorScheme = useColorScheme() ?? "light";
+  const {scheme} = useTheme();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [emailCorrect, setEmailCorrect] = useState<boolean>(false);
@@ -37,16 +37,16 @@ export default function LoginScreen() {
       paddingHorizontal: 24,
     },
     input: {
-      color: Colors[colorScheme ?? "light"].text,
+      color: Colors[scheme ?? "light"].text,
       paddingTop: 16,
       paddingBottom: 16,
       paddingStart: 10,
       // TODO: Majd ezeket a szineket átalakítani megcsinálni :)
       borderWidth: 1,
-      borderColor: Colors[colorScheme ?? "light"].neutral + "CC",
+      borderColor: Colors[scheme ?? "light"].neutral + "CC",
       borderRadius: 12,
       fontSize: 16,
-      backgroundColor: `${Colors[colorScheme ?? "light"].primary}10`,
+      backgroundColor: `${Colors[scheme ?? "light"].primary}10`,
     },
     inputContainer: {
       display: "flex",
@@ -55,7 +55,7 @@ export default function LoginScreen() {
     },
     button: {
       alignItems: "center",
-      backgroundColor: Colors[colorScheme ?? "light"].button,
+      backgroundColor: Colors[scheme ?? "light"].button,
       borderRadius: 12,
       padding: 15,
       paddingTop: 18,
@@ -87,9 +87,9 @@ export default function LoginScreen() {
         style: {
           borderColor: active
             ? emailCorrect
-              ? Colors[colorScheme ?? "light"].correct
-              : Colors[colorScheme ?? "light"].uncorrect
-            : Colors[colorScheme ?? "light"].neutral + "CC",
+              ? Colors[scheme ?? "light"].correct
+              : Colors[scheme ?? "light"].uncorrect
+            : Colors[scheme ?? "light"].neutral + "CC",
         },
       });
     }
@@ -144,7 +144,7 @@ export default function LoginScreen() {
             </Text>
           </Pressable>
           <View style={styles.notHaveAccount}>
-            <Text style={{ color: Colors[colorScheme ?? "light"].text }}>
+            <Text style={{ color: Colors[scheme ?? "light"].text }}>
               {t("auth.noAccount")}
             </Text>
             <Pressable
@@ -154,7 +154,7 @@ export default function LoginScreen() {
             >
               <Text
                 style={{
-                  color: Colors[colorScheme ?? "light"].button,
+                  color: Colors[scheme ?? "light"].button,
                   fontWeight: "bold",
                 }}
               >

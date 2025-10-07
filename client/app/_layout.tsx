@@ -1,5 +1,5 @@
 import { Colors } from "@/constants/theme";
-import { useColorScheme } from "@/hooks/use-color-scheme";
+import { ThemeProvider, useTheme } from "@/contexts/theme-context";
 import {
   useFonts,
   ZalandoSans_400Regular,
@@ -9,7 +9,7 @@ import {
 import {
   DarkTheme,
   DefaultTheme,
-  ThemeProvider,
+  ThemeProvider as NavigationThemeProvider,
 } from "@react-navigation/native";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -22,8 +22,8 @@ export const unstable_settings = {
   anchor: "(tabs)",
 };
 
-export default function RootLayout() {
-    const { scheme: colorScheme } = useColorScheme();
+function AppContent() {
+  const { scheme } = useTheme();
 
   const [loaded, error] = useFonts({
     ZalandoSans_400Regular,
@@ -42,7 +42,7 @@ export default function RootLayout() {
       <View>
         <ActivityIndicator
           size="large"
-          color={Colors[colorScheme ?? "light"].primary}
+          color={Colors[scheme ?? "light"].primary}
         />
         <Text>Betöltés...</Text>
       </View>
@@ -50,7 +50,7 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+    <NavigationThemeProvider value={scheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
@@ -59,6 +59,14 @@ export default function RootLayout() {
         />
       </Stack>
       <StatusBar style="auto" />
+    </NavigationThemeProvider>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <ThemeProvider>
+      <AppContent />
     </ThemeProvider>
   );
 }

@@ -1,5 +1,5 @@
 import { Colors } from "@/constants/theme";
-import { useColorScheme } from "@/hooks/use-color-scheme";
+import { useTheme } from "@/contexts/theme-context";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
   StyleSheet,
@@ -17,7 +17,7 @@ export default function Button({
   action: any;
   chevron?: boolean;
 }) {
-    const { scheme: colorScheme } = useColorScheme();
+    const {scheme} = useTheme();
   const styles = StyleSheet.create({
     button: {
       flexDirection: "row",
@@ -26,9 +26,9 @@ export default function Button({
       paddingVertical: 16,
       paddingHorizontal: 16,
       borderWidth: 1,
-      borderColor: Colors[colorScheme ?? "light"].neutral + "CC",
+      borderColor: Colors[scheme ?? "light"].neutral + "CC",
       borderRadius: 12,
-      backgroundColor: `${Colors[colorScheme ?? "light"].primary}10`,
+      backgroundColor: `${Colors[scheme ?? "light"].primary}10`,
     },
     buttonLeft: {
       flexDirection: "row",
@@ -47,7 +47,7 @@ export default function Button({
         <MaterialCommunityIcons
           name="translate"
           size={24}
-          color={Colors[colorScheme ?? "light"].text}
+          color={Colors[scheme ?? "light"].text}
           style={styles.icon}
         />
         <ThemedText>{label}</ThemedText>
@@ -56,7 +56,7 @@ export default function Button({
         <MaterialCommunityIcons
           name="chevron-right"
           size={24}
-          color={Colors[colorScheme ?? "light"].text}
+          color={Colors[scheme ?? "light"].text}
           style={styles.chevron}
         />
       )}

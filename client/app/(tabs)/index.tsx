@@ -1,16 +1,16 @@
 import { ThemedView } from "@/components/themed-view";
 import { Colors } from "@/constants/theme";
-import { useColorScheme } from "@/hooks/use-color-scheme";
+import { useTheme } from "@/contexts/theme-context";
 import { t } from "i18next";
 import { Text } from "react-native";
 
 export default function IndexScreen() {
-    const { scheme: colorScheme } = useColorScheme();
+    const { scheme } = useTheme();
   return (
     <ThemedView>
       <Text
         style={{
-          color: Colors[colorScheme ?? "light"].button,
+          color: Colors[scheme ?? "light"].button,
           fontWeight: "bold",
         }}
       >

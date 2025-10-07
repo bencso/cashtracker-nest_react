@@ -12,7 +12,7 @@ const warning = "#ebcb8b";
 const info = "#b48ead";
 
 export const Colors = {
-  "light": {
+  light: {
     text: '#11181C',
     background: '#fff',
     neutral: neutral,
@@ -26,7 +26,7 @@ export const Colors = {
     button: accent,
     base: base
   },
-  "dark": {
+  dark: {
     text: text,
     background: '#151718',
     neutral: neutral,
