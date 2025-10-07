@@ -3,6 +3,7 @@ import { ThemedView } from "@/components/themed-view";
 import { GbFlag } from "@/components/ui/flags/en";
 import { HuFlag } from "@/components/ui/flags/hu";
 import { Colors } from "@/constants/theme";
+import { useColorScheme } from "@/hooks/use-color-scheme";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router, Stack } from "expo-router";
 import { t } from "i18next";
@@ -10,13 +11,12 @@ import { useState } from "react";
 import {
   StyleSheet,
   TouchableOpacity,
-  useColorScheme,
   View,
 } from "react-native";
 
 export default function LanguageScreen() {
-  const colorScheme = useColorScheme();
-  const [selectedLanguage, setSelectedLanguage] = useState<string>("hu");
+  const { scheme: colorScheme } = useColorScheme();
+    const [selectedLanguage, setSelectedLanguage] = useState<string>("hu");
 
   const styles = StyleSheet.create({
     container: {

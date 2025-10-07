@@ -1,3 +1,5 @@
+import { Colors } from "@/constants/theme";
+import { useColorScheme } from "@/hooks/use-color-scheme";
 import {
   useFonts,
   ZalandoSans_400Regular,
@@ -13,19 +15,15 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
-import "react-native-reanimated";
-import "../global.css";
-
-import { Colors } from "@/constants/theme";
-import { useColorScheme } from "@/hooks/use-color-scheme";
 import { ActivityIndicator, Text, View } from "react-native";
+import "react-native-reanimated";
 
 export const unstable_settings = {
   anchor: "(tabs)",
 };
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+    const { scheme: colorScheme } = useColorScheme();
 
   const [loaded, error] = useFonts({
     ZalandoSans_400Regular,

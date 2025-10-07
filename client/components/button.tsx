@@ -1,9 +1,9 @@
 import { Colors } from "@/constants/theme";
+import { useColorScheme } from "@/hooks/use-color-scheme";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
   StyleSheet,
   TouchableOpacity,
-  useColorScheme,
   View,
 } from "react-native";
 import { ThemedText } from "./themed-text";
@@ -17,7 +17,7 @@ export default function Button({
   action: any;
   chevron?: boolean;
 }) {
-  const colorScheme = useColorScheme();
+    const { scheme: colorScheme } = useColorScheme();
   const styles = StyleSheet.create({
     button: {
       flexDirection: "row",

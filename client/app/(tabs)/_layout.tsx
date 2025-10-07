@@ -9,7 +9,7 @@ import { Platform } from "react-native";
 import "../../i18n";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const { scheme: colorScheme } = useColorScheme();
 
   if (Platform.OS === "ios") {
     return (
@@ -31,7 +31,6 @@ export default function TabLayout() {
       screenOptions={{
         tabBarStyle: {
           backgroundColor: Colors[colorScheme ?? "light"].neutral + "CC",
-          backdropFilter: "blur(10px)",
           bottom: 20,
           width: "95%",
           borderRadius: 28,

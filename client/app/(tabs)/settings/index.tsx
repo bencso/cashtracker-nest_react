@@ -3,6 +3,7 @@ import { RadioButtons } from "@/components/radiobutton";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { Colors } from "@/constants/theme";
+import { useColorScheme } from "@/hooks/use-color-scheme";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { t } from "i18next";
@@ -11,12 +12,11 @@ import {
   Appearance,
   ColorSchemeName,
   StyleSheet,
-  useColorScheme,
   View,
 } from "react-native";
 
 export default function SettingsScreen() {
-  const colorScheme = useColorScheme();
+  const { scheme: colorScheme } = useColorScheme();
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -49,6 +49,7 @@ export default function SettingsScreen() {
     },
   });
 
+
   return (
     <ThemedView style={styles.container}>
       <ThemedView style={styles.content}>
@@ -72,7 +73,7 @@ export default function SettingsScreen() {
 //TODO: Memória tárolásba megoldani
 function ThemeButton() {
   const [selectedTheme, setSelectedTheme] = useState<ColorSchemeName>();
-  const colorScheme = useColorScheme();
+  const { scheme: colorScheme } = useColorScheme();
   const styles = StyleSheet.create({
     icon: {
       marginRight: 12,
