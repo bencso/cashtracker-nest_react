@@ -1,14 +1,15 @@
+import Button from "@/components/button";
 import { RadioButtons } from "@/components/radiobutton";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { Colors } from "@/constants/theme";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { t } from "i18next";
 import { useEffect, useState } from "react";
 import {
   Appearance,
   ColorSchemeName,
-  Pressable,
   StyleSheet,
   useColorScheme,
   View,
@@ -39,33 +40,12 @@ export default function SettingsScreen() {
       fontSize: 16,
       backgroundColor: `${Colors[colorScheme ?? "light"].primary}10`,
     },
-    icon: {
-      marginRight: 12,
-    },
     settingGroup: {
       gap: 12,
     },
     settingGroupTitle: {
       marginBottom: 8,
       marginLeft: 4,
-    },
-    button: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      paddingVertical: 16,
-      paddingHorizontal: 16,
-      borderWidth: 1,
-      borderColor: Colors[colorScheme ?? "light"].neutral + "CC",
-      borderRadius: 12,
-      backgroundColor: `${Colors[colorScheme ?? "light"].primary}10`,
-    },
-    buttonLeft: {
-      flexDirection: "row",
-      alignItems: "center",
-    },
-    chevron: {
-      opacity: 0.5,
     },
   });
 
@@ -76,23 +56,12 @@ export default function SettingsScreen() {
           <ThemedText type="defaultSemiBold" style={styles.settingGroupTitle}>
             {t("settings.appearance")}
           </ThemedText>
-          <Pressable style={styles.button}>
-            <View style={styles.buttonLeft}>
-              <MaterialCommunityIcons
-                name="translate"
-                size={24}
-                color={Colors[colorScheme ?? "light"].text}
-                style={styles.icon}
-              />
-              <ThemedText>{t("settings.languages.cta")}</ThemedText>
-            </View>
-            <MaterialCommunityIcons
-              name="chevron-right"
-              size={24}
-              color={Colors[colorScheme ?? "light"].text}
-              style={styles.chevron}
-            />
-          </Pressable>
+          <Button
+            label={t("settings.languages.cta")}
+            action={() => {
+              router.replace("/(tabs)/settings/language");
+            }}
+          />
         </View>
         <ThemeButton />
       </ThemedView>
@@ -100,6 +69,7 @@ export default function SettingsScreen() {
   );
 }
 
+//TODO: Memória tárolásba megoldani
 function ThemeButton() {
   const [selectedTheme, setSelectedTheme] = useState<ColorSchemeName>();
   const colorScheme = useColorScheme();

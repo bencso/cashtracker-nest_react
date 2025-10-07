@@ -1,0 +1,86 @@
+import { RadioButtons } from "@/components/radiobutton";
+import { ThemedView } from "@/components/themed-view";
+import { Colors } from "@/constants/theme";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { router, Stack } from "expo-router";
+import { t } from "i18next";
+import { useState } from "react";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from "react-native";
+
+export default function LanguageScreen() {
+  const colorScheme = useColorScheme();
+  const [selectedLanguage, setSelectedLanguage] = useState<string>("hu");
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      height: "100%",
+      marginTop: 30,
+    },
+    content: {
+      flex: 1,
+      padding: 16,
+      gap: 12,
+      paddingTop: 100,
+    },
+    group: {
+      flexDirection: "column",
+      gap: 12,
+      justifyContent: "space-between",
+      paddingVertical: 16,
+      paddingHorizontal: 16,
+      borderWidth: 1,
+      borderColor: Colors[colorScheme ?? "light"].neutral + "CC",
+      borderRadius: 12,
+      backgroundColor: `${Colors[colorScheme ?? "light"].primary}10`,
+    },
+  });
+
+  return (
+    <ThemedView style={styles.container}>
+      <Stack.Screen
+        options={{
+          title: t("settings.languages.cta"),
+          headerLeft: () => {
+            return (
+              <TouchableOpacity
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  paddingLeft: 5,
+                }}
+                onPress={() => {
+                  router.replace("/(tabs)/settings");
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="chevron-left"
+                  size={24}
+                  color={Colors[colorScheme ?? "light"].text}
+                />
+              </TouchableOpacity>
+            );
+          },
+        }}
+      />
+      <ThemedView style={styles.content}>
+        <View style={styles.group}>
+          <RadioButtons
+            options={[
+              { label: "Magyar", value: "hu", icon: "translate" },
+              { label: "English", value: "en", icon: "translate" },
+            ]}
+            checkedValue={selectedLanguage}
+            onChange={setSelectedLanguage}
+            colorScheme={colorScheme}
+          />
+        </View>
+      </ThemedView>
+    </ThemedView>
+  );
+}
