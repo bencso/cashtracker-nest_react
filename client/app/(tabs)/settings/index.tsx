@@ -101,14 +101,17 @@ function ThemeButton() {
       opacity: 0.5,
     },
   });
-
-  useEffect(()=>{
-    setSelectedTheme(scheme);
+  useEffect(() => {
+    if (selectedTheme !== scheme) {
+      setSelectedTheme(scheme);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scheme]);
 
-  useEffect(()=>{
-    setScheme(selectedTheme ?? "light");
-  }, [selectedTheme, setScheme]);
+  const handleChange = (value: ColorSchemeName) => {
+    setSelectedTheme(value);
+    setScheme(value ?? "light");
+  };
 
   return (
     <View style={styles.group}>
@@ -135,7 +138,7 @@ function ThemeButton() {
           },
         ]}
         checkedValue={selectedTheme}
-        onChange={setSelectedTheme}
+        onChange={handleChange}
         colorScheme={scheme}
       />
     </View>

@@ -1,4 +1,5 @@
 import { Colors } from "@/constants/theme";
+import { LanguageProvider, useLanguage } from "@/contexts/language-context";
 import { ThemeProvider, useTheme } from "@/contexts/theme-context";
 import {
   useFonts,
@@ -23,7 +24,8 @@ export const unstable_settings = {
 };
 
 function AppContent() {
-  const { scheme } = useTheme();
+  const { scheme, isLoading: themeLoading } = useTheme();
+  const {isLoading : languageLoading} = useLanguage();
 
   const [loaded, error] = useFonts({
     ZalandoSans_400Regular,
@@ -32,10 +34,10 @@ function AppContent() {
   });
 
   useEffect(() => {
-    if (loaded || error) {
+    if (loaded || error || languageLoading || themeLoading) {
       SplashScreen.hideAsync();
     }
-  }, [loaded, error]);
+  }, [loaded, error, languageLoading, themeLoading]);
 
   if (!loaded && !error) {
     return (
@@ -65,8 +67,10 @@ function AppContent() {
 
 export default function RootLayout() {
   return (
-    <ThemeProvider>
-      <AppContent />
-    </ThemeProvider>
+    <LanguageProvider>
+      <ThemeProvider>
+        <AppContent />
+      </ThemeProvider>
+    </LanguageProvider>
   );
 }
