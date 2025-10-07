@@ -12,14 +12,14 @@ export default function TabLayout() {
 
   if (Platform.OS === "ios") {
     return (
-      <NativeTabs>
+      <NativeTabs blurEffect="prominent" minimizeBehavior="onScrollDown" shadowColor={Colors[scheme ?? "light"].button}>
         <NativeTabs.Trigger name="login">
-          <Icon sf="door.left.hand.open" drawable="custom_login_drawable" />
-          <Label>{t("tabs.login")}</Label>
+            <Icon selectedColor={Colors[scheme ?? "light"].button} sf="door.left.hand.open" drawable="custom_login_drawable" />
+            <Label hidden>{t("tabs.login")}</Label>
         </NativeTabs.Trigger>
         <NativeTabs.Trigger name="settings">
-          <Icon sf="gear" drawable="custom_setting_drawable" />
-          <Label>{t("tabs.settings")}</Label>
+          <Icon selectedColor={Colors[scheme ?? "light"].button}  sf="gear" drawable="custom_setting_drawable" />
+          <Label hidden>{t("tabs.settings")}</Label>
         </NativeTabs.Trigger>
       </NativeTabs>
     );
@@ -66,6 +66,7 @@ export default function TabLayout() {
         tabBarInactiveTintColor: Colors[scheme ?? "light"].icon,
         headerShown: false,
         tabBarButton: HapticTab,
+        animation: "shift"
       }}
     >
       <Tabs.Screen
