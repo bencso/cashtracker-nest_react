@@ -93,7 +93,7 @@ export default function LoginScreen() {
         },
       });
     }
-  }, [emailCorrect, email]);
+  }, [emailCorrect, email, scheme]);
 
   return (
     <ThemedView style={styles.mainContainer}>
@@ -110,6 +110,8 @@ export default function LoginScreen() {
             value={email}
             maxLength={150}
             autoComplete="email"
+            placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
+
             autoCorrect={false}
             keyboardType="email-address"
             textContentType="emailAddress"
@@ -130,6 +132,7 @@ export default function LoginScreen() {
             textContentType="password"
             autoCapitalize="none"
             placeholder={t("forms.password")}
+            placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
             onChangeText={(text) => {
               setPassword(text);
             }}

@@ -15,7 +15,7 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export default function LoginScreen() {
-  const {scheme} = useTheme();
+  const { scheme } = useTheme();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [emailCorrect, setEmailCorrect] = useState<boolean>(false);
@@ -78,7 +78,7 @@ export default function LoginScreen() {
     setEmailCorrect(emailRegex.test(text));
   }
 
-  function onSubmit() {}
+  function onSubmit() { }
 
   useEffect(() => {
     if (emailTextInput.current) {
@@ -93,7 +93,7 @@ export default function LoginScreen() {
         },
       });
     }
-  }, [emailCorrect, email]);
+  }, [emailCorrect, email, scheme]);
 
   return (
     <ThemedView style={styles.mainContainer}>
@@ -107,6 +107,7 @@ export default function LoginScreen() {
           <TextInput
             style={styles.input}
             ref={emailTextInput}
+            placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
             value={email}
             maxLength={150}
             autoComplete="email"
@@ -123,6 +124,7 @@ export default function LoginScreen() {
             style={styles.input}
             value={password}
             maxLength={150}
+            placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
             autoComplete="current-password"
             autoCorrect={false}
             keyboardType="visible-password"
