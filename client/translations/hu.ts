@@ -1,32 +1,35 @@
 export default {
     auth: {
         welcome: "Üdvözlünk újra",
-        welcomeRegistration: "Üdvözlünk! Nincsen még fiókja?",
+        welcomeRegistration: "Üdvözlünk! Hozzon létre fiókot",
         login: "Bejelentkezés",
         registration: "Regisztráció",
-        email: "Email-cím",
-        password: "Adja meg a jelszavát",
-        noAccount: "Nincs még fiókod?",
-        haveAccount: "Van már fiókja?",
-        register: "Regisztráljon!",
-        loginCTA: "Jelentkezzen be!"
+        email: "E-mail-cím",
+        password: "Jelszó",
+        noAccount: "Még nincs fiókja?",
+        haveAccount: "Már van fiókja?",
+        register: "Regisztráljon most",
+        loginCTA: "Bejelentkezés"
     },
     forms: {
-        password: "Adja meg a jelszavát",
-        email: "Adja meg az email-címét"
+        password: "Írja be jelszavát",
+        email: "Írja be e-mail címét"
     },
     tabs: {
         login: "Bejelentkezés",
-        home: "Kezdőlap",
+        home: "Főoldal",
         settings: "Beállítások"
     },
     settings: {
-        apperiance: "Általános",
+        appearance: "Általános",
         languages: {
-            cta: "Nyelvbeállítás"
+            cta: "Nyelv"
         },
         colortheme: {
-            cta: "Témaválasztó"
+            cta: "Megjelenés",
+            light: "Világos",
+            dark: "Sötét",
+            auto: "Rendszer alapértelmezett",
         },
     }
 };

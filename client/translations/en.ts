@@ -1,32 +1,35 @@
 export default {
     auth: {
         welcome: "Welcome back",
-        welcomeRegistration: "Welcome! Don't have an account yet?",
-        login: "Login",
-        registration: "Registration",
+        welcomeRegistration: "Welcome! Create your account",
+        login: "Sign in",
+        registration: "Sign up",
         email: "Email address",
-        password: "Enter your password",
+        password: "Password",
         noAccount: "Don't have an account?",
         haveAccount: "Already have an account?",
-        register: "Register",
-        loginCTA: "Log in!"
+        register: "Sign up now",
+        loginCTA: "Sign in"
     },
     forms: {
         password: "Enter your password",
         email: "Enter your email address"
     },
     tabs: {
-        login: "Login",
+        login: "Sign in",
         home: "Home",
         settings: "Settings"
     },
     settings: {
-        apperiance: "Apperiance",
+        appearance: "General",
         languages: {
-            cta: "Set language"
+            cta: "Language",
         },
         colortheme: {
-            cta: "Set color theme"
+            cta: "Theme",
+            light: "Light",
+            dark: "Dark",
+            auto: "System default",
         },
     }
 };

@@ -1,9 +1,18 @@
+import { RadioButtons } from "@/components/radiobutton";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { Colors } from "@/constants/theme";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { t } from "i18next";
-import { Pressable, StyleSheet, useColorScheme, View } from "react-native";
+import { useEffect, useState } from "react";
+import {
+  Appearance,
+  ColorSchemeName,
+  Pressable,
+  StyleSheet,
+  useColorScheme,
+  View,
+} from "react-native";
 
 export default function SettingsScreen() {
   const colorScheme = useColorScheme();
@@ -15,6 +24,7 @@ export default function SettingsScreen() {
     content: {
       flex: 1,
       padding: 16,
+      gap: 12,
       paddingTop: 100,
     },
     buttons: {
@@ -64,7 +74,7 @@ export default function SettingsScreen() {
       <ThemedView style={styles.content}>
         <View style={styles.settingGroup}>
           <ThemedText type="defaultSemiBold" style={styles.settingGroupTitle}>
-            {t("settings.apperiance")}
+            {t("settings.appearance")}
           </ThemedText>
           <Pressable style={styles.button}>
             <View style={styles.buttonLeft}>
@@ -83,25 +93,81 @@ export default function SettingsScreen() {
               style={styles.chevron}
             />
           </Pressable>
-          <Pressable style={styles.button}>
-            <View style={styles.buttonLeft}>
-              <MaterialCommunityIcons
-                name="theme-light-dark"
-                size={24}
-                color={Colors[colorScheme ?? "light"].text}
-                style={styles.icon}
-              />
-              <ThemedText>{t("settings.colortheme.cta")}</ThemedText>
-            </View>
-            <MaterialCommunityIcons
-              name="chevron-right"
-              size={24}
-              color={Colors[colorScheme ?? "light"].text}
-              style={styles.chevron}
-            />
-          </Pressable>
         </View>
+        <ThemeButton />
       </ThemedView>
     </ThemedView>
+  );
+}
+
+function ThemeButton() {
+  const [selectedTheme, setSelectedTheme] = useState<ColorSchemeName>();
+  const colorScheme = useColorScheme();
+  const styles = StyleSheet.create({
+    icon: {
+      marginRight: 12,
+    },
+    group: {
+      flexDirection: "column",
+      gap: 12,
+      justifyContent: "space-between",
+      paddingVertical: 16,
+      paddingHorizontal: 16,
+      borderWidth: 1,
+      borderColor: Colors[colorScheme ?? "light"].neutral + "CC",
+      borderRadius: 12,
+      backgroundColor: `${Colors[colorScheme ?? "light"].primary}10`,
+    },
+    groupLeft: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    groupBottom: {
+      display: "flex",
+      flexDirection: "column",
+      gap: 12,
+    },
+    chevron: {
+      opacity: 0.5,
+    },
+  });
+
+  useEffect(() => {
+    setSelectedTheme(colorScheme);
+  }, []);
+
+  useEffect(() => {
+    Appearance.setColorScheme(selectedTheme);
+  }, [selectedTheme]);
+
+  return (
+    <View style={styles.group}>
+      <View style={styles.groupLeft}>
+        <MaterialCommunityIcons
+          name="theme-light-dark"
+          size={24}
+          color={Colors[colorScheme ?? "light"].text}
+          style={styles.icon}
+        />
+        <ThemedText>{t("settings.colortheme.cta")}</ThemedText>
+      </View>
+      <RadioButtons
+        options={[
+          {
+            label: t("settings.colortheme.light"),
+            icon: "white-balance-sunny",
+            value: "light",
+          },
+          {
+            label: t("settings.colortheme.dark"),
+            icon: "moon-waning-crescent",
+            value: "dark",
+          },
+        ]}
+        checkedValue={selectedTheme}
+        onChange={setSelectedTheme}
+        colorScheme={colorScheme}
+      />
+    </View>
   );
 }
