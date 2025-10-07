@@ -1,5 +1,7 @@
 import { RadioButtons } from "@/components/radiobutton";
 import { ThemedView } from "@/components/themed-view";
+import { GbFlag } from "@/components/ui/flags/en";
+import { HuFlag } from "@/components/ui/flags/hu";
 import { Colors } from "@/constants/theme";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router, Stack } from "expo-router";
@@ -70,10 +72,19 @@ export default function LanguageScreen() {
       />
       <ThemedView style={styles.content}>
         <View style={styles.group}>
+          {/* Zászlók innen: https://www.untitledui.com/resources/flag-icons */}
           <RadioButtons
             options={[
-              { label: "Magyar", value: "hu", icon: "translate" },
-              { label: "English", value: "en", icon: "translate" },
+              {
+                label: t("settings.languages.hu"),
+                value: "hu",
+                icon: <HuFlag />,
+              },
+              {
+                label: t("settings.languages.en"),
+                value: "en",
+                icon: <GbFlag />,
+              },
             ]}
             checkedValue={selectedLanguage}
             onChange={setSelectedLanguage}

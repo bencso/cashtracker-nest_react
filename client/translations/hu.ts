@@ -23,7 +23,9 @@ export default {
     settings: {
         appearance: "Általános",
         languages: {
-            cta: "Nyelv"
+            cta: "Nyelv",
+            hu: "Magyar",
+            en: "Angol"
         },
         colortheme: {
             cta: "Megjelenés",

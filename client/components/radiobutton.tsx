@@ -1,3 +1,4 @@
+import { ThemedText } from "@/components/themed-text";
 import { Colors } from "@/constants/theme";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
@@ -6,11 +7,10 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { ThemedText } from "./themed-text";
 
 interface OptionsParam {
   label: string;
-  icon: any;
+  icon: React.ReactNode | string;
   value: string;
 }
 
@@ -53,6 +53,20 @@ export const RadioButtons = ({
     rows: {
       gap: 12,
     },
+    iconContainer: {
+      marginRight: 12,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    buttonContent: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 12,
+    },
+    label: {
+      marginLeft: 8,
+    },
   });
 
   const button = StyleSheet.create({
@@ -85,9 +99,7 @@ export const RadioButtons = ({
       {options?.map((option, idx) => (
         <TouchableOpacity
           disabled={checkedValue === option.value}
-          onPress={() => {
-            onChange(option.value);
-          }}
+          onPress={() => onChange(option.value)}
           key={idx}
         >
           <View
@@ -95,14 +107,20 @@ export const RadioButtons = ({
               checkedValue === option.value ? button.active : button.notActive
             }
           >
-            <View style={styles.groupLeft}>
-              <MaterialCommunityIcons
-                name={option.icon}
-                size={24}
-                color={Colors[colorScheme ?? "light"].text}
-                style={styles.icon}
-              />
-              <ThemedText>{option.label}</ThemedText>
+            <View style={styles.buttonContent}>
+              {typeof option.icon === "string" ? (
+                <MaterialCommunityIcons
+                  name={
+                    option.icon as keyof typeof MaterialCommunityIcons.glyphMap
+                  }
+                  size={24}
+                  color={Colors[colorScheme ?? "light"].text}
+                  style={styles.icon}
+                />
+              ) : (
+                <View style={styles.iconContainer}>{option.icon}</View>
+              )}
+              <ThemedText style={styles.label}>{option.label}</ThemedText>
             </View>
             <MaterialCommunityIcons
               name={

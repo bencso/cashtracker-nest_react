@@ -24,6 +24,8 @@ export default {
         appearance: "General",
         languages: {
             cta: "Language",
+            hu: "Hungarian",
+            en: "English"
         },
         colortheme: {
             cta: "Theme",
