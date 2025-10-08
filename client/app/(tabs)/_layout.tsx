@@ -13,12 +13,12 @@ export default function TabLayout() {
   if (Platform.OS === "ios") {
     return (
       <NativeTabs blurEffect="prominent" minimizeBehavior="onScrollDown" shadowColor={Colors[scheme ?? "light"].button}>
-        <NativeTabs.Trigger name="login">
-            <Icon selectedColor={Colors[scheme ?? "light"].button} sf="door.left.hand.open" drawable="custom_login_drawable" />
-            <Label hidden>{t("tabs.login")}</Label>
+        <NativeTabs.Trigger name="auth">
+          <Icon selectedColor={Colors[scheme ?? "light"].button} sf="door.left.hand.open" drawable="custom_login_drawable" />
+          <Label hidden>{t("tabs.login")}</Label>
         </NativeTabs.Trigger>
         <NativeTabs.Trigger name="settings">
-          <Icon selectedColor={Colors[scheme ?? "light"].button}  sf="gear" drawable="custom_setting_drawable" />
+          <Icon selectedColor={Colors[scheme ?? "light"].button} sf="gear" drawable="custom_setting_drawable" />
           <Label hidden>{t("tabs.settings")}</Label>
         </NativeTabs.Trigger>
       </NativeTabs>

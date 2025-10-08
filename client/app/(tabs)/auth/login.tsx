@@ -1,9 +1,9 @@
 import {
-  Pressable,
   StyleSheet,
   Text,
   TextInput,
-  View,
+  TouchableOpacity,
+  View
 } from "react-native";
 
 import { ThemedText } from "@/components/themed-text";
@@ -99,7 +99,7 @@ export default function LoginScreen() {
     <ThemedView style={styles.mainContainer}>
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title" style={{ textTransform: "uppercase" }}>
-          {t("auth.welcomeRegistration")}
+          {t("auth.welcome")}
         </ThemedText>
       </ThemedView>
       <ThemedView>
@@ -107,11 +107,10 @@ export default function LoginScreen() {
           <TextInput
             style={styles.input}
             ref={emailTextInput}
+            placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
             value={email}
             maxLength={150}
             autoComplete="email"
-            placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
-
             autoCorrect={false}
             keyboardType="email-address"
             textContentType="emailAddress"
@@ -125,6 +124,7 @@ export default function LoginScreen() {
             style={styles.input}
             value={password}
             maxLength={150}
+            placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
             autoComplete="current-password"
             autoCorrect={false}
             keyboardType="visible-password"
@@ -132,26 +132,25 @@ export default function LoginScreen() {
             textContentType="password"
             autoCapitalize="none"
             placeholder={t("forms.password")}
-            placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
             onChangeText={(text) => {
               setPassword(text);
             }}
           />
-          <Pressable onPress={onSubmit} style={styles.button}>
+          <TouchableOpacity onPress={onSubmit} style={styles.button}>
             <Text
               style={{
                 textTransform: "uppercase",
               }}
             >
-              {t("auth.registration")}
+              {t("auth.login")}
             </Text>
-          </Pressable>
+          </TouchableOpacity>
           <View style={styles.notHaveAccount}>
             <Text style={{ color: Colors[scheme ?? "light"].text }}>
-              {t("auth.haveAccount")}
+              {t("auth.noAccount")}
             </Text>
-            <Pressable onPress={() => {
-              router.replace("/(tabs)/login")
+            <TouchableOpacity onPress={() => {
+              router.replace("/(tabs)/auth/registration")
             }}>
               <Text
                 style={{
@@ -159,9 +158,9 @@ export default function LoginScreen() {
                   fontWeight: "bold",
                 }}
               >
-                {t("auth.loginCTA")}
+                {t("auth.register")}
               </Text>
-            </Pressable>
+            </TouchableOpacity>
           </View>
         </View>
       </ThemedView>

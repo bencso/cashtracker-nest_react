@@ -3,6 +3,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  TouchableOpacity,
   View
 } from "react-native";
 
@@ -14,7 +15,7 @@ import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-export default function LoginScreen() {
+export default function RegistrationScreen() {
   const { scheme } = useTheme();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -99,7 +100,7 @@ export default function LoginScreen() {
     <ThemedView style={styles.mainContainer}>
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title" style={{ textTransform: "uppercase" }}>
-          {t("auth.welcome")}
+          {t("auth.welcomeRegistration")}
         </ThemedText>
       </ThemedView>
       <ThemedView>
@@ -107,10 +108,11 @@ export default function LoginScreen() {
           <TextInput
             style={styles.input}
             ref={emailTextInput}
-            placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
             value={email}
             maxLength={150}
             autoComplete="email"
+            placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
+
             autoCorrect={false}
             keyboardType="email-address"
             textContentType="emailAddress"
@@ -124,7 +126,6 @@ export default function LoginScreen() {
             style={styles.input}
             value={password}
             maxLength={150}
-            placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
             autoComplete="current-password"
             autoCorrect={false}
             keyboardType="visible-password"
@@ -132,6 +133,7 @@ export default function LoginScreen() {
             textContentType="password"
             autoCapitalize="none"
             placeholder={t("forms.password")}
+            placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
             onChangeText={(text) => {
               setPassword(text);
             }}
@@ -142,27 +144,25 @@ export default function LoginScreen() {
                 textTransform: "uppercase",
               }}
             >
-              {t("auth.login")}
+              {t("auth.registration")}
             </Text>
           </Pressable>
           <View style={styles.notHaveAccount}>
             <Text style={{ color: Colors[scheme ?? "light"].text }}>
-              {t("auth.noAccount")}
+              {t("auth.haveAccount")}
             </Text>
-            <Pressable
-              onPress={() => {
-                router.replace("/registration");
-              }}
-            >
+            <TouchableOpacity onPress={() => {
+              router.replace("/(tabs)/auth/login")
+            }}>
               <Text
                 style={{
                   color: Colors[scheme ?? "light"].button,
                   fontWeight: "bold",
                 }}
               >
-                {t("auth.register")}
+                {t("auth.loginCTA")}
               </Text>
-            </Pressable>
+            </TouchableOpacity>
           </View>
         </View>
       </ThemedView>
