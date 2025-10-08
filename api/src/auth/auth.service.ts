@@ -35,6 +35,7 @@ export class AuthService {
     @Res() response: Response,
   ): Promise<Response<ReturnDataDto> | UnauthorizedException> {
     try {
+      console.log(body);
       const token = (await this.signIn(
         body.email,
         body.password,
@@ -55,6 +56,7 @@ export class AuthService {
           message: token.message,
           statusCode: token.statusCode || 404,
           data: token.data || null,
+          tokens: token,
         });
       } else {
         throw new UnauthorizedException({

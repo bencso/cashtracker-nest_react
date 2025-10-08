@@ -30,6 +30,7 @@ let AuthService = class AuthService {
     }
     async login(body, request, response) {
         try {
+            console.log(body);
             const token = (await this.signIn(body.email, body.password, request));
             console.log(token.tokens);
             if (token.tokens) {
@@ -43,6 +44,7 @@ let AuthService = class AuthService {
                     message: token.message,
                     statusCode: token.statusCode || 404,
                     data: token.data || null,
+                    tokens: token,
                 });
             }
             else {

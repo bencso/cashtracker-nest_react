@@ -21,7 +21,7 @@ async function bootstrap() {
     app.useGlobalPipes(new common_1.ValidationPipe());
     swagger_1.SwaggerModule.setup('api', app, documentFactory);
     app.use(cookieParser());
-    await app.listen(process.env.PORT ?? 3000);
+    await app.listen(3000, '0.0.0.0');
 }
 bootstrap();
 //# sourceMappingURL=main.js.map

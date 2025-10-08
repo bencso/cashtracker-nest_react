@@ -1,4 +1,5 @@
 import { Colors } from "@/constants/theme";
+import { AuthProvider } from "@/contexts/auth-context";
 import { LanguageProvider, useLanguage } from "@/contexts/language-context";
 import { ThemeProvider, useTheme } from "@/contexts/theme-context";
 import en from "@/translations/en";
@@ -88,10 +89,12 @@ function AppContent() {
 
 export default function RootLayout() {
   return (
+    <AuthProvider>
     <LanguageProvider>
       <ThemeProvider>
         <AppContent />
       </ThemeProvider>
     </LanguageProvider>
+    </AuthProvider>
   );
 }

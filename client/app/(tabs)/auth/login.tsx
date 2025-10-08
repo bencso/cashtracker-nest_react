@@ -9,6 +9,7 @@ import {
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { Colors } from "@/constants/theme";
+import { useAuth } from "@/contexts/auth-context";
 import { useTheme } from "@/contexts/theme-context";
 import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
@@ -23,6 +24,7 @@ export default function LoginScreen() {
   const emailTextInput = useRef<TextInput>(null);
   const { t } = useTranslation();
 
+  const { login } = useAuth();
   const styles = StyleSheet.create({
     titleContainer: {
       flexDirection: "column",
@@ -78,7 +80,15 @@ export default function LoginScreen() {
     setEmailCorrect(emailRegex.test(text));
   }
 
-  function onSubmit() { }
+  async function onSubmit() {
+    const result = await login({ email: email, password: password });
+    if (result?.success) {
+      router.replace("/(tabs)/settings");
+    } else {
+      // Hibakezelés
+      console.log("Login failed:", result?.error);
+    }
+  }
 
   useEffect(() => {
     if (emailTextInput.current) {
