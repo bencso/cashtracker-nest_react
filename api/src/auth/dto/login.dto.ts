@@ -11,14 +11,10 @@ export class BodyLogin {
 
 export class LoginDto extends ReturnDto {
   data?: ReturnData;
-  tokens?: TokenData;
+  refreshToken?: string;
+  accessToken?: string;
 }
 
 class ReturnData {
-  access: string;
-}
-
-class TokenData {
-  refresh: string;
   access: string;
 }

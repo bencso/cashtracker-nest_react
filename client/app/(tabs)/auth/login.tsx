@@ -1,4 +1,5 @@
 import {
+  Alert,
   StyleSheet,
   Text,
   TextInput,
@@ -82,11 +83,14 @@ export default function LoginScreen() {
 
   async function onSubmit() {
     const result = await login({ email: email, password: password });
-    if (result?.success) {
-      router.replace("/(tabs)/settings");
+    if (typeof result == "boolean" && result === true) {
+      //TODO: Megcsinálni a bejelentkezés után mi legyen!
+      router.push("/(tabs)/settings");
     } else {
-      // Hibakezelés
-      console.log("Login failed:", result?.error);
+      Alert.alert(
+        t("alerts.loginErrorTitle"),
+        t("alerts.loginErrorMessage")
+      );
     }
   }
 

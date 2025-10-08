@@ -35,17 +35,14 @@ export class AuthService {
     @Res() response: Response,
   ): Promise<Response<ReturnDataDto> | UnauthorizedException> {
     try {
-      console.log(body);
       const token = (await this.signIn(
         body.email,
         body.password,
         request,
       )) as LoginDto;
 
-      console.log(token.tokens);
-
-      if (token.tokens) {
-        response.cookie('refreshToken', token.tokens.refresh, {
+      if (token.refreshToken) {
+        response.cookie('refreshToken', token.refreshToken, {
           maxAge: Number(this.config.get<string>('JWT_REFRESH_TIME')),
           httpOnly: true,
           sameSite: 'none',
@@ -108,11 +105,8 @@ export class AuthService {
         return {
           message: ['Sikeres bejelentkezés'],
           statusCode: 200,
-          data: { access: accessToken },
-          tokens: {
-            refresh: refreshToken,
-            access: accessToken,
-          },
+          refreshToken: refreshToken,
+          accessToken: accessToken,
         };
       }
     } catch (err) {

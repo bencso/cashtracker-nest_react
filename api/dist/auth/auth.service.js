@@ -30,11 +30,9 @@ let AuthService = class AuthService {
     }
     async login(body, request, response) {
         try {
-            console.log(body);
             const token = (await this.signIn(body.email, body.password, request));
-            console.log(token.tokens);
-            if (token.tokens) {
-                response.cookie('refreshToken', token.tokens.refresh, {
+            if (token.refreshToken) {
+                response.cookie('refreshToken', token.refreshToken, {
                     maxAge: Number(this.config.get('JWT_REFRESH_TIME')),
                     httpOnly: true,
                     sameSite: 'none',
@@ -86,11 +84,8 @@ let AuthService = class AuthService {
                 return {
                     message: ['Sikeres bejelentkezés'],
                     statusCode: 200,
-                    data: { access: accessToken },
-                    tokens: {
-                        refresh: refreshToken,
-                        access: accessToken,
-                    },
+                    refreshToken: refreshToken,
+                    accessToken: accessToken,
                 };
             }
         }

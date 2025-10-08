@@ -33,5 +33,9 @@ export default {
             dark: "Dark",
             auto: "System default",
         },
+    },
+    alerts: {
+        loginErrorTitle: "An error occurred during login!",
+        loginErrorMessage:  "Please check your details and try again."
     }
 };

@@ -43,16 +43,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 password: password
             });
 
-            const tokens = response.data.data;
-            console.log(tokens);
-            await SecureStore.setItemAsync('accessToken', String(tokens.access));
-            await SecureStore.setItemAsync('refreshToken', String(tokens.refresh));
-            setAccessToken(String(tokens.access));
-            setRefreshToken(String(tokens.refresh));
+            const responseAPI = response.data;
+
+            const tokens = {
+                access: responseAPI.tokens?.accessToken,
+                refresh: responseAPI.tokens?.refreshToken
+            };
+
+            if (tokens && tokens.access && tokens.refresh) {
+                await SecureStore.setItemAsync('accessToken', String(tokens.access));
+                await SecureStore.setItemAsync('refreshToken', String(tokens.refresh));
+                setAccessToken(String(tokens.access));
+                setRefreshToken(String(tokens.refresh));
+            } else {
+                throw new Error('Hiányzó bejelentkezési token');
+            }
             return true;
         } catch (error) {
-            console.log(error);
-            return false;
+            return error;
         } finally {
             setIsLoading(false);
         }

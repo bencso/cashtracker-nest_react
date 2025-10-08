@@ -33,5 +33,9 @@ export default {
             dark: "Sötét",
             auto: "Rendszer alapértelmezett",
         },
+    },
+    alerts: {
+        loginErrorTitle: "Hiba történt a bejelentkezéssel!",
+        loginErrorMessage:  "Kérjük, ellenőrizze az adatait és próbálja újra."
     }
 };
