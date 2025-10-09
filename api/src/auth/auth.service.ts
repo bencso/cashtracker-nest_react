@@ -27,7 +27,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
     private readonly sessionsService: SessionService,
-  ) {}
+  ) { }
 
   async login(
     @Body() body: BodyLogin,
@@ -76,6 +76,7 @@ export class AuthService {
   ): Promise<LoginDto | UnauthorizedException> {
     try {
       const user = (await this.usersService.findUser(email)) as User;
+      console.log(password);
       const compared = await bcrypt.compare(password, user.password);
       if (!compared) {
         throw new UnauthorizedException({

@@ -7,19 +7,23 @@ import { t } from "i18next";
 import React from "react";
 import { Platform } from "react-native";
 
-export default function TabLayout() {
+export default function AuthenticatedLayout() {
   const { scheme } = useTheme();
 
   if (Platform.OS === "ios") {
     return (
-      <NativeTabs blurEffect="prominent" minimizeBehavior="onScrollDown" shadowColor={Colors[scheme ?? "light"].button}>
-        <NativeTabs.Trigger name="auth">
-          <Icon selectedColor={Colors[scheme ?? "light"].button} sf="door.left.hand.open" drawable="custom_login_drawable" />
-          <Label hidden>{t("tabs.login")}</Label>
-        </NativeTabs.Trigger>
-        <NativeTabs.Trigger name="settings">
-          <Icon selectedColor={Colors[scheme ?? "light"].button} sf="gear" drawable="custom_setting_drawable" />
-          <Label hidden>{t("tabs.settings")}</Label>
+      <NativeTabs
+        blurEffect="prominent"
+        minimizeBehavior="onScrollDown"
+        shadowColor={Colors[scheme ?? "light"].button}
+      >
+        <NativeTabs.Trigger name="index">
+          <Icon
+            selectedColor={Colors[scheme ?? "light"].button}
+            sf="door.left.hand.open"
+            drawable="custom_login_drawable"
+          />
+          <Label>{t("tabs.login")}</Label>
         </NativeTabs.Trigger>
       </NativeTabs>
     );
@@ -66,24 +70,15 @@ export default function TabLayout() {
         tabBarInactiveTintColor: Colors[scheme ?? "light"].icon,
         headerShown: false,
         tabBarButton: HapticTab,
-        animation: "shift"
+        animation: "shift",
       }}
     >
       <Tabs.Screen
-        name="login"
+        name="index"
         options={{
           title: t("tabs.login"),
           tabBarIcon: () => (
-            <Icon sf="paperplane.fill" drawable="custom_login_drawable" />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="settings.settings"
-        options={{
-          title: t("tabs.settings"),
-          tabBarIcon: () => (
-            <Icon sf="gear" drawable="custom_setting_drawable" />
+            <Icon sf="door.left.hand.open" drawable="custom_login_drawable" />
           ),
         }}
       />

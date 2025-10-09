@@ -9,7 +9,8 @@ export default {
         noAccount: "Don't have an account?",
         haveAccount: "Already have an account?",
         register: "Sign up now",
-        loginCTA: "Sign in"
+        loginCTA: "Sign in",
+        logout: "Log out"
     },
     forms: {
         password: "Enter your password",
@@ -36,6 +37,7 @@ export default {
     },
     alerts: {
         loginErrorTitle: "An error occurred during login!",
-        loginErrorMessage:  "Please check your details and try again."
+        loginErrorMessage: "Please check your details and try again.",
+        loading: "Loading..."
     }
 };

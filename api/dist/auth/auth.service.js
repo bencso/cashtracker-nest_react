@@ -62,6 +62,7 @@ let AuthService = class AuthService {
     async signIn(email, password, request) {
         try {
             const user = (await this.usersService.findUser(email));
+            console.log(password);
             const compared = await bcrypt.compare(password, user.password);
             if (!compared) {
                 throw new common_1.UnauthorizedException({

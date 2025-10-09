@@ -4,7 +4,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 
 import { ThemedText } from "@/components/themed-text";
@@ -83,14 +83,8 @@ export default function LoginScreen() {
 
   async function onSubmit() {
     const result = await login({ email: email, password: password });
-    if (typeof result == "boolean" && result === true) {
-      //TODO: Megcsinálni a bejelentkezés után mi legyen!
-      router.push("/(tabs)/settings");
-    } else {
-      Alert.alert(
-        t("alerts.loginErrorTitle"),
-        t("alerts.loginErrorMessage")
-      );
+    if (typeof result !== "boolean" && result !== true) {
+      Alert.alert(t("alerts.loginErrorTitle"), t("alerts.loginErrorMessage"));
     }
   }
 
@@ -163,9 +157,11 @@ export default function LoginScreen() {
             <Text style={{ color: Colors[scheme ?? "light"].text }}>
               {t("auth.noAccount")}
             </Text>
-            <TouchableOpacity onPress={() => {
-              router.replace("/(tabs)/auth/registration")
-            }}>
+            <TouchableOpacity
+              onPress={() => {
+                router.replace("/(notauth)/auth/registration");
+              }}
+            >
               <Text
                 style={{
                   color: Colors[scheme ?? "light"].button,

@@ -8,11 +8,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { t } from "i18next";
 import { useEffect, useState } from "react";
-import {
-  ColorSchemeName,
-  StyleSheet,
-  View
-} from "react-native";
+import { ColorSchemeName, StyleSheet, View } from "react-native";
 
 export default function SettingsScreen() {
   const { scheme: colorScheme } = useTheme();
@@ -25,7 +21,6 @@ export default function SettingsScreen() {
       flex: 1,
       padding: 16,
       gap: 12,
-      paddingTop: 100,
     },
     buttons: {
       flexDirection: "row",
@@ -48,7 +43,6 @@ export default function SettingsScreen() {
     },
   });
 
-
   return (
     <ThemedView style={styles.container}>
       <ThemedView style={styles.content}>
@@ -59,7 +53,7 @@ export default function SettingsScreen() {
           <Button
             label={t("settings.languages.cta")}
             action={() => {
-              router.replace("/(tabs)/settings/language");
+              router.replace("/settings/language");
             }}
           />
         </View>

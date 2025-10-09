@@ -5,20 +5,15 @@ import { HuFlag } from "@/components/ui/flags/hu";
 import { Colors } from "@/constants/theme";
 import { useLanguage } from "@/contexts/language-context";
 import { useTheme } from "@/contexts/theme-context";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { router, Stack } from "expo-router";
+import { Stack } from "expo-router";
 import { t } from "i18next";
 import { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, View } from "react-native";
 
 export default function LanguageScreen() {
   const { scheme } = useTheme();
-    const [selectedLanguage, setSelectedLanguage] = useState<string>();
-    const {Language, setLanguage} = useLanguage();
+  const [selectedLanguage, setSelectedLanguage] = useState<string>();
+  const { Language, setLanguage } = useLanguage();
 
   useEffect(() => {
     if (selectedLanguage !== Language) {
@@ -32,18 +27,15 @@ export default function LanguageScreen() {
     setLanguage(value ?? "en");
   };
 
-
   const styles = StyleSheet.create({
     container: {
       flex: 1,
       height: "100%",
-      marginTop: 30,
     },
     content: {
       flex: 1,
       padding: 16,
       gap: 12,
-      paddingTop: 100,
     },
     group: {
       flexDirection: "column",
@@ -63,26 +55,6 @@ export default function LanguageScreen() {
       <Stack.Screen
         options={{
           title: t("settings.languages.cta"),
-          headerLeft: () => {
-            return (
-              <TouchableOpacity
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  paddingLeft: 5,
-                }}
-                onPress={() => {
-                  router.replace("/(tabs)/settings");
-                }}
-              >
-                <MaterialCommunityIcons
-                  name="chevron-left"
-                  size={24}
-                  color={Colors[scheme ?? "light"].text}
-                />
-              </TouchableOpacity>
-            );
-          },
         }}
       />
       <ThemedView style={styles.content}>

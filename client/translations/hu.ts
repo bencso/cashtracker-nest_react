@@ -9,7 +9,8 @@ export default {
         noAccount: "Még nincs fiókja?",
         haveAccount: "Már van fiókja?",
         register: "Regisztráljon most",
-        loginCTA: "Bejelentkezés"
+        loginCTA: "Bejelentkezés",
+        logout: "Kijelentkezés"
     },
     forms: {
         password: "Írja be jelszavát",
@@ -36,6 +37,7 @@ export default {
     },
     alerts: {
         loginErrorTitle: "Hiba történt a bejelentkezéssel!",
-        loginErrorMessage:  "Kérjük, ellenőrizze az adatait és próbálja újra."
+        loginErrorMessage: "Kérjük, ellenőrizze az adatait és próbálja újra.",
+        loading: "Betöltés..."
     }
 };

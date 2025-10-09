@@ -7,10 +7,7 @@ export default function SettingsLayout() {
       <Stack.Screen
         name="language"
         options={{
-          headerShown: true,
-          title: "Nyelv",
-          headerTransparent: true,
-          headerBlurEffect: "regular",
+          headerShown: false,
         }}
       />
     </Stack>
