@@ -21,12 +21,15 @@ const config_1 = require("@nestjs/config");
 const bcrypt = require("bcrypt");
 const crypto_1 = require("crypto");
 const sessions_service_1 = require("../sessions/sessions.service");
+const sessions_entity_1 = require("../sessions/entities/sessions.entity");
+const typeorm_1 = require("typeorm");
 let AuthService = class AuthService {
-    constructor(usersService, jwtService, config, sessionsService) {
+    constructor(usersService, jwtService, config, sessionsService, dataSource) {
         this.usersService = usersService;
         this.jwtService = jwtService;
         this.config = config;
         this.sessionsService = sessionsService;
+        this.dataSource = dataSource;
     }
     async login(body, request, response) {
         try {
@@ -62,7 +65,6 @@ let AuthService = class AuthService {
     async signIn(email, password, request) {
         try {
             const user = (await this.usersService.findUser(email));
-            console.log(password);
             const compared = await bcrypt.compare(password, user.password);
             if (!compared) {
                 throw new common_1.UnauthorizedException({
@@ -175,15 +177,40 @@ let AuthService = class AuthService {
     }
     async logout(response, request) {
         try {
-            const token = request.cookies?.accessToken;
-            const userAgent = request.headers['user-agent'];
-            const userIp = request.ip;
-            const userData = {
-                user_agent: userAgent,
-                ip: userIp,
-            };
+            const token = request.headers.authorization.split(" ")[1];
             if (token) {
-                await this.sessionsService.deleteSessionInDb(token, userData);
+                let payload;
+                try {
+                    payload = await this.jwtService.verifyAsync(token, {
+                        secret: this.config.get('JWT_TOKEN_SECRET'),
+                        ignoreExpiration: true
+                    });
+                    console.log("PAYLOAD:" + JSON.stringify(payload));
+                    const user = await this.usersService.findUser(payload.email);
+                    const clientLogged = await this.dataSource
+                        .getRepository(sessions_entity_1.Sessions)
+                        .createQueryBuilder()
+                        .select()
+                        .where({
+                        user: user.id,
+                        user_data: payload.user_data,
+                    })
+                        .getCount();
+                    console.log("COUNT: " + clientLogged);
+                    if (clientLogged > 0)
+                        await this.dataSource
+                            .createQueryBuilder()
+                            .delete()
+                            .from(sessions_entity_1.Sessions)
+                            .where({
+                            user_data: payload.user_data,
+                            user: user.id,
+                        })
+                            .execute();
+                }
+                catch (error) {
+                    console.log("HIBAAAAA:" + error);
+                }
             }
             response.clearCookie('refreshToken', {
                 httpOnly: true,
@@ -241,6 +268,7 @@ exports.AuthService = AuthService = __decorate([
     __metadata("design:paramtypes", [users_service_1.UsersService,
         jwt_1.JwtService,
         config_1.ConfigService,
-        sessions_service_1.SessionService])
+        sessions_service_1.SessionService,
+        typeorm_1.DataSource])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

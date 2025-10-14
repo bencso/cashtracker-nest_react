@@ -1,10 +1,10 @@
 import {
-  Pressable,
+  Alert,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 
 import { ThemedText } from "@/components/themed-text";
@@ -12,11 +12,15 @@ import { ThemedView } from "@/components/themed-view";
 import { Colors } from "@/constants/theme";
 import { useTheme } from "@/contexts/theme-context";
 import { router } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/contexts/auth-context";
 
 export default function RegistrationScreen() {
+  const { registration } = useAuth();
   const { scheme } = useTheme();
+  const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [emailCorrect, setEmailCorrect] = useState<boolean>(false);
@@ -42,7 +46,6 @@ export default function RegistrationScreen() {
       paddingTop: 16,
       paddingBottom: 16,
       paddingStart: 10,
-      // TODO: Majd ezeket a szineket átalakítani megcsinálni :)
       borderWidth: 1,
       borderColor: Colors[scheme ?? "light"].neutral + "CC",
       borderRadius: 12,
@@ -79,7 +82,24 @@ export default function RegistrationScreen() {
     setEmailCorrect(emailRegex.test(text));
   }
 
-  function onSubmit() { }
+  async function onSubmit() {
+    const result = await registration({
+      username: username,
+      email: email,
+      password: password,
+    });
+    if (typeof result !== "boolean" && result !== true) {
+      let error = t("alerts.registrationErrorMessage");
+      if (result == "Ez az email cím már regisztrálva van!")
+        error = t("alerts.registrationEmailErrorMessage");
+      Alert.alert(t("alerts.registrationErrorTitle"), error);
+    } else {
+      Alert.alert(
+        t("alerts.registrationSuccessTitle"),
+        t("alerts.registrationSuccessMessage")
+      );
+    }
+  }
 
   useEffect(() => {
     if (emailTextInput.current) {
@@ -108,11 +128,26 @@ export default function RegistrationScreen() {
           <TextInput
             style={styles.input}
             ref={emailTextInput}
+            value={username}
+            maxLength={30}
+            autoComplete="nickname"
+            placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
+            autoCorrect={false}
+            keyboardType="default"
+            textContentType="nickname"
+            autoCapitalize="none"
+            onChangeText={(text) => {
+              setUsername(text);
+            }}
+            placeholder={t("forms.username")}
+          />
+          <TextInput
+            style={styles.input}
+            ref={emailTextInput}
             value={email}
-            maxLength={150}
+            maxLength={30}
             autoComplete="email"
             placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
-
             autoCorrect={false}
             keyboardType="email-address"
             textContentType="emailAddress"
@@ -125,7 +160,7 @@ export default function RegistrationScreen() {
           <TextInput
             style={styles.input}
             value={password}
-            maxLength={150}
+            maxLength={35}
             autoComplete="current-password"
             autoCorrect={false}
             keyboardType="visible-password"
@@ -138,7 +173,7 @@ export default function RegistrationScreen() {
               setPassword(text);
             }}
           />
-          <Pressable onPress={onSubmit} style={styles.button}>
+          <TouchableOpacity onPress={onSubmit} style={styles.button}>
             <Text
               style={{
                 textTransform: "uppercase",
@@ -146,14 +181,16 @@ export default function RegistrationScreen() {
             >
               {t("auth.registration")}
             </Text>
-          </Pressable>
+          </TouchableOpacity>
           <View style={styles.notHaveAccount}>
             <Text style={{ color: Colors[scheme ?? "light"].text }}>
               {t("auth.haveAccount")}
             </Text>
-            <TouchableOpacity onPress={() => {
-              router.replace("/(tabs)/auth/login")
-            }}>
+            <TouchableOpacity
+              onPress={() => {
+                router.replace("/(notauth)/auth/login");
+              }}
+            >
               <Text
                 style={{
                   color: Colors[scheme ?? "light"].button,

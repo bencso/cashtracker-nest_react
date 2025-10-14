@@ -14,7 +14,8 @@ export default {
     },
     forms: {
         password: "Írja be jelszavát",
-        email: "Írja be e-mail címét"
+        email: "Írja be e-mail címét",
+        username: "Írja be felhasználónevét",
     },
     tabs: {
         login: "Bejelentkezés",
@@ -36,8 +37,13 @@ export default {
         },
     },
     alerts: {
-        loginErrorTitle: "Hiba történt a bejelentkezéssel!",
+        loginErrorTitle: "Hiba történt a bejelentkezés során!",
         loginErrorMessage: "Kérjük, ellenőrizze az adatait és próbálja újra.",
+        registrationErrorTitle: "Hiba történt a regisztráció során!",
+        registrationErrorMessage: "Kérjük, ellenőrizze az adatait és próbálja újra.",
+        registrationEmailErrorMessage: "Ez az e-mail cím már használatban van!",
+        registrationSuccessTitle: "Sikeres regisztráció!",
+        registrationSuccessMessage: "Üdvözöljük az applikációnkban!",
         loading: "Betöltés..."
     }
 };

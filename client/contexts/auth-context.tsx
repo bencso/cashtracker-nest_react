@@ -13,6 +13,7 @@ type AuthContextProp = {
   login: any;
   logout: any;
   isAuthenticated: boolean;
+  registration: any;
 };
 
 const AuthContext = createContext<AuthContextProp | undefined>(undefined);
@@ -92,8 +93,48 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const registration = async ({
+    username,
+    email,
+    password,
+  }: {
+    username: string;
+    email: string;
+    password: string;
+  }) => {
+    try {
+      const response = await api.post("/auth/registration", {
+        email,
+        username,
+        password,
+      });
+      if (
+        response.data.statusCode === 200 ||
+        response.data.statusCode === 201
+      ) {
+        return await login({
+          email,
+          password,
+        });
+      } else {
+        const message = response.data?.message;
+        const error = Array.isArray(message) ? message[0] : String(message);
+        throw new Error(error);
+      }
+    } catch (error: any) {
+      setIsAuthenticated(false);
+      if (error?.response?.status === 400) {
+        return;
+      }
+      return error?.message ?? error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const logout = async () => {
     try {
+      await api.post("/auth/logout");
       await SecureStore.deleteItemAsync("accessToken");
       await SecureStore.deleteItemAsync("refreshToken");
       setAccessToken(null);
@@ -108,7 +149,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ isLoading, login, logout, isAuthenticated }}>
+    <AuthContext.Provider
+      value={{ isLoading, login, registration, logout, isAuthenticated }}
+    >
       {children}
     </AuthContext.Provider>
   );

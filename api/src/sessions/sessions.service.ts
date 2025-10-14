@@ -14,13 +14,14 @@ export class SessionService {
     private jwtService: JwtService,
     private config: ConfigService,
     private userService: UsersService,
-  ) {}
+  ) { }
   async createSessionInDb(
     sub: number,
     token: string,
     user_data: UserData,
     sessionId: string,
   ) {
+    //TODO: Nem irja át a régit
     const user = (await this.userService.findOne(sub)) as User;
     const isHave = await this.dataSource
       .getRepository(Sessions)

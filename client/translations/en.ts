@@ -14,7 +14,8 @@ export default {
     },
     forms: {
         password: "Enter your password",
-        email: "Enter your email address"
+        email: "Enter your email address",
+        username: "Enter your username"
     },
     tabs: {
         login: "Sign in",
@@ -38,6 +39,11 @@ export default {
     alerts: {
         loginErrorTitle: "An error occurred during login!",
         loginErrorMessage: "Please check your details and try again.",
+        registrationErrorTitle: "An error occurred during registration!",
+        registrationErrorMessage: "Please check your details and try again.",
+        registrationEmailErrorMessage: "This email address is already in use!",
+        registrationSuccessTitle: "Successful registration!",
+        registrationSuccessMessage: "Welcome to our app!",
         loading: "Loading..."
     }
 };

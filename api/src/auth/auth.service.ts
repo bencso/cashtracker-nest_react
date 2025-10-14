@@ -16,9 +16,10 @@ import { Request, Response } from 'express';
 import { ReturnUserDto } from 'src/users/dto/return.dto';
 import { randomUUID } from 'crypto';
 import { SessionService } from 'src/sessions/sessions.service';
-import { UserData } from 'src/sessions/entities/sessions.entity';
+import { Sessions, UserData } from 'src/sessions/entities/sessions.entity';
 import { User } from 'src/users/entities/user.entity';
 import { ReturnDataDto, ReturnDto } from 'src/dto/return.dto';
+import { DataSource } from 'typeorm';
 //TODO: Refaktorálni majd a logoutot, illetve átnézni a refresht
 @Injectable()
 export class AuthService {
@@ -27,6 +28,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
     private readonly sessionsService: SessionService,
+    private readonly dataSource: DataSource
   ) { }
 
   async login(
@@ -69,6 +71,7 @@ export class AuthService {
     }
   }
 
+
   async signIn(
     email: string,
     password: string,
@@ -76,7 +79,6 @@ export class AuthService {
   ): Promise<LoginDto | UnauthorizedException> {
     try {
       const user = (await this.usersService.findUser(email)) as User;
-      console.log(password);
       const compared = await bcrypt.compare(password, user.password);
       if (!compared) {
         throw new UnauthorizedException({
@@ -209,15 +211,44 @@ export class AuthService {
     request: Request,
   ): Promise<Response<ReturnDto>> {
     try {
-      const token = request.cookies?.accessToken;
-      const userAgent = request.headers['user-agent'];
-      const userIp = request.ip;
-      const userData = {
-        user_agent: userAgent,
-        ip: userIp,
-      };
+      //TODO: Ezt késöbb átnézni
+      const token = request.headers.authorization.split(" ")[1];
       if (token) {
-        await this.sessionsService.deleteSessionInDb(token, userData);
+        let payload;
+        try {
+          payload = await this.jwtService.verifyAsync(token, {
+            secret: this.config.get<string>('JWT_TOKEN_SECRET'),
+            ignoreExpiration: true
+          });
+          console.log("PAYLOAD:" + JSON.stringify(payload));
+          const user = await this.usersService.findUser(payload.email);
+          const clientLogged = await this.dataSource
+            .getRepository(Sessions)
+            .createQueryBuilder()
+            .select()
+            .where({
+              user: user.id,
+              user_data: payload.user_data,
+            })
+            .getCount();
+
+          console.log("COUNT: " + clientLogged);
+
+          if (clientLogged > 0)
+            await this.dataSource
+              .createQueryBuilder()
+              .delete()
+              .from(Sessions)
+              .where({
+                user_data: payload.user_data,
+                user: user.id,
+              })
+              .execute();
+
+        } catch (error) {
+          console.log("HIBAAAAA:" + error);
+        }
+
       }
       response.clearCookie('refreshToken', {
         httpOnly: true,
