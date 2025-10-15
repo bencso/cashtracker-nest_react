@@ -41,6 +41,9 @@ export default {
             auto: "System default",
         },
     },
+    main: {
+        title: "Welcome,"
+    },
     alerts: {
         authErrorTitle: "An error occurred during login!",
         authErrorMessage: "Please check your details and try again.",

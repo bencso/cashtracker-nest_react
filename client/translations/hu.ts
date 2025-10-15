@@ -41,6 +41,9 @@ export default {
             auto: "Rendszer alapértelmezett",
         },
     },
+    main: {
+        title: "Üdvözlünk,"
+    },
     alerts: {
         authErrorTitle: "Hiba történt a bejelentkezés során!",
         authErrorMessage: "Kérjük, ellenőrizze az adatait és próbálja újra.",

@@ -4,12 +4,7 @@ import { LanguageProvider, useLanguage } from "@/contexts/language-context";
 import { ThemeProvider, useTheme } from "@/contexts/theme-context";
 import en from "@/translations/en";
 import hu from "@/translations/hu";
-import {
-  useFonts,
-  ZalandoSans_400Regular,
-  ZalandoSans_700Bold,
-  ZalandoSans_900Black,
-} from "@expo-google-fonts/zalando-sans";
+import { useFonts } from "expo-font";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
   DarkTheme,
@@ -48,15 +43,15 @@ function AppContent() {
       lng: Language,
       fallbackLng: Language,
       interpolation: {
-        escapeValue: true,
+        escapeValue: false,
       },
     });
   }, [Language]);
 
   const [loaded, error] = useFonts({
-    ZalandoSans_400Regular,
-    ZalandoSans_700Bold,
-    ZalandoSans_900Black,
+    Regular: require("../assets/fonts/DMSans_36pt-Regular.ttf"),
+    Bold: require("../assets/fonts/DMSans_36pt-Bold.ttf"),
+    Black: require("../assets/fonts/DMSans_36pt-Black.ttf"),
   });
 
   useEffect(() => {
@@ -153,7 +148,9 @@ function AppContent() {
             }}
           />
         </Stack.Protected>
-        {/*TODO: Title nem jó mikor nyelvet változtatunk! */}
+        {
+          //TODO: Title nem jó mikor nyelvet változtatunk!
+        }
         <Stack.Screen
           name="settings"
           options={{

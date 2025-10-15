@@ -36,31 +36,27 @@ export function ThemedText({
 const styles = StyleSheet.create({
   default: {
     fontSize: 16,
-    lineHeight: 24,
-    fontFamily: "ZalandoSans_400Regular",
+    fontFamily: "Regular",
   },
   defaultSemiBold: {
     fontSize: 16,
-    lineHeight: 24,
     fontWeight: "600",
-    fontFamily: "ZalandoSans_700Bold",
+    fontFamily: "Bold",
   },
   title: {
     fontSize: 32,
     fontWeight: "bold",
-    lineHeight: 32,
-    fontFamily: "ZalandoSans_900Black",
-    letterSpacing: 1.3,
+    fontFamily: "Black",
   },
   subtitle: {
     fontSize: 20,
     fontWeight: "bold",
-    fontFamily: "ZalandoSans_400Regular",
+    fontFamily: "Regular",
   },
   link: {
     lineHeight: 30,
     fontSize: 16,
     color: "#0a7ea4",
-    fontFamily: "ZalandoSans_400Regular",
+    fontFamily: "Regular",
   },
 });

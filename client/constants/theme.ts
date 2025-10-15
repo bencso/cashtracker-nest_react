@@ -44,23 +44,27 @@ export const Colors = {
 
 export const Fonts = Platform.select({
   ios: {
-    regular: 'ZalandoSans_400Regular',
-    sans: 'ZalandoSans_400Regular',
-    serif: 'ZalandoSans_400Regular',
-    rounded: 'ZalandoSans_400Regular',
-    mono: 'ZalandoSans_400Regular'
+    regular: 'Regular',
+    bold: 'Bold',
+    sans: 'Regular',
+    serif: 'Regular',
+    rounded: 'Regular',
+    mono: 'Regular'
   },
   default: {
-    regular: 'ZalandoSans_400Regular',
-    sans: 'ZalandoSans_400Regular',
-    serif: 'ZalandoSans_400Regular',
-    rounded: 'ZalandoSans_400Regular',
-    mono: 'ZalandoSans_400Regular'
+    regular: 'Regular',
+    bold: 'Bold',
+    sans: 'Regular',
+    serif: 'Regular',
+    rounded: 'Regular',
+    mono: 'Regular'
   },
   web: {
-    sans: 'ZalandoSans_400Regular',
-    serif: 'ZalandoSans_400Regular',
-    rounded: 'ZalandoSans_400Regular',
-    mono: 'ZalandoSans_400Regular'
+    regular: 'Regular',
+    bold: 'Bold',
+    sans: 'Regular',
+    serif: 'Regular',
+    rounded: 'Regular',
+    mono: 'Regular'
   },
 });

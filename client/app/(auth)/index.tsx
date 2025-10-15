@@ -1,4 +1,5 @@
 import Button from "@/components/button";
+import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { Colors } from "@/constants/theme";
 import { useAuth } from "@/contexts/auth-context";
@@ -35,9 +36,8 @@ export default function SettingsScreen() {
     settingGroup: {
       gap: 12,
     },
-    settingGroupTitle: {
-      marginBottom: 8,
-      marginLeft: 4,
+    title: {
+      maxWidth: "50%",
     },
   });
 
@@ -45,6 +45,9 @@ export default function SettingsScreen() {
     <ThemedView style={styles.container}>
       <ThemedView style={styles.content}>
         <View style={styles.settingGroup}>
+          <ThemedText type="title" style={styles.title}>
+            {t("main.title")}
+          </ThemedText>
           <Button
             label={t("auth.logout")}
             action={async () => {
