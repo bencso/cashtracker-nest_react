@@ -10,6 +10,12 @@ export default function SettingsLayout() {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="passwordchange"
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 }

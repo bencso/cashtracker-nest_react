@@ -5,7 +5,6 @@ import { HuFlag } from "@/components/ui/flags/hu";
 import { Colors } from "@/constants/theme";
 import { useLanguage } from "@/contexts/language-context";
 import { useTheme } from "@/contexts/theme-context";
-import { Stack } from "expo-router";
 import { t } from "i18next";
 import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
@@ -52,11 +51,6 @@ export default function LanguageScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <Stack.Screen
-        options={{
-          title: t("settings.languages.cta"),
-        }}
-      />
       <ThemedView style={styles.content}>
         <View style={styles.group}>
           {/* Zászlók innen: https://www.untitledui.com/resources/flag-icons */}

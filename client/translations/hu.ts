@@ -23,13 +23,14 @@ export default {
         settings: "Beállítások"
     },
     settings: {
-        appearance: "Általános",
+        title: "Beállítások",
+        appearance: "Általános beállítások",
         authenticated: {
             title: "Felhasználói beállítások",
             password: "Jelszóváltoztatás",
         },
         languages: {
-            cta: "Nyelv",
+            cta: "Nyelv beállítások",
             hu: "Magyar",
             en: "Angol"
         },

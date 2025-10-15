@@ -23,6 +23,7 @@ export default {
         settings: "Settings"
     },
     settings: {
+        title: "Settings",
         appearance: "General",
         authenticated: {
             title: "User settings",

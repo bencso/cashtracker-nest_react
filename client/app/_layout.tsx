@@ -48,7 +48,7 @@ function AppContent() {
       lng: Language,
       fallbackLng: Language,
       interpolation: {
-        escapeValue: false,
+        escapeValue: true,
       },
     });
   }, [Language]);
@@ -71,6 +71,8 @@ function AppContent() {
     }
     hideSplash();
   }, [loaded, error, languageLoading, themeLoading]);
+
+  useEffect(() => {}, [Language]);
 
   if (!loaded && !error) {
     return (
@@ -151,11 +153,19 @@ function AppContent() {
             }}
           />
         </Stack.Protected>
+        {/*TODO: Title nem jó mikor nyelvet változtatunk! */}
         <Stack.Screen
           name="settings"
           options={{
             presentation: "modal",
-            title: t("tabs.settings"),
+            title:
+              pathname === "/settings"
+                ? t("settings.title")
+                : pathname === "/settings/language"
+                ? t("settings.languages.cta")
+                : pathname === "/settings/passwordchange"
+                ? t("settings.authenticated.password")
+                : t("settings.title"),
             headerLeft: () => {
               if (pathname === "/settings") return null;
               else

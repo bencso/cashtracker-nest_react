@@ -12,6 +12,7 @@ import { StyleSheet, View } from "react-native";
 export default function SettingsScreen() {
   const { scheme: colorScheme } = useTheme();
   const { isAuthenticated } = useAuth();
+
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -96,7 +97,7 @@ function AuthenticatedSection() {
       <Button
         label={t("settings.authenticated.password")}
         action={() => {
-          router.replace("/settings/language");
+          router.replace("/settings/passwordchange");
         }}
         icon="form-textbox-password"
       />

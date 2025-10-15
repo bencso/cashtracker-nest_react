@@ -105,8 +105,10 @@ export default function RegistrationScreen() {
     });
     if (typeof result !== "boolean" && result !== true) {
       let error = t("alerts.registrationErrorMessage");
+
       if (result === "Ez az email cím már regisztrálva van!")
         error = t("alerts.registrationEmailErrorMessage");
+
       Alert.alert(t("alerts.registrationErrorTitle"), error);
     } else {
       Alert.alert(
