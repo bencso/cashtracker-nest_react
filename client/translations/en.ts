@@ -24,6 +24,10 @@ export default {
     },
     settings: {
         appearance: "General",
+        authenticated: {
+            title: "User settings",
+            password: "Password change",
+        },
         languages: {
             cta: "Language",
             hu: "Hungarian",

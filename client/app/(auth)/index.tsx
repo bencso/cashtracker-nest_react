@@ -51,6 +51,7 @@ export default function SettingsScreen() {
               await logout();
             }}
             chevron={false}
+            icon="logout"
           />
         </View>
       </ThemedView>

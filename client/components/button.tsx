@@ -1,23 +1,21 @@
 import { Colors } from "@/constants/theme";
 import { useTheme } from "@/contexts/theme-context";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import {
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { ThemedText } from "./themed-text";
 
 export default function Button({
   label,
   action,
   chevron,
+  icon,
 }: {
   label: string;
   action: any;
   chevron?: boolean;
+  icon?: keyof typeof MaterialCommunityIcons.glyphMap;
 }) {
-    const {scheme} = useTheme();
+  const { scheme } = useTheme();
   const styles = StyleSheet.create({
     button: {
       flexDirection: "row",
@@ -44,12 +42,14 @@ export default function Button({
   return (
     <TouchableOpacity style={styles.button} onPress={action}>
       <View style={styles.buttonLeft}>
-        <MaterialCommunityIcons
-          name="translate"
-          size={24}
-          color={Colors[scheme ?? "light"].text}
-          style={styles.icon}
-        />
+        {icon && (
+          <MaterialCommunityIcons
+            name={icon}
+            size={24}
+            color={Colors[scheme ?? "light"].text}
+            style={styles.icon}
+          />
+        )}
         <ThemedText>{label}</ThemedText>
       </View>
       {chevron ?? (

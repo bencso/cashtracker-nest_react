@@ -24,6 +24,10 @@ export default {
     },
     settings: {
         appearance: "Általános",
+        authenticated: {
+            title: "Felhasználói beállítások",
+            password: "Jelszóváltoztatás",
+        },
         languages: {
             cta: "Nyelv",
             hu: "Magyar",
