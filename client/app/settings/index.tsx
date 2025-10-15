@@ -63,7 +63,6 @@ export default function SettingsScreen() {
   );
 }
 
-//TODO: Memória tárolásba megoldani
 function ThemeButton() {
   const [selectedTheme, setSelectedTheme] = useState<ColorSchemeName>();
   const { scheme, setScheme } = useTheme();

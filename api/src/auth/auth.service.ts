@@ -20,7 +20,7 @@ import { Sessions, UserData } from 'src/sessions/entities/sessions.entity';
 import { User } from 'src/users/entities/user.entity';
 import { ReturnDataDto, ReturnDto } from 'src/dto/return.dto';
 import { DataSource } from 'typeorm';
-//TODO: Refaktorálni majd a logoutot, illetve átnézni a refresht
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -211,7 +211,6 @@ export class AuthService {
     request: Request,
   ): Promise<Response<ReturnDto>> {
     try {
-      //TODO: Ezt késöbb átnézni
       const token = request.headers.authorization.split(" ")[1];
       if (token) {
         let payload;
@@ -220,7 +219,7 @@ export class AuthService {
             secret: this.config.get<string>('JWT_TOKEN_SECRET'),
             ignoreExpiration: true
           });
-          console.log("PAYLOAD:" + JSON.stringify(payload));
+          //? User DTO itt passwordos mennyire kockázatos lehet?!?
           const user = await this.usersService.findUser(payload.email);
           const clientLogged = await this.dataSource
             .getRepository(Sessions)
@@ -228,11 +227,9 @@ export class AuthService {
             .select()
             .where({
               user: user.id,
-              user_data: payload.user_data,
+              user_data: JSON.stringify(payload.user_data),
             })
             .getCount();
-
-          console.log("COUNT: " + clientLogged);
 
           if (clientLogged > 0)
             await this.dataSource
@@ -240,7 +237,7 @@ export class AuthService {
               .delete()
               .from(Sessions)
               .where({
-                user_data: payload.user_data,
+                user_data: JSON.stringify(payload.user_data),
                 user: user.id,
               })
               .execute();

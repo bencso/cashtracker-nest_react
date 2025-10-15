@@ -12,7 +12,6 @@ import { ThemedView } from "@/components/themed-view";
 import { Colors } from "@/constants/theme";
 import { useTheme } from "@/contexts/theme-context";
 import { router } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/auth-context";
@@ -27,6 +26,11 @@ export default function RegistrationScreen() {
   const emailRegex = new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/);
   const emailTextInput = useRef<TextInput>(null);
   const { t } = useTranslation();
+  const disabledButton =
+    !emailCorrect ||
+    password.length < 0 ||
+    email.length < 0 ||
+    username.length < 0;
 
   const styles = StyleSheet.create({
     titleContainer: {
@@ -67,6 +71,7 @@ export default function RegistrationScreen() {
       fontWeight: "bold",
       width: "100%",
       fontSize: 20,
+      opacity: !disabledButton ? 1 : 0.5,
     },
     notHaveAccount: {
       display: "flex",
@@ -83,6 +88,16 @@ export default function RegistrationScreen() {
   }
 
   async function onSubmit() {
+    if (email.length === 0 || password.length === 0 || username.length === 0) {
+      let message = t("alerts.authErrorMessage");
+
+      if (username.length === 0) message = t("alerts.authMissingUsername");
+      else if (email.length === 0) message = t("alerts.authMissingEmail");
+      else if (password.length === 0) message = t("alerts.authMissingPassword");
+
+      Alert.alert(t("alerts.authErrorMessage"), message);
+      return;
+    }
     const result = await registration({
       username: username,
       email: email,
@@ -90,7 +105,7 @@ export default function RegistrationScreen() {
     });
     if (typeof result !== "boolean" && result !== true) {
       let error = t("alerts.registrationErrorMessage");
-      if (result == "Ez az email cím már regisztrálva van!")
+      if (result === "Ez az email cím már regisztrálva van!")
         error = t("alerts.registrationEmailErrorMessage");
       Alert.alert(t("alerts.registrationErrorTitle"), error);
     } else {
@@ -173,7 +188,11 @@ export default function RegistrationScreen() {
               setPassword(text);
             }}
           />
-          <TouchableOpacity onPress={onSubmit} style={styles.button}>
+          <TouchableOpacity
+            disabled={disabledButton}
+            onPress={onSubmit}
+            style={styles.button}
+          >
             <Text
               style={{
                 textTransform: "uppercase",

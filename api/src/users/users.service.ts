@@ -46,7 +46,6 @@ export class UsersService {
       .getOne();
   }
 
-  //TODO: Logikát majd ide beirni, csak utána kell nézni hogy müködik pontosan ezaz ORM
   async findUser(email: string): Promise<ReturnUserPassDto> {
     const user = await this.dataSource
       .getRepository(User)

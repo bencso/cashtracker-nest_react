@@ -37,13 +37,16 @@ export default {
         },
     },
     alerts: {
-        loginErrorTitle: "Hiba történt a bejelentkezés során!",
-        loginErrorMessage: "Kérjük, ellenőrizze az adatait és próbálja újra.",
+        authErrorTitle: "Hiba történt a bejelentkezés során!",
+        authErrorMessage: "Kérjük, ellenőrizze az adatait és próbálja újra.",
         registrationErrorTitle: "Hiba történt a regisztráció során!",
         registrationErrorMessage: "Kérjük, ellenőrizze az adatait és próbálja újra.",
         registrationEmailErrorMessage: "Ez az e-mail cím már használatban van!",
         registrationSuccessTitle: "Sikeres regisztráció!",
         registrationSuccessMessage: "Üdvözöljük az applikációnkban!",
+        authMissingEmail: "Kérem adja meg az email címét!",
+        authMissingPassword: "Kérem adja meg a jelszavát!",
+        registrationMissingUsername: "Kérem adja meg a felhasználónevét!",
         loading: "Betöltés..."
     }
 };

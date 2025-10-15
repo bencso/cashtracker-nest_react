@@ -185,7 +185,6 @@ let AuthService = class AuthService {
                         secret: this.config.get('JWT_TOKEN_SECRET'),
                         ignoreExpiration: true
                     });
-                    console.log("PAYLOAD:" + JSON.stringify(payload));
                     const user = await this.usersService.findUser(payload.email);
                     const clientLogged = await this.dataSource
                         .getRepository(sessions_entity_1.Sessions)
@@ -193,17 +192,16 @@ let AuthService = class AuthService {
                         .select()
                         .where({
                         user: user.id,
-                        user_data: payload.user_data,
+                        user_data: JSON.stringify(payload.user_data),
                     })
                         .getCount();
-                    console.log("COUNT: " + clientLogged);
                     if (clientLogged > 0)
                         await this.dataSource
                             .createQueryBuilder()
                             .delete()
                             .from(sessions_entity_1.Sessions)
                             .where({
-                            user_data: payload.user_data,
+                            user_data: JSON.stringify(payload.user_data),
                             user: user.id,
                         })
                             .execute();

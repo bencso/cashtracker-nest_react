@@ -21,7 +21,6 @@ export class SessionService {
     user_data: UserData,
     sessionId: string,
   ) {
-    //TODO: Nem irja át a régit
     const user = (await this.userService.findOne(sub)) as User;
     const isHave = await this.dataSource
       .getRepository(Sessions)
@@ -31,25 +30,6 @@ export class SessionService {
         user: user,
       })
       .getCount();
-
-    const clientLogged = await this.dataSource
-      .getRepository(Sessions)
-      .createQueryBuilder()
-      .select()
-      .where({
-        user_data: JSON.stringify(user_data),
-      })
-      .getCount();
-
-    if (clientLogged > 0)
-      await this.dataSource
-        .createQueryBuilder()
-        .delete()
-        .from(Sessions)
-        .where({
-          user_data: JSON.stringify(user_data),
-        })
-        .execute();
 
     if (isHave > 0) {
       await this.dataSource

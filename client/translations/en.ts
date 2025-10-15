@@ -37,13 +37,16 @@ export default {
         },
     },
     alerts: {
-        loginErrorTitle: "An error occurred during login!",
-        loginErrorMessage: "Please check your details and try again.",
+        authErrorTitle: "An error occurred during login!",
+        authErrorMessage: "Please check your details and try again.",
         registrationErrorTitle: "An error occurred during registration!",
         registrationErrorMessage: "Please check your details and try again.",
         registrationEmailErrorMessage: "This email address is already in use!",
         registrationSuccessTitle: "Successful registration!",
         registrationSuccessMessage: "Welcome to our app!",
+        authMissingEmail: "Please enter your email address!",
+        authMissingPassword: "Please enter your password!",
+        authMissingUsername: "Please enter your username!",
         loading: "Loading..."
     }
 };

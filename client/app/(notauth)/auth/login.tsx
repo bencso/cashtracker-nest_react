@@ -24,6 +24,8 @@ export default function LoginScreen() {
   const emailRegex = new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/);
   const emailTextInput = useRef<TextInput>(null);
   const { t } = useTranslation();
+  const disabledButton =
+    !emailCorrect || password.length < 0 || email.length < 0;
 
   const { login } = useAuth();
   const styles = StyleSheet.create({
@@ -44,7 +46,6 @@ export default function LoginScreen() {
       paddingTop: 16,
       paddingBottom: 16,
       paddingStart: 10,
-      // TODO: Majd ezeket a szineket átalakítani megcsinálni :)
       borderWidth: 1,
       borderColor: Colors[scheme ?? "light"].neutral + "CC",
       borderRadius: 12,
@@ -66,6 +67,7 @@ export default function LoginScreen() {
       fontWeight: "bold",
       width: "100%",
       fontSize: 20,
+      opacity: !disabledButton ? 1 : 0.5,
     },
     notHaveAccount: {
       display: "flex",
@@ -82,10 +84,18 @@ export default function LoginScreen() {
   }
 
   async function onSubmit() {
-    const result = await login({ email: email, password: password });
-    if (typeof result !== "boolean" && result !== true) {
-      Alert.alert(t("alerts.loginErrorTitle"), t("alerts.loginErrorMessage"));
+    if (email.length === 0 || password.length === 0) {
+      let message = t("alerts.authErrorMessage");
+
+      if (email.length === 0) message = t("alerts.authMissingEmail");
+      else if (password.length === 0) message = t("alerts.authMissingPassword");
+
+      Alert.alert(t("alerts.authErrorMessage"), message);
+      return;
     }
+    const result = await login({ email: email, password: password });
+    if (typeof result !== "boolean" && result !== true)
+      Alert.alert(t("alerts.authErrorTitle"), t("alerts.authErrorMessage"));
   }
 
   useEffect(() => {
@@ -144,7 +154,11 @@ export default function LoginScreen() {
               setPassword(text);
             }}
           />
-          <TouchableOpacity onPress={onSubmit} style={styles.button}>
+          <TouchableOpacity
+            disabled={disabledButton}
+            onPress={onSubmit}
+            style={styles.button}
+          >
             <Text
               style={{
                 textTransform: "uppercase",

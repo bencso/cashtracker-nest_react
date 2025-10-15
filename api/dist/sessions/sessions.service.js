@@ -33,23 +33,6 @@ let SessionService = class SessionService {
             user: user,
         })
             .getCount();
-        const clientLogged = await this.dataSource
-            .getRepository(sessions_entity_1.Sessions)
-            .createQueryBuilder()
-            .select()
-            .where({
-            user_data: JSON.stringify(user_data),
-        })
-            .getCount();
-        if (clientLogged > 0)
-            await this.dataSource
-                .createQueryBuilder()
-                .delete()
-                .from(sessions_entity_1.Sessions)
-                .where({
-                user_data: JSON.stringify(user_data),
-            })
-                .execute();
         if (isHave > 0) {
             await this.dataSource
                 .createQueryBuilder()

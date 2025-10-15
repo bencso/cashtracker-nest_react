@@ -36,6 +36,7 @@ function AppContent() {
   const { scheme, isLoading: themeLoading } = useTheme();
   const { isLoading: languageLoading, Language } = useLanguage();
   const { isAuthenticated } = useAuth();
+  const pathname = usePathname();
 
   useEffect(() => {
     // eslint-disable-next-line import/no-named-as-default-member
@@ -156,7 +157,7 @@ function AppContent() {
             presentation: "modal",
             title: t("tabs.settings"),
             headerLeft: () => {
-              if (usePathname() === "/settings") return null;
+              if (pathname === "/settings") return null;
               else
                 return (
                   <TouchableOpacity
