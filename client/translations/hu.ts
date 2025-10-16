@@ -20,7 +20,10 @@ export default {
     tabs: {
         login: "Bejelentkezés",
         home: "Főoldal",
-        settings: "Beállítások"
+        settings: "Beállítások",
+        inventory:{
+            create: "Szkennelés"
+        }
     },
     settings: {
         title: "Beállítások",

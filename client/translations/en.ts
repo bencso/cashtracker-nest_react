@@ -20,7 +20,10 @@ export default {
     tabs: {
         login: "Sign in",
         home: "Home",
-        settings: "Settings"
+        settings: "Settings",
+        inventory: {
+            create: "Scanning"
+        }
     },
     settings: {
         title: "Settings",

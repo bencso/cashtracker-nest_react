@@ -20,10 +20,18 @@ export default function AuthenticatedLayout() {
         <NativeTabs.Trigger name="index">
           <Icon
             selectedColor={Colors[scheme ?? "light"].button}
-            sf="door.left.hand.open"
+            sf="house"
             drawable="custom_login_drawable"
           />
-          <Label>{t("tabs.login")}</Label>
+          <Label>{t("tabs.home")}</Label>
+        </NativeTabs.Trigger>
+        <NativeTabs.Trigger name="inventory">
+          <Icon
+            selectedColor={Colors[scheme ?? "light"].button}
+            sf="scanner"
+            drawable="custom_login_drawable"
+          />
+          <Label>{t("tabs.inventory.create")}</Label>
         </NativeTabs.Trigger>
       </NativeTabs>
     );
@@ -79,6 +87,15 @@ export default function AuthenticatedLayout() {
           title: t("tabs.login"),
           tabBarIcon: () => (
             <Icon sf="door.left.hand.open" drawable="custom_login_drawable" />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="inventory"
+        options={{
+          title: t("tabs.inventory.create"),
+          tabBarIcon: () => (
+            <Icon sf="scanner" drawable="custom_login_drawable" />
           ),
         }}
       />
