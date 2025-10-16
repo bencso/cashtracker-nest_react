@@ -7,6 +7,8 @@ export declare class LoginDto extends ReturnDto {
     data?: ReturnData;
     refreshToken?: string;
     accessToken?: string;
+    username?: string;
+    email?: string;
 }
 declare class ReturnData {
     access: string;

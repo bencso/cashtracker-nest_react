@@ -33,19 +33,23 @@ let AuthService = class AuthService {
     }
     async login(body, request, response) {
         try {
-            const token = (await this.signIn(body.email, body.password, request));
-            if (token.refreshToken) {
-                response.cookie('refreshToken', token.refreshToken, {
+            const returnData = (await this.signIn(body.email, body.password, request));
+            if (returnData.refreshToken) {
+                response.cookie('refreshToken', returnData.refreshToken, {
                     maxAge: Number(this.config.get('JWT_REFRESH_TIME')),
                     httpOnly: true,
                     sameSite: 'none',
                     secure: true,
                 });
                 return response.json({
-                    message: token.message,
-                    statusCode: token.statusCode || 404,
-                    data: token.data || null,
-                    tokens: token,
+                    message: returnData.message,
+                    statusCode: returnData.statusCode || 404,
+                    data: returnData.data || null,
+                    tokens: returnData,
+                    userData: {
+                        email: returnData.email,
+                        username: returnData.username,
+                    }
                 });
             }
             else {
@@ -114,11 +118,14 @@ let AuthService = class AuthService {
                 const accessToken = await this.createAccessToken(user, user_data);
                 const refreshToken = await this.createRefreshToken(payload);
                 await this.sessionsService.createSessionInDb(payload.sub, refreshToken, user_data, payload.tokenId);
+                console.log(JSON.stringify(user));
                 return {
                     message: ['Sikeres bejelentkezés'],
                     statusCode: 200,
                     refreshToken: refreshToken,
                     accessToken: accessToken,
+                    username: user.username,
+                    email: email
                 };
             }
         }

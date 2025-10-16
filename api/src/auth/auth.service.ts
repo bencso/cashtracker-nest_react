@@ -38,14 +38,14 @@ export class AuthService {
     @Res() response: Response,
   ): Promise<Response<ReturnDataDto> | UnauthorizedException> {
     try {
-      const token = (await this.signIn(
+      const returnData = (await this.signIn(
         body.email,
         body.password,
         request,
       )) as LoginDto;
 
-      if (token.refreshToken) {
-        response.cookie('refreshToken', token.refreshToken, {
+      if (returnData.refreshToken) {
+        response.cookie('refreshToken', returnData.refreshToken, {
           maxAge: Number(this.config.get<string>('JWT_REFRESH_TIME')),
           httpOnly: true,
           sameSite: 'none',
@@ -53,10 +53,14 @@ export class AuthService {
         });
 
         return response.json({
-          message: token.message,
-          statusCode: token.statusCode || 404,
-          data: token.data || null,
-          tokens: token,
+          message: returnData.message,
+          statusCode: returnData.statusCode || 404,
+          data: returnData.data || null,
+          tokens: returnData,
+          userData: {
+            email: returnData.email,
+            username: returnData.username,
+          }
         });
       } else {
         throw new UnauthorizedException({
@@ -139,11 +143,15 @@ export class AuthService {
           payload.tokenId,
         );
 
+        console.log(JSON.stringify(user));
+
         return {
           message: ['Sikeres bejelentkezés'],
           statusCode: 200,
           refreshToken: refreshToken,
           accessToken: accessToken,
+          username: user.username,
+          email: email
         };
       }
     } catch (err) {

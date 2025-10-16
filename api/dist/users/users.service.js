@@ -90,6 +90,7 @@ let UsersService = class UsersService {
         return {
             id: user.id,
             email: user.email,
+            username: user.username,
             password: user.password,
         };
     }

@@ -7,9 +7,9 @@ import { useTheme } from "@/contexts/theme-context";
 import { t } from "i18next";
 import { StyleSheet, View } from "react-native";
 
-export default function SettingsScreen() {
+export default function AuthenticatedScreen() {
   const { scheme: colorScheme } = useTheme();
-  const { logout } = useAuth();
+  const { logout, userData } = useAuth();
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -46,7 +46,7 @@ export default function SettingsScreen() {
       <ThemedView style={styles.content}>
         <View style={styles.settingGroup}>
           <ThemedText type="title" style={styles.title}>
-            {t("main.title")}
+            {t("main.title")} {userData && userData.username}
           </ThemedText>
           <Button
             label={t("auth.logout")}

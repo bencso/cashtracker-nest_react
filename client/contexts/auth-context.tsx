@@ -8,12 +8,18 @@ import React, {
   useState,
 } from "react";
 
+interface UserData {
+  username: string;
+  email: string;
+}
+
 type AuthContextProp = {
   isLoading: boolean;
   login: any;
   logout: any;
   isAuthenticated: boolean;
   registration: any;
+  userData: UserData | null;
 };
 
 const AuthContext = createContext<AuthContextProp | undefined>(undefined);
@@ -23,6 +29,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
     const loadAuth = async () => {
@@ -79,6 +86,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (tokens && tokens.access && tokens.refresh) {
         await SecureStore.setItemAsync("accessToken", String(tokens.access));
         await SecureStore.setItemAsync("refreshToken", String(tokens.refresh));
+        console.log(responseAPI.userData);
+        setUserData(responseAPI.userData);
         setAccessToken(String(tokens.access));
         setRefreshToken(String(tokens.refresh));
         setIsAuthenticated(true);
@@ -139,6 +148,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await SecureStore.deleteItemAsync("refreshToken");
       setAccessToken(null);
       setRefreshToken(null);
+      setUserData(null);
       setIsAuthenticated(false);
     } catch (error) {
       console.log(error);
@@ -150,7 +160,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ isLoading, login, registration, logout, isAuthenticated }}
+      value={{
+        isLoading,
+        login,
+        registration,
+        userData,
+        logout,
+        isAuthenticated,
+      }}
     >
       {children}
     </AuthContext.Provider>
