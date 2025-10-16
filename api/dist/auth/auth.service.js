@@ -49,7 +49,7 @@ let AuthService = class AuthService {
                     userData: {
                         email: returnData.email,
                         username: returnData.username,
-                    }
+                    },
                 });
             }
             else {
@@ -75,7 +75,7 @@ let AuthService = class AuthService {
             await this.usersService
                 .updatePassword({
                 password: hashedPassword,
-                userId: user.id
+                userId: user.id,
             })
                 .then((value) => {
                 if (value.statusCode !== 200)
@@ -124,7 +124,7 @@ let AuthService = class AuthService {
                     refreshToken: refreshToken,
                     accessToken: accessToken,
                     username: user.username,
-                    email: email
+                    email: email,
                 };
             }
         }
@@ -213,13 +213,13 @@ let AuthService = class AuthService {
     }
     async logout(response, request) {
         try {
-            const token = request.headers.authorization.split(" ")[1];
+            const token = request.headers.authorization.split(' ')[1];
             if (token) {
                 let payload;
                 try {
                     payload = await this.jwtService.verifyAsync(token, {
                         secret: this.config.get('JWT_TOKEN_SECRET'),
-                        ignoreExpiration: true
+                        ignoreExpiration: true,
                     });
                     const user = await this.usersService.findUser(payload.email);
                     const clientLogged = await this.dataSource

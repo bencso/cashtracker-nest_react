@@ -12,7 +12,7 @@ import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { BodyRegistration, RegistrationDto } from './dto/registration.dto';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
-import e, { Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { ReturnUserDto } from 'src/users/dto/return.dto';
 import { randomUUID } from 'crypto';
 import { SessionService } from 'src/sessions/sessions.service';
@@ -29,8 +29,8 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
     private readonly sessionsService: SessionService,
-    private readonly dataSource: DataSource
-  ) { }
+    private readonly dataSource: DataSource,
+  ) {}
 
   async login(
     @Body() body: BodyLogin,
@@ -60,7 +60,7 @@ export class AuthService {
           userData: {
             email: returnData.email,
             username: returnData.username,
-          }
+          },
         });
       } else {
         throw new UnauthorizedException({
@@ -78,7 +78,7 @@ export class AuthService {
 
   async passwordChange(
     body: PasswordChangeBody,
-    request: Request
+    request: Request,
   ): Promise<ReturnDto | UnauthorizedException> {
     const salt = 10;
     try {
@@ -88,7 +88,7 @@ export class AuthService {
       await this.usersService
         .updatePassword({
           password: hashedPassword,
-          userId: user.id
+          userId: user.id,
         })
         .then((value) => {
           if (value.statusCode !== 200)
@@ -149,7 +149,7 @@ export class AuthService {
           refreshToken: refreshToken,
           accessToken: accessToken,
           username: user.username,
-          email: email
+          email: email,
         };
       }
     } catch (err) {
@@ -251,13 +251,13 @@ export class AuthService {
     request: Request,
   ): Promise<Response<ReturnDto>> {
     try {
-      const token = request.headers.authorization.split(" ")[1];
+      const token = request.headers.authorization.split(' ')[1];
       if (token) {
         let payload;
         try {
           payload = await this.jwtService.verifyAsync(token, {
             secret: this.config.get<string>('JWT_TOKEN_SECRET'),
-            ignoreExpiration: true
+            ignoreExpiration: true,
           });
           //? User DTO itt passwordos mennyire kockázatos lehet?!?
           const user = await this.usersService.findUser(payload.email);
@@ -281,11 +281,9 @@ export class AuthService {
                 user: user.id,
               })
               .execute();
-
         } catch (error) {
           console.error(error);
         }
-
       }
       response.clearCookie('refreshToken', {
         httpOnly: true,
