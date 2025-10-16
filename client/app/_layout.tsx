@@ -14,9 +14,9 @@ import {
 import { router, Stack, usePathname } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import i18next, { t } from "i18next";
-import { useEffect } from "react";
-import { initReactI18next } from "react-i18next";
+import i18next from "i18next";
+import { useEffect, useState } from "react";
+import { initReactI18next, useTranslation } from "react-i18next";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import "react-native-reanimated";
 import { SplashScreenController } from "./splash";
@@ -25,26 +25,31 @@ export const unstable_settings = {
   anchor: "(tabs)",
 };
 
+i18next.use(initReactI18next).init({
+  resources: {
+    hu: { translation: hu },
+    en: { translation: en },
+  },
+  lng: "en",
+  fallbackLng: "en",
+  interpolation: {
+    escapeValue: false,
+  },
+});
+
 SplashScreen.preventAutoHideAsync();
 
 function AppContent() {
   const { scheme, isLoading: themeLoading } = useTheme();
   const { isLoading: languageLoading, Language } = useLanguage();
   const { isAuthenticated } = useAuth();
+  const { t } = useTranslation();
   const pathname = usePathname();
 
   useEffect(() => {
     // eslint-disable-next-line import/no-named-as-default-member
-    i18next.use(initReactI18next).init({
-      resources: {
-        hu: { translation: hu },
-        en: { translation: en },
-      },
-      lng: Language,
-      fallbackLng: Language,
-      interpolation: {
-        escapeValue: false,
-      },
+    i18next.changeLanguage(Language).catch((e) => {
+      console.warn("i18next changeLanguage error:", e);
     });
   }, [Language]);
 
@@ -65,6 +70,12 @@ function AppContent() {
       }
     }
     hideSplash();
+  }, [loaded, error, languageLoading, themeLoading]);
+
+  useEffect(() => {
+    if (loaded && !error && !languageLoading && !themeLoading) {
+      SplashScreen.hideAsync();
+    }
   }, [loaded, error, languageLoading, themeLoading]);
 
   useEffect(() => {}, [Language]);

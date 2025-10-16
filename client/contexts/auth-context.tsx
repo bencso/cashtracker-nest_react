@@ -1,4 +1,5 @@
 import api from "@/interceptor/api";
+import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import React, {
   createContext,
@@ -43,7 +44,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setIsAuthenticated(isValidSession);
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
         setIsAuthenticated(false);
       } finally {
         setIsLoading(false);
@@ -86,7 +87,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (tokens && tokens.access && tokens.refresh) {
         await SecureStore.setItemAsync("accessToken", String(tokens.access));
         await SecureStore.setItemAsync("refreshToken", String(tokens.refresh));
-        console.log(responseAPI.userData);
         setUserData(responseAPI.userData);
         setAccessToken(String(tokens.access));
         setRefreshToken(String(tokens.refresh));
@@ -150,8 +150,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setRefreshToken(null);
       setUserData(null);
       setIsAuthenticated(false);
+      router.replace("/(notauth)/auth/login");
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setIsAuthenticated(false);
     } finally {
       setIsLoading(false);

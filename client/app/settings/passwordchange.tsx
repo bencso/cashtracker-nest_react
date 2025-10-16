@@ -4,9 +4,10 @@ import { useAuth } from "@/contexts/auth-context";
 import { useTheme } from "@/contexts/theme-context";
 import { router } from "expo-router";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet } from "react-native";
 
-export default function LanguageScreen() {
+export default function PasswordChangeScreen() {
   const { scheme } = useTheme();
   const { isAuthenticated } = useAuth();
 

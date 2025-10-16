@@ -24,7 +24,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
           await i18next.changeLanguage(value);
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
       } finally {
         setIsLoading(false);
       }
@@ -39,7 +39,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       // eslint-disable-next-line import/no-named-as-default-member
       await i18next.changeLanguage(newLanguage);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

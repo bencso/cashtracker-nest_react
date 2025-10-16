@@ -4,12 +4,13 @@ import { ThemedView } from "@/components/themed-view";
 import { Colors } from "@/constants/theme";
 import { useAuth } from "@/contexts/auth-context";
 import { useTheme } from "@/contexts/theme-context";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 
 export default function AuthenticatedScreen() {
   const { scheme: colorScheme } = useTheme();
-  const { logout, userData } = useAuth();
+  const { userData } = useAuth();
+  const { t } = useTranslation();
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -37,7 +38,7 @@ export default function AuthenticatedScreen() {
       gap: 12,
     },
     title: {
-      maxWidth: "50%",
+      maxWidth: "80%",
     },
   });
 
@@ -48,14 +49,6 @@ export default function AuthenticatedScreen() {
           <ThemedText type="title" style={styles.title}>
             {t("main.title")} {userData && userData.username}
           </ThemedText>
-          <Button
-            label={t("auth.logout")}
-            action={async () => {
-              await logout();
-            }}
-            chevron={false}
-            icon="logout"
-          />
         </View>
       </ThemedView>
     </ThemedView>

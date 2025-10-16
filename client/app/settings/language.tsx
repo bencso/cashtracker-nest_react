@@ -5,14 +5,15 @@ import { HuFlag } from "@/components/ui/flags/hu";
 import { Colors } from "@/constants/theme";
 import { useLanguage } from "@/contexts/language-context";
 import { useTheme } from "@/contexts/theme-context";
-import { t } from "i18next";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 
 export default function LanguageScreen() {
   const { scheme } = useTheme();
   const [selectedLanguage, setSelectedLanguage] = useState<string>();
   const { Language, setLanguage } = useLanguage();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (selectedLanguage !== Language) {

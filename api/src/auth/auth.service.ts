@@ -143,8 +143,6 @@ export class AuthService {
           payload.tokenId,
         );
 
-        console.log(JSON.stringify(user));
-
         return {
           message: ['Sikeres bejelentkezés'],
           statusCode: 200,
@@ -285,7 +283,7 @@ export class AuthService {
               .execute();
 
         } catch (error) {
-          console.log("HIBAAAAA:" + error);
+          console.error(error);
         }
 
       }

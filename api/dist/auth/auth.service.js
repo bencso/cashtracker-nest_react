@@ -118,7 +118,6 @@ let AuthService = class AuthService {
                 const accessToken = await this.createAccessToken(user, user_data);
                 const refreshToken = await this.createRefreshToken(payload);
                 await this.sessionsService.createSessionInDb(payload.sub, refreshToken, user_data, payload.tokenId);
-                console.log(JSON.stringify(user));
                 return {
                     message: ['Sikeres bejelentkezés'],
                     statusCode: 200,
@@ -244,7 +243,7 @@ let AuthService = class AuthService {
                             .execute();
                 }
                 catch (error) {
-                    console.log("HIBAAAAA:" + error);
+                    console.error(error);
                 }
             }
             response.clearCookie('refreshToken', {

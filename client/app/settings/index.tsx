@@ -6,12 +6,13 @@ import { Colors } from "@/constants/theme";
 import { useAuth } from "@/contexts/auth-context";
 import { useTheme } from "@/contexts/theme-context";
 import { router } from "expo-router";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 
 export default function SettingsScreen() {
   const { scheme: colorScheme } = useTheme();
   const { isAuthenticated } = useAuth();
+  const { t } = useTranslation();
 
   const styles = StyleSheet.create({
     container: {
@@ -68,6 +69,9 @@ export default function SettingsScreen() {
 
 function AuthenticatedSection() {
   const { scheme: colorScheme } = useTheme();
+  const { logout } = useAuth();
+  const { t } = useTranslation();
+
   const styles = StyleSheet.create({
     buttons: {
       flexDirection: "row",
@@ -100,6 +104,14 @@ function AuthenticatedSection() {
           router.replace("/settings/passwordchange");
         }}
         icon="form-textbox-password"
+      />
+      <Button
+        label={t("auth.logout")}
+        action={async () => {
+          await logout();
+        }}
+        chevron={false}
+        icon="logout"
       />
     </ThemedView>
   );
