@@ -9,11 +9,13 @@ export default function Button({
   action,
   chevron,
   icon,
+  coloredIcon
 }: {
   label: string;
   action: any;
   chevron?: boolean;
   icon?: keyof typeof MaterialCommunityIcons.glyphMap;
+  coloredIcon?: boolean;
 }) {
   const { scheme } = useTheme();
   const styles = StyleSheet.create({
@@ -46,11 +48,11 @@ export default function Button({
           <MaterialCommunityIcons
             name={icon}
             size={24}
-            color={Colors[scheme ?? "light"].text}
-            style={styles.icon}
+            color={coloredIcon ? Colors[scheme ?? "light"].button : Colors[scheme ?? "light"].text}
+            style={label ? styles.icon : null}
           />
         )}
-        <ThemedText>{label}</ThemedText>
+      {label &&(  <ThemedText>{label}</ThemedText>)}
       </View>
       {chevron ?? (
         <MaterialCommunityIcons

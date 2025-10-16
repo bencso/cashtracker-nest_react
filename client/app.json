@@ -7,7 +7,11 @@
     "icon": "./assets/images/icon.png",
     "scheme": "client",
     "extra": {
-      "apiUrl": "http://192.168.0.27:3000"
+      "apiUrl": "http://192.168.0.18:3000",
+      "router": {},
+      "eas": {
+        "projectId": "995035e0-4091-4bb5-9b6b-b23a273eebe3"
+      }
     },
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -20,7 +24,8 @@
       "supportsTablet": true,
       "infoPlist": {
         "NSCameraUsageDescription": "$(PRODUCT_NAME) needs access to your Camera.",
-        "NSMicrophoneUsageDescription": "$(PRODUCT_NAME) needs access to your Microphone."
+        "NSMicrophoneUsageDescription": "$(PRODUCT_NAME) needs access to your Microphone.",
+        "ITSAppUsesNonExemptEncryption": false
       },
       "bundleIdentifier": "com.anonymous.client"
     },
@@ -72,20 +77,17 @@
         }
       ],
       [
-        "react-native-vision-camera",
-        {
-          "cameraPermissionText": "$(PRODUCT_NAME) needs access to your Camera.",
-          "enableCodeScanner": true
-        }
-      ],
-      [
         "expo-secure-store",
         {
           "configureAndroidBackup": true,
           "faceIDPermission": "Allow $(PRODUCT_NAME) to access your Face ID biometric data."
         }
-      ],
-      "react-native-vision-camera"
+      ], [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
