@@ -12,6 +12,13 @@ export declare class UsersService {
     }>;
     findAll(): string;
     findOne(id: number): Promise<User>;
+    updatePassword({ password, userId }: {
+        password: string;
+        userId: number;
+    }): Promise<{
+        message: any;
+        statusCode: any;
+    }>;
     findUser(email: string): Promise<ReturnUserPassDto>;
     update(id: number, updateUserDto: UpdateUserDto): string;
     remove(id: number): string;

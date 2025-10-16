@@ -46,6 +46,30 @@ export class UsersService {
       .getOne();
   }
 
+  async updatePassword({ password, userId }: { password: string; userId: number }) {
+    try {
+      await this.dataSource
+        .createQueryBuilder()
+        .update(User)
+        .set([
+          {
+            password: password,
+          },
+        ])
+        .where("user = :id", { id: userId })
+        .execute();
+      return {
+        message: [`Sikeres jelszóváltoztatás!`],
+        statusCode: 200,
+      };
+    } catch (err) {
+      return {
+        message: err.message,
+        statusCode: err.statusCode,
+      };
+    }
+  }
+
   async findUser(email: string): Promise<ReturnUserPassDto> {
     const user = await this.dataSource
       .getRepository(User)

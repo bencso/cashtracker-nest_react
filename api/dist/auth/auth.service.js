@@ -62,6 +62,36 @@ let AuthService = class AuthService {
             });
         }
     }
+    async passwordChange(body, request) {
+        const salt = 10;
+        try {
+            const hashedPassword = await bcrypt.hash(body.password, salt);
+            const userEmail = (await this.validation(request)).data.email;
+            const user = await this.usersService.findUser(userEmail);
+            await this.usersService
+                .updatePassword({
+                password: hashedPassword,
+                userId: user.id
+            })
+                .then((value) => {
+                if (value.statusCode !== 200)
+                    throw new common_1.ConflictException(value.message);
+            })
+                .catch((error) => {
+                throw new common_1.ConflictException(error);
+            });
+            return {
+                message: ['Sikeres jelszóváltoztatás!'],
+                statusCode: 200,
+            };
+        }
+        catch (error) {
+            return {
+                message: [error.message],
+                statusCode: error.status,
+            };
+        }
+    }
     async signIn(email, password, request) {
         try {
             const user = (await this.usersService.findUser(email));

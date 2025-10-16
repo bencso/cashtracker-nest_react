@@ -12,7 +12,7 @@ import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { BodyRegistration, RegistrationDto } from './dto/registration.dto';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
-import { Request, Response } from 'express';
+import e, { Request, Response } from 'express';
 import { ReturnUserDto } from 'src/users/dto/return.dto';
 import { randomUUID } from 'crypto';
 import { SessionService } from 'src/sessions/sessions.service';
@@ -20,6 +20,7 @@ import { Sessions, UserData } from 'src/sessions/entities/sessions.entity';
 import { User } from 'src/users/entities/user.entity';
 import { ReturnDataDto, ReturnDto } from 'src/dto/return.dto';
 import { DataSource } from 'typeorm';
+import { PasswordChangeBody } from './dto/password.dto';
 
 @Injectable()
 export class AuthService {
@@ -71,6 +72,39 @@ export class AuthService {
     }
   }
 
+  async passwordChange(
+    body: PasswordChangeBody,
+    request: Request
+  ): Promise<ReturnDto | UnauthorizedException> {
+    const salt = 10;
+    try {
+      const hashedPassword = await bcrypt.hash(body.password, salt);
+      const userEmail = (await this.validation(request)).data.email;
+      const user = await this.usersService.findUser(userEmail);
+      await this.usersService
+        .updatePassword({
+          password: hashedPassword,
+          userId: user.id
+        })
+        .then((value) => {
+          if (value.statusCode !== 200)
+            throw new ConflictException(value.message);
+        })
+        .catch((error) => {
+          throw new ConflictException(error);
+        });
+
+      return {
+        message: ['Sikeres jelszóváltoztatás!'],
+        statusCode: 200,
+      };
+    } catch (error) {
+      return {
+        message: [error.message],
+        statusCode: error.status,
+      };
+    }
+  }
 
   async signIn(
     email: string,

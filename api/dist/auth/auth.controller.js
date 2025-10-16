@@ -18,6 +18,7 @@ const auth_service_1 = require("./auth.service");
 const login_dto_1 = require("./dto/login.dto");
 const registration_dto_1 = require("./dto/registration.dto");
 const swagger_1 = require("@nestjs/swagger");
+const password_dto_1 = require("./dto/password.dto");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
@@ -27,6 +28,9 @@ let AuthController = class AuthController {
     }
     registration(body) {
         return this.authService.registration(body);
+    }
+    passwordChange(body, request) {
+        return this.authService.passwordChange(body, request);
     }
     refreshToken(request) {
         return this.authService.refresh(request);
@@ -57,6 +61,16 @@ __decorate([
     __metadata("design:paramtypes", [registration_dto_1.BodyRegistration]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "registration", null);
+__decorate([
+    (0, common_1.Post)('passwordChange'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [password_dto_1.PasswordChangeBody, Object]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "passwordChange", null);
 __decorate([
     (0, common_1.Post)('refresh'),
     (0, swagger_1.ApiBearerAuth)(),
