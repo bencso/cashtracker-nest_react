@@ -6,8 +6,8 @@ import { useAuth } from "@/contexts/auth-context";
 import { useTheme } from "@/contexts/theme-context";
 import { useTranslation } from "react-i18next";
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import { StyleSheet } from "react-native";
 import { useState } from "react";
+import { Linking,StyleSheet } from "react-native";
 
 export default function CameraScreen() {
   const { scheme: colorScheme } = useTheme();
@@ -18,21 +18,7 @@ export default function CameraScreen() {
   const [torch, setTorch] = useState<boolean>(false);
   const [barcode, setBarcode] = useState<string | null>(null);
 
-  if (!permission) {
-    return <ThemedView>
-    </ThemedView>;
-  }
-
-  if (!permission.granted) {
-    return (
-      <ThemedView>
-        <ThemedText>Nem rendelkezik megfelelő kamera engedéllyel.</ThemedText>
-        <Button action={requestPermission} icon="camera" label="Engedélykérés" />
-      </ThemedView>
-    );
-  }
-
-  const styles = StyleSheet.create({
+    const styles = StyleSheet.create({
     container: {
       flex: 1,
       height: "100%",
@@ -40,8 +26,8 @@ export default function CameraScreen() {
     content: {
       flex: 1,
       padding: 16,
-      gap: 12,
-      paddingTop: 100,
+      gap: 24,
+      paddingTop: 120,
     },
     buttons: {
       flexDirection: "row",
@@ -132,6 +118,36 @@ export default function CameraScreen() {
       backgroundColor: "transparent",
     },
   });
+
+  if (!permission) {
+    return  <ThemedView style={styles.content}>
+      </ThemedView>
+  }
+
+  if (!permission.granted) {
+    if (permission.canAskAgain) {
+      return (
+        <ThemedView style={styles.content}>
+          <ThemedText type="title">{t("camera.permission.title")}</ThemedText>
+          <ThemedText>{t("camera.permission.description")}</ThemedText>
+          <Button action={requestPermission} icon="camera" label={t("camera.permission.cta")} />
+        </ThemedView>
+      );
+    }
+
+    return (
+      <ThemedView style={styles.content}>
+          <ThemedText type="title">{t("camera.permission.title")}</ThemedText>
+        <Button
+          action={() => {
+            Linking.openSettings();
+          }}
+          icon="cog"
+          label={t("camera.permission.openSettings")}
+        />
+      </ThemedView>
+    );
+  }
 
   return <ThemedView style={styles.container}>
 

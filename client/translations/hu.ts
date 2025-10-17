@@ -59,5 +59,13 @@ export default {
         authMissingPassword: "Kérem adja meg a jelszavát!",
         registrationMissingUsername: "Kérem adja meg a felhasználónevét!",
         loading: "Betöltés..."
+    },
+    camera: {
+        permission: {
+            title: "A kamera használatához engedély szükséges.",
+            description: 'Engedélyezze a kamera hozzáférést az alkalmazás beállításaiban, vagy nyomja meg az "Engedélykérés" gombot.',
+            cta: "Engedélykérés",
+            openSettings: "Beállítások megnyitása"
+        }
     }
 };
