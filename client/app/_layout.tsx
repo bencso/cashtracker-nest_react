@@ -15,7 +15,7 @@ import { router, Stack, usePathname } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import i18next from "i18next";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { initReactI18next, useTranslation } from "react-i18next";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import "react-native-reanimated";
@@ -25,6 +25,7 @@ export const unstable_settings = {
   anchor: "(tabs)",
 };
 
+// eslint-disable-next-line import/no-named-as-default-member
 i18next.use(initReactI18next).init({
   resources: {
     hu: { translation: hu },

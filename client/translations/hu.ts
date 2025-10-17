@@ -66,6 +66,14 @@ export default {
             description: 'Engedélyezze a kamera hozzáférést az alkalmazás beállításaiban, vagy nyomja meg az "Engedélykérés" gombot.',
             cta: "Engedélykérés",
             openSettings: "Beállítások megnyitása"
+        },
+        inventory: {
+            title: "Termék felvitele a spejzba",
+            code: "Termékkód",
+            name: "Terméknév",
+            rescan: "Újraszkennelés",
+            wrongscan: "Hibás felvitel javítása",
+            customadd: "Termék felvitele a rendszerbe"
         }
     }
 };

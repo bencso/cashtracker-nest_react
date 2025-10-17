@@ -28,7 +28,7 @@ export default function AuthenticatedLayout() {
         <NativeTabs.Trigger name="inventory">
           <Icon
             selectedColor={Colors[scheme ?? "light"].button}
-            sf="scanner"
+            sf="barcode"
             drawable="custom_login_drawable"
           />
           <Label>{t("tabs.inventory.create")}</Label>

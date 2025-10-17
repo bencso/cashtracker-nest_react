@@ -60,12 +60,20 @@ export default {
         authMissingUsername: "Please enter your username!",
         loading: "Loading..."
     },
-        camera: {
+    camera: {
         permission: {
             title: "Permission is required to use the camera.",
             description: 'Enable camera access in the app settings or press the "Request Permission" button.',
             cta: "Request permission",
             openSettings: "Open settings"
+        },
+        inventory: {
+            title: "Add product to pantry",
+            code: "Product code",
+            name: "Product name",
+            rescan: "Rescan",
+            wrongscan: "Correct incorrect entry",
+            customadd: "Add product to the system"
         }
     }
 };
