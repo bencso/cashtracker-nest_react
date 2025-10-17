@@ -1,8 +1,0 @@
-services:
-  api:
-    build: .
-    container_name: nest-api
-    ports:
-      - "3000:3000"
-    env_file:
-      - .env

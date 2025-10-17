@@ -17,7 +17,7 @@ import { UsersController } from './users/users.controller';
       envFilePath: '.env',
     }),
     TypeOrmModule.forRoot({
-      type: 'mysql',
+      type: 'postgres',
       host: process.env.DB_HOST,
       port: +process.env.DB_PORT,
       username: process.env.DB_USERNAME,
