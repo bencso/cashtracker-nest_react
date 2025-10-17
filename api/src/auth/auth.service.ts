@@ -86,7 +86,6 @@ export class AuthService {
         await this.sessionsService.validateAccessToken(request);
       const hashedPassword = await bcrypt.hash(body.password, salt);
       const user = await this.usersService.findUser(requestUser.email);
-      console.log(user);
       await this.usersService
         .updatePassword({
           password: hashedPassword,
