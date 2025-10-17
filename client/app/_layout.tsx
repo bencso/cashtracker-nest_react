@@ -160,9 +160,6 @@ function AppContent() {
             }}
           />
         </Stack.Protected>
-        {
-          //TODO: Title nem jó mikor nyelvet változtatunk!
-        }
         <Stack.Screen
           name="settings"
           options={{

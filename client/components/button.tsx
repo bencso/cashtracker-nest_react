@@ -1,6 +1,6 @@
 import { Colors } from "@/constants/theme";
 import { useTheme } from "@/contexts/theme-context";
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { ThemedText } from "./themed-text";
 
@@ -28,7 +28,7 @@ export default function Button({
       borderWidth: 1,
       borderColor: Colors[scheme ?? "light"].neutral + "CC",
       borderRadius: 12,
-      backgroundColor: `${Colors[scheme ?? "light"].primary}10`,
+      backgroundColor: `${Colors[scheme ?? "light"].background}`,
     },
     buttonLeft: {
       flexDirection: "row",
@@ -48,20 +48,26 @@ export default function Button({
           <MaterialCommunityIcons
             name={icon}
             size={24}
-            color={coloredIcon ? Colors[scheme ?? "light"].button : Colors[scheme ?? "light"].text}
+            color={Colors[scheme ?? "light"].text}
             style={label ? styles.icon : null}
           />
         )}
-      {label &&(  <ThemedText>{label}</ThemedText>)}
+        {label && (<ThemedText style={
+          {
+            color:Colors[scheme ?? "light"].text
+          }
+        }>{label}</ThemedText>)}
       </View>
-      {chevron ?? (
-        <MaterialCommunityIcons
-          name="chevron-right"
-          size={24}
-          color={Colors[scheme ?? "light"].text}
-          style={styles.chevron}
-        />
-      )}
-    </TouchableOpacity>
+      {
+        chevron ?? (
+          <MaterialCommunityIcons
+            name="chevron-right"
+            size={24}
+            color={coloredIcon ? Colors[scheme ?? "light"].button : Colors[scheme ?? "light"].text}
+            style={styles.chevron}
+          />
+        )
+      }
+    </TouchableOpacity >
   );
 }

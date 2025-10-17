@@ -73,7 +73,8 @@ export default {
             name: "Terméknév",
             rescan: "Újraszkennelés",
             wrongscan: "Hibás felvitel javítása",
-            customadd: "Termék felvitele a rendszerbe"
+            customadd: "Termék felvitele a rendszerbe",
+            custominput: "Kézzel bevitel"
         }
     }
 };

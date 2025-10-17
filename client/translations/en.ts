@@ -73,7 +73,8 @@ export default {
             name: "Product name",
             rescan: "Rescan",
             wrongscan: "Correct incorrect entry",
-            customadd: "Add product to the system"
+            customadd: "Add product to the system",
+            custominput: "Manual input"
         }
     }
 };

@@ -53,9 +53,12 @@ export default function CameraScreen() {
       zIndex: 20,
       bottom: 120,
       alignSelf: "center",
-      backgroundColor: Colors[colorScheme ?? "light"].text,
+      display: "flex",
+      flexDirection: "row",
+      gap: 12,
+      backgroundColor: "transparent",
       borderRadius: 16,
-      padding: 8,
+      borderColor: Colors[colorScheme ?? "light"].text,
       shadowColor: "#000",
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.2,
@@ -111,7 +114,7 @@ export default function CameraScreen() {
       bottom: '40%',
       left: '12%',
       right: '12%',
-      borderColor: Colors[colorScheme ?? "light"].text,
+      borderColor: Colors[colorScheme ?? "light"].background,
       borderWidth: 2,
       backgroundColor: "transparent",
     },
@@ -176,7 +179,8 @@ export default function CameraScreen() {
   return <ThemedView style={styles.container}>
 
     {
-      (product === null) && <ThemedView style={styles.content}>
+      (product === null) && 
+      <ThemedView style={styles.content}>
         <CameraView enableTorch={torch} style={styles.camera} barcodeScannerSettings={{
           barcodeTypes: ["ean13", "ean8"],
         }} videoQuality="480p" mute autofocus="on" facing={facing} onBarcodeScanned={({ data }) => {
@@ -194,6 +198,9 @@ export default function CameraScreen() {
         </ThemedView>
         <ThemedView style={styles.cameraTools}>
           <Button icon={torch ? "flashlight" : "flashlight-off"} label="" chevron={false} coloredIcon action={() => {
+            setTorch(!torch);
+          }} />
+          <Button icon={"pen"} label={t("camera.inventory.custominput")} chevron={false} coloredIcon action={() => {
             setTorch(!torch);
           }} />
         </ThemedView>
