@@ -1,13 +1,12 @@
 import { Body, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { ReturnUserPassDto } from './dto/return.dto';
 import { DataSource } from 'typeorm';
 
 @Injectable()
 export class UsersService {
-  constructor(public dataSource: DataSource) { }
+  constructor(public dataSource: DataSource) {}
   async create(@Body() createUserDto: CreateUserDto) {
     try {
       await this.dataSource
@@ -46,17 +45,19 @@ export class UsersService {
       .getOne();
   }
 
-  async updatePassword({ password, userId }: { password: string; userId: number }) {
+  async updatePassword({
+    password,
+    userId,
+  }: {
+    password: string;
+    userId: number;
+  }) {
     try {
       await this.dataSource
         .createQueryBuilder()
         .update(User)
-        .set([
-          {
-            password: password,
-          },
-        ])
-        .where("user = :id", { id: userId })
+        .set({ password: password })
+        .where('id = :id', { id: userId })
         .execute();
       return {
         message: [`Sikeres jelszóváltoztatás!`],
@@ -84,7 +85,7 @@ export class UsersService {
     };
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  update(id: number) {
     return `This action updates a #${id} user`;
   }
 

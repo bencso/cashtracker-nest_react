@@ -14,10 +14,9 @@ import { BodyLogin } from './dto/login.dto';
 import { BodyRegistration } from './dto/registration.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { PasswordChangeBody } from './dto/password.dto';
-import { AuthGuard } from './auth.guard';
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
   @Post('login')
   @HttpCode(HttpStatus.OK)

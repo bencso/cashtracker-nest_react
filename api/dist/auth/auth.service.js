@@ -69,9 +69,10 @@ let AuthService = class AuthService {
     async passwordChange(body, request) {
         const salt = 10;
         try {
+            const requestUser = await this.sessionsService.validateAccessToken(request);
             const hashedPassword = await bcrypt.hash(body.password, salt);
-            const userEmail = (await this.validation(request)).data.email;
-            const user = await this.usersService.findUser(userEmail);
+            const user = await this.usersService.findUser(requestUser.email);
+            console.log(user);
             await this.usersService
                 .updatePassword({
                 password: hashedPassword,

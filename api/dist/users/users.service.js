@@ -57,17 +57,13 @@ let UsersService = class UsersService {
             .where('user.id = :id', { id: id })
             .getOne();
     }
-    async updatePassword({ password, userId }) {
+    async updatePassword({ password, userId, }) {
         try {
             await this.dataSource
                 .createQueryBuilder()
                 .update(user_entity_1.User)
-                .set([
-                {
-                    password: password,
-                },
-            ])
-                .where("user = :id", { id: userId })
+                .set({ password: password })
+                .where('id = :id', { id: userId })
                 .execute();
             return {
                 message: [`Sikeres jelszóváltoztatás!`],
@@ -94,7 +90,7 @@ let UsersService = class UsersService {
             password: user.password,
         };
     }
-    update(id, updateUserDto) {
+    update(id) {
         return `This action updates a #${id} user`;
     }
     remove(id) {

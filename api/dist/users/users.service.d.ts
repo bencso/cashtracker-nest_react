@@ -1,5 +1,4 @@
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { ReturnUserPassDto } from './dto/return.dto';
 import { DataSource } from 'typeorm';
@@ -12,7 +11,7 @@ export declare class UsersService {
     }>;
     findAll(): string;
     findOne(id: number): Promise<User>;
-    updatePassword({ password, userId }: {
+    updatePassword({ password, userId, }: {
         password: string;
         userId: number;
     }): Promise<{
@@ -20,6 +19,6 @@ export declare class UsersService {
         statusCode: any;
     }>;
     findUser(email: string): Promise<ReturnUserPassDto>;
-    update(id: number, updateUserDto: UpdateUserDto): string;
+    update(id: number): string;
     remove(id: number): string;
 }
