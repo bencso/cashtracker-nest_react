@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 from tqdm import tqdm
 
 JSONL_FILE = "Open Food Facts Products.jsonl"
-POSTGRES_URI = "postgresql://root:inu87IUB8nuinr9RO4@localhost:3307/fridzsi"
+POSTGRES_URI = "postgresql://root:password@localhost:3307/fridzsi"
 TABLE_NAME = "pantry"
 BATCH_SIZE = 10000 
 
