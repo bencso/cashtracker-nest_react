@@ -64,7 +64,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       if (!accessToken || !refreshToken) return false;
       const response = await api.get("/auth/valid");
-      console.log(response.data.data.user);
       return response.status === 200;
     } catch {
       await logout();

@@ -28,9 +28,7 @@ export default function CameraScreen() {
 
   async function getProductByCode() {
     try {
-      console.log("Sikeres: " + product?.code);
       await api.get("/item/" + product?.code).then((data) => {
-        console.log(data);
       })
     }
     catch {
@@ -206,7 +204,6 @@ export default function CameraScreen() {
         <CameraView enableTorch={torch} style={styles.camera} barcodeScannerSettings={{
           barcodeTypes: ["ean13", "ean8"],
         }} videoQuality="720p" mute autofocus="on" facing={facing} onBarcodeScanned={({ data }) => {
-          console.log(data);
           setProduct({
             code: data,
             inDb: false

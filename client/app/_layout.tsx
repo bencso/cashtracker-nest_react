@@ -43,7 +43,7 @@ SplashScreen.preventAutoHideAsync();
 function AppContent() {
   const { scheme, isLoading: themeLoading } = useTheme();
   const { isLoading: languageLoading, Language } = useLanguage();
-  const { isAuthenticated,  loadAuth, isLoading: authLoading} = useAuth();
+  const { isAuthenticated, loadAuth, isLoading: authLoading } = useAuth();
   const { t } = useTranslation();
   const pathname = usePathname();
 
@@ -62,7 +62,7 @@ function AppContent() {
 
   useEffect(() => {
     async function hideSplash() {
-      if (loaded || error || languageLoading || themeLoading || authLoading) {
+      if (loaded && !error && !languageLoading && !themeLoading && !authLoading) {
         try {
           await SplashScreen.hideAsync();
         } catch (e) {
@@ -73,9 +73,13 @@ function AppContent() {
     hideSplash();
   }, [loaded, error, languageLoading, themeLoading, authLoading]);
 
-  useEffect(() => { 
-    loadAuth();
-  }, [loadAuth]);
+  useEffect(() => {
+    async function fetchAuth() {
+      await loadAuth();
+    }
+    fetchAuth();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authLoading]);
 
   if (!loaded && !error) {
     return (
