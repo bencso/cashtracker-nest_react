@@ -19,7 +19,11 @@ __decorate([
     __metadata("design:type", String)
 ], PantryFixed.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'text' }),
+    (0, typeorm_1.Column)({ type: 'text', nullable: true }),
+    __metadata("design:type", String)
+], PantryFixed.prototype, "code", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'text', nullable: true }),
     __metadata("design:type", String)
 ], PantryFixed.prototype, "product_name", void 0);
 __decorate([

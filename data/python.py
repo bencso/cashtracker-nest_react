@@ -2,15 +2,22 @@ import json
 import pandas as pd
 from sqlalchemy import create_engine
 from tqdm import tqdm
+from dotenv import load_dotenv
+import os
+from pathlib import Path
+
+dotenv_path = Path(__file__).resolve().parent.parent / 'api' / '.env'
+load_dotenv(dotenv_path)
 
 JSONL_FILE = "Open Food Facts Products.jsonl"
-POSTGRES_URI = "postgresql://root:password@localhost:3307/fridzsi"
+POSTGRES_URI = f"postgresql://{os.getenv("DB_USERNAME")}:{os.getenv("DB_PASSWORD")}@localhost:{os.getenv("DB_PORT")}/{os.getenv("DB_NAME")}"
 TABLE_NAME = "pantry"
-BATCH_SIZE = 10000 
+BATCH_SIZE = 10000
 
 engine = create_engine(POSTGRES_URI)
 
 FIELDS = [
+    "code",
     "product_name",
     "brands",
     "quantity",
@@ -32,8 +39,9 @@ batch = []
 with open(JSONL_FILE, "r", encoding="utf-8") as f:
     for line in tqdm(f, desc="Importing JSONL"):
         doc = json.loads(line)
-        if doc.get("product_name"):
+        if doc.get("product_name") and doc.get("code"):
             row = {
+                "code": doc.get("code"),
                 "product_name": doc.get("product_name"),
                 "brands": doc.get("brands"),
                 "quantity": doc.get("quantity"),

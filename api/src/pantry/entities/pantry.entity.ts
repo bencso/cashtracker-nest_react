@@ -5,7 +5,10 @@ export class PantryFixed {
   @PrimaryGeneratedColumn('increment')
   id: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'text', nullable: true })
+  code: string;
+
+  @Column({ type: 'text', nullable: true })
   product_name: string;
 
   @Column({

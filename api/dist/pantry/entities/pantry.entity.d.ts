@@ -1,5 +1,6 @@
 export declare class PantryFixed {
     id: string;
+    code: string;
     product_name: string;
     brands: string;
     quantity: string;
