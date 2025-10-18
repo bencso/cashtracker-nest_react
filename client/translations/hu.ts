@@ -6,14 +6,17 @@ export default {
         registration: "Regisztráció",
         email: "E-mail-cím",
         password: "Jelszó",
+        repassword: "Jelszó újra",
         noAccount: "Még nincs fiókja?",
         haveAccount: "Már van fiókja?",
         register: "Regisztráljon most",
         loginCTA: "Bejelentkezés",
-        logout: "Kijelentkezés"
+        logout: "Kijelentkezés",
+        passwordChange: "Jelszóváltoztatás"
     },
     forms: {
         password: "Írja be jelszavát",
+        repassword: "Írja be újra jelszavát",
         email: "Írja be e-mail címét",
         username: "Írja be felhasználónevét",
     },
@@ -57,8 +60,10 @@ export default {
         registrationSuccessMessage: "Üdvözöljük az applikációnkban!",
         authMissingEmail: "Kérem adja meg az email címét!",
         authMissingPassword: "Kérem adja meg a jelszavát!",
+        authMissingRePassword: "Kérem adja meg újra jelszavát!",
         registrationMissingUsername: "Kérem adja meg a felhasználónevét!",
-        loading: "Betöltés..."
+        loading: "Betöltés...",
+        authPasswordMatchMessage: "A megadott jelszavak nem egyeznek!"
     },
     camera: {
         permission: {
