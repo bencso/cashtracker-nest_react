@@ -78,7 +78,7 @@ function AppContent() {
       await loadAuth();
     }
     fetchAuth();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authLoading]);
 
   if (!loaded && !error) {
@@ -121,7 +121,7 @@ function AppContent() {
                     <MaterialCommunityIcons
                       name="cog"
                       size={24}
-                      color={Colors[scheme ?? "light"].text}
+                      color={Colors[scheme ?? "light"].button}
                     />
                   </TouchableOpacity>
                 );
@@ -152,7 +152,7 @@ function AppContent() {
                     <MaterialCommunityIcons
                       name="cog"
                       size={24}
-                      color={Colors[scheme ?? "light"].text}
+                      color={pathname !== "/inventory" ? Colors[scheme ?? "light"].text : Colors["light"].background}
                     />
                   </TouchableOpacity>
                 );
