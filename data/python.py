@@ -1,22 +1,21 @@
-import json
-import pandas as pd
-from sqlalchemy import create_engine
-from tqdm import tqdm
-from dotenv import load_dotenv
+from pymongo import MongoClient
+import psycopg2
 import os
-from pathlib import Path
+from dotenv import load_dotenv
 
-dotenv_path = Path(__file__).resolve().parent.parent / 'api' / '.env'
-load_dotenv(dotenv_path)
+load_dotenv()
 
-JSONL_FILE = "Open Food Facts Products.jsonl"
-POSTGRES_URI = f"postgresql://{os.getenv("DB_USERNAME")}:{os.getenv("DB_PASSWORD")}@localhost:{os.getenv("DB_PORT")}/{os.getenv("DB_NAME")}"
-TABLE_NAME = "pantry"
-BATCH_SIZE = 10000
+client = MongoClient("mongodb://localhost:27017/")
+db = client["adatbazis"]
+collection = db["gyujtemeny"]
 
-engine = create_engine(POSTGRES_URI)
+conn = psycopg2.connect(
+    f"dbname={os.getenv("DB_NAME")} user={os.getenv("DB_USERNAME")} password={os.getenv("DB_PASSWORD")} host={os.getenv("DB_HOST")}"
+)
+cur = conn.cursor()
 
-FIELDS = [
+
+fields = [
     "code",
     "product_name",
     "brands",
@@ -35,46 +34,45 @@ FIELDS = [
     "ingredients_text",
 ]
 
+batch_size = 1000
 batch = []
-with open(JSONL_FILE, "r", encoding="utf-8") as f:
-    for line in tqdm(f, desc="Importing JSONL"):
-        doc = json.loads(line)
-        if doc.get("product_name") and doc.get("code"):
-            row = {
-                "code": doc.get("code"),
-                "product_name": doc.get("product_name"),
-                "brands": doc.get("brands"),
-                "quantity": doc.get("quantity"),
-                "categories": doc.get("categories"),
-                "serving_size": doc.get("serving_size"),
-                "energy_kcal_100g": doc.get("nutriments", {}).get("energy-kcal_100g"),
-                "fat_100g": doc.get("nutriments", {}).get("fat_100g"),
-                "saturated_fat_100g": doc.get("nutriments", {}).get(
-                    "saturated-fat_100g"
-                ),
-                "carbohydrates_100g": doc.get("nutriments", {}).get(
-                    "carbohydrates_100g"
-                ),
-                "sugars_100g": doc.get("nutriments", {}).get("sugars_100g"),
-                "fiber_100g": doc.get("nutriments", {}).get("fiber_100g"),
-                "proteins_100g": doc.get("nutriments", {}).get("proteins_100g"),
-                "salt_100g": doc.get("nutriments", {}).get("salt_100g"),
-                "image_url": doc.get("image_url"),
-                "ingredients_text": doc.get("ingredients_text"),
-            }
-        for k, v in row.items():
-            if v in ["", "unknown", None]:
-                row[k] = None
 
-        batch.append(row)
+# Elindítani mindig elsőnek a servicest a mongodbnek: brew services start mongodb/brew/mongodb-community@7.0
+for doc in collection.find({}, {f: 1 for f in fields}):
+    doc["saturated_fat_100g"] = doc.pop("saturated-fat_100g", None)
+    values = [doc.get(f.replace("-", "_")) for f in fields]
+    batch.append(values)
 
-        if len(batch) >= BATCH_SIZE:
-            pd.DataFrame(batch).to_sql(
-                TABLE_NAME, engine, if_exists="append", index=False
-            )
-            batch = []
+    if len(batch) >= batch_size:
+        cur.executemany(
+            """
+            INSERT INTO products (
+                code, product_name, brands, quantity, categories,
+                serving_size, energy_kcal_100g, fat_100g, saturated_fat_100g,
+                carbohydrates_100g, sugars_100g, fiber_100g, proteins_100g,
+                salt_100g, image_url, ingredients_text
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """,
+            batch,
+        )
+        conn.commit()
+        batch = []
 
 if batch:
-    pd.DataFrame(batch).to_sql(TABLE_NAME, engine, if_exists="append", index=False)
+    cur.executemany(
+        """
+        INSERT INTO products (
+            code, product_name, brands, quantity, categories,
+            serving_size, energy_kcal_100g, fat_100g, saturated_fat_100g,
+            carbohydrates_100g, sugars_100g, fiber_100g, proteins_100g,
+            salt_100g, image_url, ingredients_text
+        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+    """,
+        batch,
+    )
+    conn.commit()
 
-print("Import complete!")
+cur.close()
+conn.close()
+print("Feltöltés kész!")
+# Leállítani a servicest a mongodbnek: brew services stop mongodb/brew/mongodb-community@7.0

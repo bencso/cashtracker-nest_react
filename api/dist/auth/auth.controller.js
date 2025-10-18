@@ -19,6 +19,7 @@ const login_dto_1 = require("./dto/login.dto");
 const registration_dto_1 = require("./dto/registration.dto");
 const swagger_1 = require("@nestjs/swagger");
 const password_dto_1 = require("./dto/password.dto");
+const auth_guard_1 = require("./auth.guard");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
@@ -37,6 +38,9 @@ let AuthController = class AuthController {
     }
     validUser(request) {
         return this.authService.validation(request);
+    }
+    getMe(request) {
+        return this.authService.getMe(request);
     }
     logout(response, request) {
         return this.authService.logout(response, request);
@@ -64,6 +68,7 @@ __decorate([
 __decorate([
     (0, common_1.Post)('passwordChange'),
     (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Req)()),
@@ -74,6 +79,7 @@ __decorate([
 __decorate([
     (0, common_1.Post)('refresh'),
     (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
@@ -84,11 +90,22 @@ __decorate([
     (0, common_1.Get)('valid'),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "validUser", null);
+__decorate([
+    (0, common_1.Get)('me'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "getMe", null);
 __decorate([
     (0, common_1.Post)('logout'),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),

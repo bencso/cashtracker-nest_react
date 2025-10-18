@@ -15,7 +15,7 @@ let PantryModule = class PantryModule {
 exports.PantryModule = PantryModule;
 exports.PantryModule = PantryModule = __decorate([
     (0, common_1.Module)({
-        controllers: [pantry_controller_1.PantryController],
+        controllers: [pantry_controller_1.ProductController],
         providers: [pantry_service_1.PantryService],
     })
 ], PantryModule);

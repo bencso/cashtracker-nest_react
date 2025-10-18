@@ -7,6 +7,7 @@ import {
   Post,
   Req,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
@@ -14,6 +15,7 @@ import { BodyLogin } from './dto/login.dto';
 import { BodyRegistration } from './dto/registration.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { PasswordChangeBody } from './dto/password.dto';
+import { AuthGuard } from './auth.guard';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -36,6 +38,7 @@ export class AuthController {
 
   @Post('passwordChange')
   @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   passwordChange(@Body() body: PasswordChangeBody, @Req() request: Request) {
     return this.authService.passwordChange(body, request);
@@ -43,6 +46,7 @@ export class AuthController {
 
   @Post('refresh')
   @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   refreshToken(@Req() request: Request) {
     return this.authService.refresh(request);
@@ -51,8 +55,17 @@ export class AuthController {
   @Get('valid')
   @HttpCode(HttpStatus.OK)
   @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   validUser(@Req() request: Request) {
     return this.authService.validation(request);
+  }
+
+  @Get('me')
+  @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  getMe(@Req() request: Request) {
+    return this.authService.getMe(request);
   }
 
   @Post('logout')

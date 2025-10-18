@@ -27,4 +27,5 @@ export declare class AuthService {
     createRefreshToken(payload: any): Promise<string>;
     logout(response: Response, request: Request): Promise<Response<ReturnDto>>;
     validation(request: Request): Promise<ReturnDataDto>;
+    getMe(request: Request): Promise<ReturnDataDto>;
 }

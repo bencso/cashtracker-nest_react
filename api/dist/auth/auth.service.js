@@ -22,6 +22,7 @@ const bcrypt = require("bcrypt");
 const crypto_1 = require("crypto");
 const sessions_service_1 = require("../sessions/sessions.service");
 const sessions_entity_1 = require("../sessions/entities/sessions.entity");
+const user_entity_1 = require("../users/entities/user.entity");
 const typeorm_1 = require("typeorm");
 let AuthService = class AuthService {
     constructor(usersService, jwtService, config, sessionsService, dataSource) {
@@ -280,6 +281,42 @@ let AuthService = class AuthService {
         catch {
             return {
                 message: ['Nem érvényes felhasználó'],
+                statusCode: 401,
+                data: {
+                    valid: false,
+                },
+            };
+        }
+    }
+    async getMe(request) {
+        try {
+            const user = await this.sessionsService.validateAccessToken(request);
+            const userDataArr = await this.dataSource
+                .getRepository(user_entity_1.User)
+                .createQueryBuilder()
+                .select(['username as username', 'email as email'])
+                .where({
+                email: user.email,
+            })
+                .execute();
+            const userData = userDataArr[0];
+            if (!userData)
+                throw new common_1.UnauthorizedException('Nem érvényes bejelentkezési token!');
+            console.log(userData.email);
+            return {
+                message: ['Sikeres lekérdezés!'],
+                statusCode: 200,
+                data: {
+                    user: {
+                        email: userData.email,
+                        username: userData.username,
+                    },
+                },
+            };
+        }
+        catch {
+            return {
+                message: ['Sikertelen lekérdezés!'],
                 statusCode: 401,
                 data: {
                     valid: false,

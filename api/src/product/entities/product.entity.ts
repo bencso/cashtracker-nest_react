@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity({ name: 'pantry' })
-export class PantryFixed {
+@Entity({ name: 'prorduct' })
+export class Product {
   @PrimaryGeneratedColumn('increment')
   id: string;
 

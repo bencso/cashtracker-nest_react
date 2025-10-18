@@ -327,4 +327,41 @@ export class AuthService {
       };
     }
   }
+
+  async getMe(request: Request): Promise<ReturnDataDto> {
+    try {
+      const user = await this.sessionsService.validateAccessToken(request);
+      const userDataArr = await this.dataSource
+        .getRepository(User)
+        .createQueryBuilder()
+        .select(['username as username', 'email as email'])
+        .where({
+          email: user.email,
+        })
+        .execute();
+      const userData = userDataArr[0] as User;
+
+      if (!userData)
+        throw new UnauthorizedException('Nem érvényes bejelentkezési token!');
+      console.log(userData.email);
+      return {
+        message: ['Sikeres lekérdezés!'],
+        statusCode: 200,
+        data: {
+          user: {
+            email: userData.email,
+            username: userData.username,
+          },
+        },
+      };
+    } catch {
+      return {
+        message: ['Sikertelen lekérdezés!'],
+        statusCode: 401,
+        data: {
+          valid: false,
+        },
+      };
+    }
+  }
 }

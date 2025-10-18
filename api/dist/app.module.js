@@ -18,7 +18,8 @@ const sessions_controller_1 = require("./sessions/sessions.controller");
 const sessions_service_1 = require("./sessions/sessions.service");
 const users_service_1 = require("./users/users.service");
 const users_controller_1 = require("./users/users.controller");
-const pantry_module_1 = require("./pantry/pantry.module");
+const product_controller_1 = require("./product/product.controller");
+const product_service_1 = require("./product/product.service");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -41,10 +42,14 @@ exports.AppModule = AppModule = __decorate([
                 logging: true,
             }),
             auth_module_1.AuthModule,
-            pantry_module_1.PantryModule,
         ],
-        controllers: [app_controller_1.AppController, sessions_controller_1.SessionsController, users_controller_1.UsersController],
-        providers: [app_service_1.AppService, sessions_service_1.SessionService, users_service_1.UsersService],
+        controllers: [
+            app_controller_1.AppController,
+            sessions_controller_1.SessionsController,
+            users_controller_1.UsersController,
+            product_controller_1.ProductController,
+        ],
+        providers: [app_service_1.AppService, sessions_service_1.SessionService, users_service_1.UsersService, product_service_1.ProductService],
         exports: [typeorm_1.TypeOrmModule],
     })
 ], AppModule);

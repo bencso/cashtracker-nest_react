@@ -9,7 +9,8 @@ import { SessionsController } from './sessions/sessions.controller';
 import { SessionService } from './sessions/sessions.service';
 import { UsersService } from './users/users.service';
 import { UsersController } from './users/users.controller';
-import { PantryModule } from './pantry/pantry.module';
+import { ProductController } from './product/product.controller';
+import { ProductService } from './product/product.service';
 
 @Module({
   imports: [
@@ -29,10 +30,14 @@ import { PantryModule } from './pantry/pantry.module';
       logging: true,
     }),
     AuthModule,
-    PantryModule,
   ],
-  controllers: [AppController, SessionsController, UsersController],
-  providers: [AppService, SessionService, UsersService],
+  controllers: [
+    AppController,
+    SessionsController,
+    UsersController,
+    ProductController,
+  ],
+  providers: [AppService, SessionService, UsersService, ProductService],
   exports: [TypeOrmModule],
 })
 export class AppModule {}

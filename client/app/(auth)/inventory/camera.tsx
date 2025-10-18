@@ -6,10 +6,11 @@ import { useAuth } from "@/contexts/auth-context";
 import { useTheme } from "@/contexts/theme-context";
 import { useTranslation } from "react-i18next";
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import { useState } from "react";
-import { Linking, StyleSheet, TouchableOpacity } from "react-native";
+import { useEffect, useState } from "react";
+import { Alert, Linking, StyleSheet, TouchableOpacity } from "react-native";
 import { router } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import api from "@/interceptor/api";
 
 interface Product {
   code: string;
@@ -24,6 +25,27 @@ export default function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [torch, setTorch] = useState<boolean>(false);
   const [product, setProduct] = useState<Product | null>(null);
+
+  async function getProductByCode() {
+    try {
+      console.log("Sikeres: " + product?.code);
+      await api.get("/item/" + product?.code).then((data) => {
+        console.log(data);
+      })
+    }
+    catch {
+      Alert.alert("Hiba történt a lekérdezés során!");
+      setProduct({
+        code: product?.code ?? "",
+        name: "Ismeretlen",
+        inDb: false
+      })
+    }
+  }
+
+  useEffect(() => {
+    if (product?.code != null) getProductByCode()
+  }, [product?.code])
 
   const styles = StyleSheet.create({
     container: {
@@ -179,11 +201,12 @@ export default function CameraScreen() {
   return <ThemedView style={styles.container}>
 
     {
-      (product === null) && 
+      (product === null) &&
       <ThemedView style={styles.content}>
         <CameraView enableTorch={torch} style={styles.camera} barcodeScannerSettings={{
           barcodeTypes: ["ean13", "ean8"],
-        }} videoQuality="480p" mute autofocus="on" facing={facing} onBarcodeScanned={({ data }) => {
+        }} videoQuality="720p" mute autofocus="on" facing={facing} onBarcodeScanned={({ data }) => {
+          console.log(data);
           setProduct({
             code: data,
             inDb: false

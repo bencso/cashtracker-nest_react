@@ -43,7 +43,7 @@ SplashScreen.preventAutoHideAsync();
 function AppContent() {
   const { scheme, isLoading: themeLoading } = useTheme();
   const { isLoading: languageLoading, Language } = useLanguage();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated,  loadAuth, isLoading: authLoading} = useAuth();
   const { t } = useTranslation();
   const pathname = usePathname();
 
@@ -62,7 +62,7 @@ function AppContent() {
 
   useEffect(() => {
     async function hideSplash() {
-      if (loaded || error || languageLoading || themeLoading) {
+      if (loaded || error || languageLoading || themeLoading || authLoading) {
         try {
           await SplashScreen.hideAsync();
         } catch (e) {
@@ -71,15 +71,11 @@ function AppContent() {
       }
     }
     hideSplash();
-  }, [loaded, error, languageLoading, themeLoading]);
+  }, [loaded, error, languageLoading, themeLoading, authLoading]);
 
-  useEffect(() => {
-    if (loaded && !error && !languageLoading && !themeLoading) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded, error, languageLoading, themeLoading]);
-
-  useEffect(() => {}, [Language]);
+  useEffect(() => { 
+    loadAuth();
+  }, [loadAuth]);
 
   if (!loaded && !error) {
     return (
@@ -168,10 +164,10 @@ function AppContent() {
               pathname === "/settings"
                 ? t("settings.title")
                 : pathname === "/settings/language"
-                ? t("settings.languages.cta")
-                : pathname === "/settings/passwordchange"
-                ? t("settings.authenticated.password")
-                : t("settings.title"),
+                  ? t("settings.languages.cta")
+                  : pathname === "/settings/passwordchange"
+                    ? t("settings.authenticated.password")
+                    : t("settings.title"),
             headerLeft: () => {
               if (pathname === "/settings") return null;
               else

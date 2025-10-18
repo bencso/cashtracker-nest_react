@@ -5,7 +5,6 @@ import React, {
   createContext,
   ReactNode,
   useContext,
-  useEffect,
   useState,
 } from "react";
 
@@ -17,6 +16,7 @@ interface UserData {
 type AuthContextProp = {
   isLoading: boolean;
   login: any;
+  loadAuth: any;
   logout: any;
   isAuthenticated: boolean;
   registration: any;
@@ -32,33 +32,41 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState<UserData | null>(null);
 
-  useEffect(() => {
-    const loadAuth = async () => {
-      try {
-        const accessToken = await SecureStore.getItemAsync("accessToken");
-        const refreshToken = await SecureStore.getItemAsync("refreshToken");
-        if (refreshToken && accessToken) {
-          setAccessToken(accessToken);
-          setRefreshToken(refreshToken);
-          const isValidSession = await validateSession();
-          setIsAuthenticated(isValidSession);
+  const loadAuth = async () => {
+    try {
+      const accessToken = await SecureStore.getItemAsync("accessToken");
+      const refreshToken = await SecureStore.getItemAsync("refreshToken");
+      if (refreshToken && accessToken) {
+        setAccessToken(accessToken);
+        setRefreshToken(refreshToken);
+        const isValidSession = await validateSession();
+        setIsAuthenticated(isValidSession);
+        try {
+          const response = await api.get("/auth/me");
+          const userData = response.data.data.user;
+          setUserData({
+            username: userData.username,
+            email: userData.email
+          })
+        } catch {
+          throw new Error("Hiba történt a beazonosítás alatt!");
         }
-      } catch (error) {
-        console.error(error);
-        setIsAuthenticated(false);
-      } finally {
-        setIsLoading(false);
       }
-    };
-    loadAuth();
-  }, []);
+    } catch (error) {
+      console.error(error);
+      setIsAuthenticated(false);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const validateSession = async () => {
     try {
       if (!accessToken || !refreshToken) return false;
       const response = await api.get("/auth/valid");
+      console.log(response.data.data.user);
       return response.status === 200;
-    } catch (error) {
+    } catch {
       await logout();
       return false;
     }
@@ -164,6 +172,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       value={{
         isLoading,
         login,
+        loadAuth,
         registration,
         userData,
         logout,

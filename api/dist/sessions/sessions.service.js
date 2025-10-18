@@ -97,7 +97,7 @@ let SessionService = class SessionService {
                 return null;
             const payload = await this.jwtService.verifyAsync(accessToken, {
                 secret: this.config.get('JWT_TOKEN_SECRET'),
-                ignoreExpiration: true
+                ignoreExpiration: true,
             });
             return payload;
         }
