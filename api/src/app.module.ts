@@ -9,6 +9,7 @@ import { SessionsController } from './sessions/sessions.controller';
 import { SessionService } from './sessions/sessions.service';
 import { UsersService } from './users/users.service';
 import { UsersController } from './users/users.controller';
+import { PantryModule } from './pantry/pantry.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { UsersController } from './users/users.controller';
       logging: true,
     }),
     AuthModule,
+    PantryModule,
   ],
   controllers: [AppController, SessionsController, UsersController],
   providers: [AppService, SessionService, UsersService],

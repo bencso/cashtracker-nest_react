@@ -1,7 +1,7 @@
 import { User } from 'src/users/entities/user.entity';
 export declare class UserData {
-    user_agent: String;
-    ip: String;
+    user_agent: string;
+    ip: string;
 }
 export declare class Sessions {
     session_id: string;

@@ -9,8 +9,8 @@ import {
 } from 'typeorm';
 
 export class UserData {
-  user_agent: String
-  ip: String
+  user_agent: string;
+  ip: string;
 }
 
 @Entity({ name: 'sessions' })
