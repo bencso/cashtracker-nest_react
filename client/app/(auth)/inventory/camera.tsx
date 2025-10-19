@@ -10,7 +10,6 @@ import { Alert, Linking, StyleSheet, TouchableOpacity } from "react-native";
 import { router } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import api from "@/interceptor/api";
-import { LinearGradient } from "expo-linear-gradient";
 
 interface Product {
   code: string;

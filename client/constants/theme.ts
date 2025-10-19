@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 
-const lime = '#C7F464';
-const softLime = '#F3FFD8';
+const lime = '#C9F158';
+const softLime = '#C9F158';
 const softBlack = '#232526';
 const darkGray = '#2C2C2E';
 const lightGray = '#F8F8FA';

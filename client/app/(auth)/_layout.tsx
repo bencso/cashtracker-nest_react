@@ -24,10 +24,10 @@ export default function AuthenticatedLayout() {
           />
           <Label>{t("tabs.home")}</Label>
         </NativeTabs.Trigger>
-        <NativeTabs.Trigger name="inventory">
+        <NativeTabs.Trigger name="inventory" role="search">
           <Icon
             selectedColor={Colors[scheme ?? "light"].tabIconSelected}
-            sf="barcode"
+            sf="plus"
             drawable="custom_login_drawable"
           />
           <Label>{t("tabs.inventory.create")}</Label>
