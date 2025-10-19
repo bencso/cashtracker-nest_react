@@ -50,6 +50,7 @@ function AppContent() {
   const pathname = usePathname();
 
   useEffect(() => {
+    // eslint-disable-next-line import/no-named-as-default-member
     i18next.changeLanguage(Language).catch((e) => {
       console.warn("i18next changeLanguage error:", e);
     });
@@ -149,11 +150,7 @@ function AppContent() {
                   <MaterialCommunityIcons
                     name="cog"
                     size={24}
-                    color={
-                      pathname !== "/inventory"
-                        ? Colors[scheme ?? "light"].text
-                        : Colors["light"].background
-                    }
+                    color={Colors[scheme ?? "light"].tabIconDefault}
                   />
                 </TouchableOpacity>
               ),

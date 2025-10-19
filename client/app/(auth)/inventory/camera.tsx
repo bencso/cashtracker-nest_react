@@ -43,6 +43,7 @@ export default function CameraScreen() {
 
   useEffect(() => {
     if (product?.code != null) getProductByCode()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product?.code])
 
   const styles = StyleSheet.create({
@@ -67,12 +68,6 @@ export default function CameraScreen() {
       flexDirection: "row",
       gap: 12,
       backgroundColor: "transparent",
-      borderRadius: 16,
-      borderColor: Colors[colorScheme ?? "light"].text,
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.2,
-      shadowRadius: 4,
       elevation: 5,
     },
     textContainer: {
