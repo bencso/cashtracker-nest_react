@@ -13,13 +13,12 @@ export default function AuthenticatedLayout() {
   if (Platform.OS === "ios") {
     return (
       <NativeTabs
-        blurEffect="prominent"
         minimizeBehavior="onScrollDown"
         shadowColor={Colors[scheme ?? "light"].button}
       >
         <NativeTabs.Trigger name="index">
           <Icon
-            selectedColor={Colors[scheme ?? "light"].button}
+            selectedColor={Colors[scheme ?? "light"].tabIconSelected}
             sf="house"
             drawable="custom_login_drawable"
           />
@@ -27,7 +26,7 @@ export default function AuthenticatedLayout() {
         </NativeTabs.Trigger>
         <NativeTabs.Trigger name="inventory">
           <Icon
-            selectedColor={Colors[scheme ?? "light"].button}
+            selectedColor={Colors[scheme ?? "light"].tabIconSelected}
             sf="barcode"
             drawable="custom_login_drawable"
           />

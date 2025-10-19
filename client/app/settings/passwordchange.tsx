@@ -1,3 +1,4 @@
+import Button from "@/components/button";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { Colors } from "@/constants/theme";
@@ -6,7 +7,7 @@ import { useTheme } from "@/contexts/theme-context";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, TextInput, View } from "react-native";
 
 export default function PasswordChangeScreen() {
   const { scheme } = useTheme();
@@ -26,6 +27,7 @@ export default function PasswordChangeScreen() {
     container: {
       flex: 1,
       height: "100%",
+      paddingTop: 120
     },
     content: {
       flex: 1,
@@ -43,16 +45,16 @@ export default function PasswordChangeScreen() {
       borderRadius: 12,
       backgroundColor: `${Colors[scheme ?? "light"].primary}10`,
     },
-    input: {
+     input: {
       color: Colors[scheme ?? "light"].text,
       paddingTop: 16,
       paddingBottom: 16,
       paddingStart: 10,
       borderWidth: 1,
-      borderColor: Colors[scheme ?? "light"].neutral + "CC",
+      borderColor: Colors[scheme ?? "light"].border,
       borderRadius: 12,
       fontSize: 16,
-      backgroundColor: `${Colors[scheme ?? "light"].primary}10`,
+      backgroundColor: Colors[scheme ?? "light"].border,
     },
     inputContainer: {
       display: "flex",
@@ -131,15 +133,10 @@ export default function PasswordChangeScreen() {
                 setRePassword(text);
               }}
             />
-            <TouchableOpacity
-              disabled={disabledButton}
-              onPress={onSubmit}
-              style={styles.button}
-            >
-              <Text>
-                {t("auth.passwordChange")}
-              </Text>
-            </TouchableOpacity>
+            <Button
+              label={t("auth.passwordChange")}
+              action={onSubmit}
+            />
           </View>
         </ThemedView>
       </ThemedView>
