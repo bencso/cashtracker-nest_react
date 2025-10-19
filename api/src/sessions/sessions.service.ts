@@ -93,7 +93,6 @@ export class SessionService {
     try {
       const authHeader = req.headers.authorization;
       const accessToken = authHeader?.split(' ')[1];
-      console.log('ACCESS:' + accessToken);
 
       if (!accessToken) return null;
 

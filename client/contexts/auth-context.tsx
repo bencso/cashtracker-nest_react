@@ -7,6 +7,7 @@ import React, {
   useContext,
   useState,
 } from "react";
+import { Alert } from "react-native";
 
 interface UserData {
   username: string;
@@ -53,8 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           throw new Error("Hiba történt a beazonosítás alatt!");
         }
       }
-    } catch (error) {
-      console.error(error);
+    } catch {
       setIsAuthenticated(false);
     } finally {
       setIsLoading(false);
@@ -167,13 +167,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const passwordChange = async ({ password }: { password: string, repassword: string }) => {
+  const passwordChange = async ({ password }: { password: string }) => {
     try {
       const response = await api.post("/auth/passwordChange", { password });
-      console.log(response.data);
-      if(response.data.statusCode===200)router.push("/(auth)");
-    } catch (error) {
-      console.error(error);
+      console.log(response);
+      if (response.data.statusCode === 200) {
+        router.back();
+        return true;
+      } else {
+        throw new Error(response.data?.message || "Ismeretlen hiba");
+      }
+    } catch (error: any) {
+      console.error(error.message);
+      Alert.alert("HIBA", error?.message ?? "Ismeretlen hiba");
+      return false;
     } finally {
       setIsLoading(false);
     }

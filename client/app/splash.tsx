@@ -1,23 +1,23 @@
 import { useEffect } from "react";
 import * as SplashScreen from "expo-splash-screen";
 import { useAuth } from "../contexts/auth-context";
+import { useTheme } from "@/contexts/theme-context";
+import { useLanguage } from "@/contexts/language-context";
 
 export default function SplashScreenController() {
   const { isLoading } = useAuth();
+  const { isLoading: themeLoading } = useTheme();
+  const { isLoading: languageLoading } = useLanguage();
 
   useEffect(() => {
-    SplashScreen.preventAutoHideAsync().catch((e) =>
-      console.warn("Failed to prevent auto hide:", e)
-    );
+    SplashScreen.preventAutoHideAsync().catch(() => {});
   }, []);
 
   useEffect(() => {
-    if (!isLoading) {
-      SplashScreen.hideAsync().catch((e) =>
-        console.warn("Error hiding splash screen:", e)
-      );
+    if (!isLoading && !themeLoading && !languageLoading) {
+      SplashScreen.hideAsync().catch(() => {});
     }
-  }, [isLoading]);
+  }, [isLoading, themeLoading, languageLoading]);
 
   return null;
 }

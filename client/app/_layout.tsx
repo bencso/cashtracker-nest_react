@@ -209,9 +209,9 @@ function AppContent() {
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <SplashScreenController />
       <LanguageProvider>
         <ThemeProvider>
+          <SplashScreenController />
           <AppContent />
         </ThemeProvider>
       </LanguageProvider>

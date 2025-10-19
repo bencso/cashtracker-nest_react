@@ -73,6 +73,9 @@ let AuthService = class AuthService {
             const requestUser = await this.sessionsService.validateAccessToken(request);
             const hashedPassword = await bcrypt.hash(body.password, salt);
             const user = await this.usersService.findUser(requestUser.email);
+            if (await bcrypt.compare(body.password, user?.password)) {
+                throw new Error('Kérjük előző jelszavát ne használja!');
+            }
             await this.usersService
                 .updatePassword({
                 password: hashedPassword,
@@ -92,8 +95,8 @@ let AuthService = class AuthService {
         }
         catch (error) {
             return {
-                message: [error.message],
-                statusCode: error.status,
+                message: [error.message ?? 'Ismeretlen hiba'],
+                statusCode: error.status ?? 400,
             };
         }
     }
