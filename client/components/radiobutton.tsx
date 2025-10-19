@@ -31,18 +31,6 @@ export const RadioButtons = ({
     icon: {
       marginRight: 12,
     },
-    groupButtom: {
-      display: "flex",
-      flexDirection: "row",
-      gap: 12,
-      justifyContent: "space-between",
-      paddingVertical: 16,
-      paddingHorizontal: 16,
-      borderWidth: 1,
-      borderColor: Colors[colorScheme ?? "light"].neutral + "CC",
-      borderRadius: 12,
-      backgroundColor: `${Colors[colorScheme ?? "light"].primary}10`,
-    },
     groupLeft: {
       flexDirection: "row",
       alignItems: "center",
@@ -66,31 +54,36 @@ export const RadioButtons = ({
     },
     label: {
       marginLeft: 8,
+      color: Colors[colorScheme ?? "light"].buttomText
     },
   });
 
   const button = StyleSheet.create({
     active: {
+      display: "flex",
       flexDirection: "row",
-      gap: 12,
-      justifyContent: "space-between",
-      paddingVertical: 16,
-      paddingHorizontal: 16,
-      borderWidth: 1,
-      borderColor: Colors[colorScheme ?? "light"].neutral + "CC",
-      borderRadius: 12,
-      backgroundColor: `${Colors[colorScheme ?? "light"].primary}30`,
+      alignItems: "center",
+      backgroundColor: Colors[colorScheme ?? "light"].button,
+      borderRadius: 40,
+      padding: 20,
+      paddingTop: 18,
+      paddingBottom: 18,
+      fontWeight: "bold",
+      fontSize: 20,
+      justifyContent: "space-between"
     },
     notActive: {
+      display: "flex",
       flexDirection: "row",
-      gap: 12,
-      justifyContent: "space-between",
-      paddingVertical: 16,
-      paddingHorizontal: 16,
-      borderWidth: 1,
-      borderColor: Colors[colorScheme ?? "light"].neutral + "CC",
-      borderRadius: 12,
-      backgroundColor: `${Colors[colorScheme ?? "light"].primary}10`,
+      alignItems: "center",
+      backgroundColor: `${Colors[colorScheme ?? "light"].button}70`,
+      borderRadius: 40,
+      padding: 20,
+      paddingTop: 18,
+      paddingBottom: 18,
+      fontWeight: "bold",
+      fontSize: 20,
+      justifyContent: "space-between"
     },
   });
 
@@ -114,7 +107,7 @@ export const RadioButtons = ({
                     option.icon as keyof typeof MaterialCommunityIcons.glyphMap
                   }
                   size={24}
-                  color={Colors[colorScheme ?? "light"].text}
+                  color={Colors[colorScheme ?? "light"].buttomText}
                   style={styles.icon}
                 />
               ) : (
@@ -129,7 +122,7 @@ export const RadioButtons = ({
                   : "radiobox-blank"
               }
               size={24}
-              color={Colors[colorScheme ?? "light"].text}
+              color={Colors[colorScheme ?? "light"].buttomText}
               style={styles.icon}
             />
           </View>

@@ -164,7 +164,7 @@ export default function CameraScreen() {
             zIndex: 10,
           }}
           onPress={() => {
-            router.push("/settings");
+            router.replace("/settings");
           }}
         >
           <MaterialCommunityIcons

@@ -44,16 +44,16 @@ export default function RegistrationScreen() {
       paddingVertical: 40,
       paddingHorizontal: 24,
     },
-    input: {
+ input: {
       color: Colors[scheme ?? "light"].text,
       paddingTop: 16,
       paddingBottom: 16,
       paddingStart: 10,
       borderWidth: 1,
-      borderColor: Colors[scheme ?? "light"].neutral + "CC",
+      borderColor: Colors[scheme ?? "light"].border,
       borderRadius: 12,
       fontSize: 16,
-      backgroundColor: `${Colors[scheme ?? "light"].primary}10`,
+      backgroundColor: Colors[scheme ?? "light"].border,
     },
     inputContainer: {
       display: "flex",
@@ -63,16 +63,16 @@ export default function RegistrationScreen() {
     button: {
       alignItems: "center",
       backgroundColor: Colors[scheme ?? "light"].button,
-      borderRadius: 12,
+      borderRadius: 40,
       padding: 15,
       paddingTop: 18,
       paddingBottom: 18,
       fontWeight: "bold",
       width: "100%",
       fontSize: 20,
-      opacity: !disabledButton ? 1 : 0.5,
+      opacity: !disabledButton ? 1 : 0.7,
     },
-    notHaveAccount: {
+    haveAccount: {
       display: "flex",
       flexDirection: "row",
       gap: 4,
@@ -202,7 +202,7 @@ export default function RegistrationScreen() {
               {t("auth.registration")}
             </Text>
           </TouchableOpacity>
-          <View style={styles.notHaveAccount}>
+          <View style={styles.haveAccount}>
             <Text style={{ color: Colors[scheme ?? "light"].text }}>
               {t("auth.haveAccount")}
             </Text>
@@ -213,7 +213,7 @@ export default function RegistrationScreen() {
             >
               <Text
                 style={{
-                  color: Colors[scheme ?? "light"].button,
+                  color: Colors[scheme ?? "light"].text,
                   fontWeight: "bold",
                 }}
               >

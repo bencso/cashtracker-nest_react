@@ -1,44 +1,52 @@
 import { Platform } from 'react-native';
 
-const primaryColor = '#5e81ac';
-const secondaryColor = "#81a1c1";
-const accent = "#88c0d0";
-const neutral = "#4c566a";
-const text = "#eceff4";
-const base = "#d8dee9";
-const success = "#a3be8d";
-const error = "#bf616a";
-const warning = "#ebcb8b";
-const info = "#b48ead";
+const lime = '#C7F464';
+const softLime = '#F3FFD8';
+const softBlack = '#232526';
+const darkGray = '#2C2C2E';
+const lightGray = '#F8F8FA';
+const white = '#FFFFFF';
+const gradientLight = [lime, white];
+const gradientDark = [softBlack, lime];
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
-    neutral: neutral,
-    primary: primaryColor,
-    secondary: secondaryColor,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: primaryColor,
-    correct: success,
-    uncorrect: error,
-    button: accent,
-    base: base
+    text: '#222428',
+    buttomText: '#222428',
+    background: white,
+    neutral: darkGray,
+    primary: lime,
+    secondary: softBlack,
+    icon: lime,
+    tabIconDefault: darkGray,
+    tabIconSelected: softBlack,
+    correct: '#7ED957',
+    uncorrect: '#FF1744',
+    button: lime,
+    base: softLime,
+    gradient: gradientLight,
+    card: lightGray,
+    border: '#E0E0E0',
+    shadow: 'rgba(199,244,100,0.08)',
   },
   dark: {
-    text: text,
-    background: '#151718',
-    neutral: neutral,
-    primary: primaryColor,
-    secondary: secondaryColor,
-    icon: base,
-    tabIconDefault: base,
-    tabIconSelected: primaryColor,
-    correct: success,
-    uncorrect: error,
-    button: accent,
-    base: base
+    text: white,
+    buttomText: '#222428',
+    background: softBlack,
+    neutral: darkGray,
+    primary: lime,
+    secondary: lightGray,
+    icon: lime,
+    tabIconDefault: lightGray,
+    tabIconSelected: lime,
+    correct: '#7ED957',
+    uncorrect: '#FF1744',
+    button: lime,
+    base: darkGray,
+    gradient: gradientDark,
+    card: '#292929',
+    border: '#444',
+    shadow: 'rgba(199,244,100,0.12)',
   },
 };
 

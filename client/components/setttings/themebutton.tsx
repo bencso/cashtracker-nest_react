@@ -2,7 +2,6 @@
 
 import { Colors } from "@/constants/theme";
 import { useTheme } from "@/contexts/theme-context";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { t } from "i18next";
 import { useEffect, useState } from "react";
 import { ColorSchemeName, StyleSheet, View } from "react-native";
@@ -22,10 +21,8 @@ export default function ThemeButton() {
       justifyContent: "space-between",
       paddingVertical: 16,
       paddingHorizontal: 16,
-      borderWidth: 1,
-      borderColor: Colors[scheme ?? "light"].neutral + "CC",
-      borderRadius: 12,
-      backgroundColor: `${Colors[scheme ?? "light"].primary}10`,
+      borderRadius: 24,
+      backgroundColor: `${Colors[scheme ?? "light"].primary}40`,
     },
     groupLeft: {
       flexDirection: "row",
@@ -44,7 +41,7 @@ export default function ThemeButton() {
     if (selectedTheme !== scheme) {
       setSelectedTheme(scheme);
     }
-  }, [scheme]);
+  }, [scheme, selectedTheme]);
 
   const handleChange = (value: ColorSchemeName) => {
     setSelectedTheme(value);
@@ -54,13 +51,7 @@ export default function ThemeButton() {
   return (
     <View style={styles.group}>
       <View style={styles.groupLeft}>
-        <MaterialCommunityIcons
-          name="theme-light-dark"
-          size={24}
-          color={Colors[scheme ?? "light"].text}
-          style={styles.icon}
-        />
-        <ThemedText>{t("settings.colortheme.cta")}</ThemedText>
+        <ThemedText type="defaultSemiBold">{t("settings.colortheme.cta")}</ThemedText>
       </View>
       <RadioButtons
         options={[

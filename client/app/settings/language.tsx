@@ -31,6 +31,7 @@ export default function LanguageScreen() {
     container: {
       flex: 1,
       height: "100%",
+      paddingTop: 120
     },
     content: {
       flex: 1,
@@ -38,15 +39,13 @@ export default function LanguageScreen() {
       gap: 12,
     },
     group: {
-      flexDirection: "column",
+       flexDirection: "column",
       gap: 12,
       justifyContent: "space-between",
       paddingVertical: 16,
       paddingHorizontal: 16,
-      borderWidth: 1,
-      borderColor: Colors[scheme ?? "light"].neutral + "CC",
-      borderRadius: 12,
-      backgroundColor: `${Colors[scheme ?? "light"].primary}10`,
+      borderRadius: 24,
+      backgroundColor: `${Colors[scheme ?? "light"].primary}40`,
     },
   });
 

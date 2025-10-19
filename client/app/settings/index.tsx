@@ -10,7 +10,6 @@ import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 
 export default function SettingsScreen() {
-  const { scheme: colorScheme } = useTheme();
   const { isAuthenticated } = useAuth();
   const { t } = useTranslation();
 
@@ -18,23 +17,12 @@ export default function SettingsScreen() {
     container: {
       flex: 1,
       height: "100%",
+      paddingTop: 120
     },
     content: {
       flex: 1,
       padding: 16,
       gap: 24,
-    },
-    buttons: {
-      flexDirection: "row",
-      alignItems: "center",
-      color: Colors[colorScheme ?? "light"].text,
-      paddingVertical: 16,
-      paddingHorizontal: 16,
-      borderWidth: 1,
-      borderColor: Colors[colorScheme ?? "light"].neutral + "CC",
-      borderRadius: 12,
-      fontSize: 16,
-      backgroundColor: `${Colors[colorScheme ?? "light"].primary}10`,
     },
     settingGroup: {
       gap: 12,
@@ -74,16 +62,15 @@ function AuthenticatedSection() {
 
   const styles = StyleSheet.create({
     buttons: {
-      flexDirection: "row",
       alignItems: "center",
-      color: Colors[colorScheme ?? "light"].text,
-      paddingVertical: 16,
-      paddingHorizontal: 16,
-      borderWidth: 1,
-      borderColor: Colors[colorScheme ?? "light"].neutral + "CC",
-      borderRadius: 12,
-      fontSize: 16,
-      backgroundColor: `${Colors[colorScheme ?? "light"].primary}10`,
+      backgroundColor: Colors[colorScheme ?? "light"].button,
+      borderRadius: 40,
+      padding: 15,
+      paddingTop: 18,
+      paddingBottom: 18,
+      fontWeight: "bold",
+      width: "100%",
+      fontSize: 20,
     },
     settingGroup: {
       gap: 12,

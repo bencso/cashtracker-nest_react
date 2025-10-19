@@ -1837,6 +1837,14 @@
   dependencies:
     nanoid "^3.3.11"
 
+"@react-navigation/stack@^7.4.10":
+  version "7.4.10"
+  resolved "https://registry.yarnpkg.com/@react-navigation/stack/-/stack-7.4.10.tgz#777adf11c15e91cf586c706002f1cf1ae0225c70"
+  integrity sha512-sA00ag632RRwnXPibjvHBE5sxf8xVBztyQ7HfgmcGZ4vaVUjRWG7XEhwdrf/jrsnnqU5nK1qz9NslRAOvpWPVA==
+  dependencies:
+    "@react-navigation/elements" "^2.6.5"
+    color "^4.2.3"
+
 "@reduxjs/toolkit@^2.9.0":
   version "2.9.0"
   resolved "https://registry.yarnpkg.com/@reduxjs/toolkit/-/toolkit-2.9.0.tgz#d4b12b90c27716a6a507193f8c3b2880729b97d5"

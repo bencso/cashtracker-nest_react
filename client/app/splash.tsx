@@ -10,12 +10,12 @@ export default function SplashScreenController() {
   const { isLoading: languageLoading } = useLanguage();
 
   useEffect(() => {
-    SplashScreen.preventAutoHideAsync().catch(() => {});
+    SplashScreen.hide();
   }, []);
 
   useEffect(() => {
     if (!isLoading && !themeLoading && !languageLoading) {
-      SplashScreen.hideAsync().catch(() => {});
+      SplashScreen.hide();
     }
   }, [isLoading, themeLoading, languageLoading]);
 

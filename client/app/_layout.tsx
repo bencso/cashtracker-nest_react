@@ -22,11 +22,6 @@ import "react-native-reanimated";
 import SplashScreenController from "./splash";
 
 //TODO: Folyamatos hiba a splash screen miatt ez után utánnézni
-/* 
-ERROR  [Error: Uncaught (in promise, id: 12) Error: No native splash screen registered for given view controller. Call 'SplashScreen.show' for given view controller first.] Uncaught (in promise, id: 12) Error: No native splash screen registered for given view controller. Call 'SplashScreen.show' for given view controller first.
- ERROR  [Error: Uncaught (in promise, id: 13) Error: No native splash screen registered for given view controller. Call 'SplashScreen.show' for given view controller first.] Uncaught (in promise, id: 13) Error: No native splash screen registered for given view controller. Call 'SplashScreen.show' for given view controller first.
- ERROR  [Error: Uncaught (in promise, id: 14) Error: No native splash screen registered for given view controller. Call 'SplashScreen.show' for given view controller first.] Uncaught (in promise, id: 14) Error: No native splash screen registered for given view controller. Call 'SplashScree
- */
 
 export const unstable_settings = {
   anchor: "(tabs)",
@@ -55,7 +50,6 @@ function AppContent() {
   const pathname = usePathname();
 
   useEffect(() => {
-    // eslint-disable-next-line import/no-named-as-default-member
     i18next.changeLanguage(Language).catch((e) => {
       console.warn("i18next changeLanguage error:", e);
     });
@@ -101,76 +95,77 @@ function AppContent() {
   }
 
   return (
-    <NavigationThemeProvider
-      value={scheme === "dark" ? DarkTheme : DefaultTheme}
-    >
-      <Stack>
+    <NavigationThemeProvider value={scheme === "dark" ? DarkTheme : DefaultTheme}>
+      <Stack
+        screenOptions={{
+          headerShown: true,
+          headerTransparent: true,
+          title: "",
+          gestureEnabled: true,
+          gestureDirection: "horizontal",
+        }}
+      >
         <Stack.Protected guard={!isAuthenticated}>
           <Stack.Screen
             name="(notauth)"
             options={{
-              headerShown: true,
-              headerTransparent: true,
-              title: "",
-              headerRight: () => {
-                return (
-                  <TouchableOpacity
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      paddingLeft: 6,
-                    }}
-                    onPress={() => {
-                      router.push("/settings");
-                    }}
-                  >
-                    <MaterialCommunityIcons
-                      name="cog"
-                      size={24}
-                      color={Colors[scheme ?? "light"].button}
-                    />
-                  </TouchableOpacity>
-                );
-              },
+              animation: "fade",
+              headerRight: () => (
+                <TouchableOpacity
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    paddingLeft: 6,
+                  }}
+                  onPress={() => router.replace("/settings")}
+                >
+                  <MaterialCommunityIcons
+                    name="cog"
+                    size={24}
+                    color={Colors[scheme ?? "light"].tabIconDefault}
+                  />
+                </TouchableOpacity>
+              ),
             }}
           />
         </Stack.Protected>
+
         <Stack.Protected guard={!!isAuthenticated}>
           <Stack.Screen
             name="(auth)"
             options={{
-              headerShown: true,
-              headerTransparent: true,
-              title: "",
-              headerRight: () => {
-                return (
-                  <TouchableOpacity
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      paddingLeft: 6,
-                    }}
-                    onPress={() => {
-                      router.push("/settings");
-                    }}
-                  >
-                    <MaterialCommunityIcons
-                      name="cog"
-                      size={24}
-                      color={pathname !== "/inventory" ? Colors[scheme ?? "light"].text : Colors["light"].background}
-                    />
-                  </TouchableOpacity>
-                );
-              },
+              animation: "fade",
+              headerRight: () => (
+                <TouchableOpacity
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    paddingLeft: 6,
+                  }}
+                  onPress={() => router.replace("/settings")}
+                >
+                  <MaterialCommunityIcons
+                    name="cog"
+                    size={24}
+                    color={
+                      pathname !== "/inventory"
+                        ? Colors[scheme ?? "light"].text
+                        : Colors["light"].background
+                    }
+                  />
+                </TouchableOpacity>
+              ),
             }}
           />
         </Stack.Protected>
+
         <Stack.Screen
           name="settings"
           options={{
             presentation: "modal",
+            animation: "fade",
             title:
               pathname === "/settings"
                 ? t("settings.title")
@@ -179,35 +174,46 @@ function AppContent() {
                   : pathname === "/settings/passwordchange"
                     ? t("settings.authenticated.password")
                     : t("settings.title"),
-            headerLeft: () => {
-              if (pathname === "/settings") return null;
-              else
-                return (
-                  <TouchableOpacity
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      paddingLeft: 5,
-                    }}
-                    onPress={() => {
-                      router.replace("/settings");
-                    }}
-                  >
-                    <MaterialCommunityIcons
-                      name="chevron-left"
-                      size={24}
-                      color={Colors[scheme ?? "light"].text}
-                    />
-                  </TouchableOpacity>
-                );
-            },
+            headerLeft: () => (
+              <TouchableOpacity
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  paddingLeft: 5,
+                }}
+                onPress={() => {
+                  if (pathname === "/settings") {
+                    if (router.canGoBack()) {
+                      router.back()
+                    } else {
+                      if (isAuthenticated) router.replace("/(auth)");
+                      else router.replace("/(notauth)");
+                    }
+                  } else {
+                    router.replace("/settings");
+                  }
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="chevron-left"
+                  size={24}
+                  color={Colors[scheme ?? "light"].text}
+                />
+              </TouchableOpacity>
+            ),
           }}
         />
+
         <Stack.Screen
           name="modal"
-          options={{ presentation: "modal", title: "Modal" }}
+          options={{
+            presentation: "modal",
+            animation: "fade_from_bottom",
+            title: "Modal",
+          }}
         />
       </Stack>
+
       <StatusBar style="auto" />
     </NavigationThemeProvider>
   );

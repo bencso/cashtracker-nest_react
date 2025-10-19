@@ -47,10 +47,10 @@ export default function LoginScreen() {
       paddingBottom: 16,
       paddingStart: 10,
       borderWidth: 1,
-      borderColor: Colors[scheme ?? "light"].neutral + "CC",
+      borderColor: Colors[scheme ?? "light"].border,
       borderRadius: 12,
       fontSize: 16,
-      backgroundColor: `${Colors[scheme ?? "light"].primary}10`,
+      backgroundColor: Colors[scheme ?? "light"].border,
     },
     inputContainer: {
       display: "flex",
@@ -60,14 +60,14 @@ export default function LoginScreen() {
     button: {
       alignItems: "center",
       backgroundColor: Colors[scheme ?? "light"].button,
-      borderRadius: 12,
+      borderRadius: 40,
       padding: 15,
       paddingTop: 18,
       paddingBottom: 18,
       fontWeight: "bold",
       width: "100%",
       fontSize: 20,
-      opacity: !disabledButton ? 1 : 0.5,
+      opacity: !disabledButton ? 1 : 0.7,
     },
     notHaveAccount: {
       display: "flex",
@@ -107,7 +107,7 @@ export default function LoginScreen() {
             ? emailCorrect
               ? Colors[scheme ?? "light"].correct
               : Colors[scheme ?? "light"].uncorrect
-            : Colors[scheme ?? "light"].neutral + "CC",
+            : Colors[scheme ?? "light"].border,
         },
       });
     }
@@ -178,7 +178,7 @@ export default function LoginScreen() {
             >
               <Text
                 style={{
-                  color: Colors[scheme ?? "light"].button,
+                  color: Colors[scheme ?? "light"].text,
                   fontWeight: "bold",
                 }}
               >

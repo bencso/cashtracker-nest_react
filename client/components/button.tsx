@@ -20,25 +20,27 @@ export default function Button({
   const { scheme } = useTheme();
   const styles = StyleSheet.create({
     button: {
+      display: "flex",
       flexDirection: "row",
       alignItems: "center",
-      justifyContent: "space-between",
-      paddingVertical: 16,
-      paddingHorizontal: 16,
-      borderWidth: 1,
-      borderColor: Colors[scheme ?? "light"].neutral + "CC",
-      borderRadius: 12,
-      backgroundColor: `${Colors[scheme ?? "light"].background}`,
+      backgroundColor: Colors[scheme ?? "light"].button,
+      borderRadius: 40,
+      padding: 20,
+      paddingTop: 18,
+      paddingBottom: 18,
+      fontWeight: "bold",
+      fontSize: 20,
+      justifyContent: "space-between"
     },
     buttonLeft: {
       flexDirection: "row",
       alignItems: "center",
     },
     chevron: {
-      opacity: 0.5,
+      opacity: .9,
     },
     icon: {
-      marginRight: 12,
+      marginRight: 20,
     },
   });
   return (
@@ -48,13 +50,13 @@ export default function Button({
           <MaterialCommunityIcons
             name={icon}
             size={24}
-            color={Colors[scheme ?? "light"].text}
+            color={Colors["light"].buttomText}
             style={label ? styles.icon : null}
           />
         )}
         {label && (<ThemedText style={
           {
-            color:Colors[scheme ?? "light"].text
+            color: Colors["light"].buttomText
           }
         }>{label}</ThemedText>)}
       </View>
@@ -63,7 +65,7 @@ export default function Button({
           <MaterialCommunityIcons
             name="chevron-right"
             size={24}
-            color={coloredIcon ? Colors[scheme ?? "light"].button : Colors[scheme ?? "light"].text}
+            color={coloredIcon ? Colors[scheme ?? "light"].neutral : Colors[scheme ?? "light"].buttomText}
             style={styles.chevron}
           />
         )

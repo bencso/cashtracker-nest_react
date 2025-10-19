@@ -13,13 +13,12 @@ export default function AuthLayout() {
   if (Platform.OS === "ios") {
     return (
       <NativeTabs
-        blurEffect="prominent"
         minimizeBehavior="onScrollDown"
         shadowColor={Colors[scheme ?? "light"].button}
       >
         <NativeTabs.Trigger name="auth">
           <Icon
-            selectedColor={Colors[scheme ?? "light"].button}
+            selectedColor={Colors[scheme ?? "light"].tabIconSelected}
             sf="door.left.hand.open"
             drawable="custom_login_drawable"
           />
@@ -66,8 +65,8 @@ export default function AuthLayout() {
           fontSize: 12,
           fontFamily: "ZalandoSans_700Bold",
         },
-        tabBarActiveTintColor: Colors[scheme ?? "light"].background,
-        tabBarInactiveTintColor: Colors[scheme ?? "light"].icon,
+        tabBarActiveTintColor: Colors[scheme ?? "light"].tabIconSelected,
+        tabBarInactiveTintColor: Colors[scheme ?? "light"].tabIconDefault,
         headerShown: false,
         tabBarButton: HapticTab,
         animation: "shift",
