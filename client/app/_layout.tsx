@@ -21,6 +21,13 @@ import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import "react-native-reanimated";
 import SplashScreenController from "./splash";
 
+//TODO: Folyamatos hiba a splash screen miatt ez után utánnézni
+/* 
+ERROR  [Error: Uncaught (in promise, id: 12) Error: No native splash screen registered for given view controller. Call 'SplashScreen.show' for given view controller first.] Uncaught (in promise, id: 12) Error: No native splash screen registered for given view controller. Call 'SplashScreen.show' for given view controller first.
+ ERROR  [Error: Uncaught (in promise, id: 13) Error: No native splash screen registered for given view controller. Call 'SplashScreen.show' for given view controller first.] Uncaught (in promise, id: 13) Error: No native splash screen registered for given view controller. Call 'SplashScreen.show' for given view controller first.
+ ERROR  [Error: Uncaught (in promise, id: 14) Error: No native splash screen registered for given view controller. Call 'SplashScreen.show' for given view controller first.] Uncaught (in promise, id: 14) Error: No native splash screen registered for given view controller. Call 'SplashScree
+ */
+
 export const unstable_settings = {
   anchor: "(tabs)",
 };

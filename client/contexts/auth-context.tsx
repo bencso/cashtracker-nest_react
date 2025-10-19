@@ -167,6 +167,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  //TODO: Nem jó az ellenörzés megnézni backend oldalon is
   const passwordChange = async ({ password }: { password: string }) => {
     try {
       const response = await api.post("/auth/passwordChange", { password });
