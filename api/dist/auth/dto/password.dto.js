@@ -28,17 +28,4 @@ __decorate([
     }),
     __metadata("design:type", String)
 ], PasswordChangeBody.prototype, "password", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsStrongPassword)({
-        minLength: 8,
-        minLowercase: 1,
-        minUppercase: 1,
-        minNumbers: 1,
-        minSymbols: 1,
-    }, {
-        message: 'A megismérlt új jelszónak legalább 8 karakter hosszúnak kell lennie, tartalmaznia kell kis- és nagybetűt, számot, valamint speciális karaktert.',
-    }),
-    __metadata("design:type", String)
-], PasswordChangeBody.prototype, "repassword", void 0);
 //# sourceMappingURL=password.dto.js.map

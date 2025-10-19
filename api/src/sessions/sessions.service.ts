@@ -93,13 +93,12 @@ export class SessionService {
     try {
       const authHeader = req.headers.authorization;
       const accessToken = authHeader?.split(' ')[1];
+      console.log('ACCESS:' + accessToken);
 
       if (!accessToken) return null;
 
-      //TODO: KRITIKUS: Kivenni majd az ignoreExpiration-t
       const payload = await this.jwtService.verifyAsync(accessToken, {
         secret: this.config.get<string>('JWT_TOKEN_SECRET'),
-        ignoreExpiration: true,
       });
 
       return payload;

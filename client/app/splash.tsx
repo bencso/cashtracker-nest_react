@@ -1,16 +1,23 @@
-import { SplashScreen } from "expo-router";
+import { useEffect } from "react";
+import * as SplashScreen from "expo-splash-screen";
 import { useAuth } from "../contexts/auth-context";
 
-SplashScreen.preventAutoHideAsync();
-
-export function SplashScreenController() {
+export default function SplashScreenController() {
   const { isLoading } = useAuth();
 
-  if (!isLoading) {
-    SplashScreen.hide();
-  }
+  useEffect(() => {
+    SplashScreen.preventAutoHideAsync().catch((e) =>
+      console.warn("Failed to prevent auto hide:", e)
+    );
+  }, []);
+
+  useEffect(() => {
+    if (!isLoading) {
+      SplashScreen.hideAsync().catch((e) =>
+        console.warn("Error hiding splash screen:", e)
+      );
+    }
+  }, [isLoading]);
 
   return null;
 }
-
-export default SplashScreenController;

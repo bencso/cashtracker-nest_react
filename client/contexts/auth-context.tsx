@@ -21,6 +21,7 @@ type AuthContextProp = {
   isAuthenticated: boolean;
   registration: any;
   userData: UserData | null;
+  passwordChange: any;
 };
 
 const AuthContext = createContext<AuthContextProp | undefined>(undefined);
@@ -166,6 +167,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const passwordChange = async ({ password }: { password: string, repassword: string }) => {
+    try {
+      const response = await api.post("/auth/passwordChange", { password });
+      console.log(response.data);
+      if(response.data.statusCode===200)router.push("/(auth)");
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -176,6 +189,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         userData,
         logout,
         isAuthenticated,
+        passwordChange
       }}
     >
       {children}

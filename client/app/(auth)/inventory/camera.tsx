@@ -222,6 +222,8 @@ function CameraOverlay({
   setProduct: any;
   facing: any;
 }) {
+  const [scanned, setScanned] = useState<boolean>(false);
+
   const styles = StyleSheet.create({
     maskContainer: {
       position: 'absolute',
@@ -329,25 +331,35 @@ function CameraOverlay({
     },
     camera: {
       flex: 1,
-      position: "absolute",
-      top: 0,
-      left: 0,
-      height: "120%",
-      width: "120%",
+      ...StyleSheet.absoluteFillObject,
       overflow: "hidden",
       zIndex: 0,
     },
   })
+  const handleBarCodeScanned = ({ type, data }: { type: any, data: any }) => {
+    if (scanned) return;
+    setScanned(true);
+
+    setProduct({
+      code: data,
+      inDb: false
+    });
+    setTimeout(() => setScanned(false), 2000);
+  };
   return (
     <>
-      <CameraView enableTorch={torch} style={styles.camera} barcodeScannerSettings={{
-        barcodeTypes: ["ean13", "ean8"],
-      }} videoQuality="720p" mute autofocus="on" facing={facing} onBarcodeScanned={({ data }) => {
-        setProduct({
-          code: data,
-          inDb: false
-        });
-      }} />
+      <CameraView
+        enableTorch={torch}
+        style={styles.camera}
+        barcodeScannerSettings={{
+          barcodeTypes: ["ean13", "ean8"],
+        }}
+        videoQuality="720p"
+        mute
+        autofocus="on"
+        facing={facing}
+        onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
+      />
       <ThemedView style={styles.maskContainer} pointerEvents="none">
         <ThemedView style={styles.overlayTop} />
         <ThemedView style={styles.overlayBottom} />

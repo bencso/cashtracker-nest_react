@@ -10,7 +10,7 @@ import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "reac
 
 export default function PasswordChangeScreen() {
   const { scheme } = useTheme();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, passwordChange } = useAuth();
   const { t } = useTranslation();
 
   const [password, setPassword] = useState<string>("");
@@ -82,7 +82,10 @@ export default function PasswordChangeScreen() {
 
       Alert.alert(t("alerts.authErrorMessage"), message);
       return;
-    }
+    } else await passwordChange({
+      password: password,
+      rePassword: rePassword
+    })
   }
 
   return (

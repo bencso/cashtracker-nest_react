@@ -19,7 +19,7 @@ import { useEffect } from "react";
 import { initReactI18next, useTranslation } from "react-i18next";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import "react-native-reanimated";
-import { SplashScreenController } from "./splash";
+import SplashScreenController from "./splash";
 
 export const unstable_settings = {
   anchor: "(tabs)",
