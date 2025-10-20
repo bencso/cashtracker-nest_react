@@ -10,7 +10,7 @@ import {
 
 interface OptionsParam {
   label: string;
-  icon: React.ReactNode | string;
+  icon: keyof typeof MaterialCommunityIcons.glyphMap;
   value: string;
 }
 

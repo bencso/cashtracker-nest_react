@@ -48,12 +48,12 @@ export default function SettingsScreen() {
             }}
             icon="translate"
           />
-            <Button
-            label={t("settings.languages.cta")}
+          <Button
+            label={t("settings.colortheme.cta")}
             action={() => {
-              router.replace("/settings/language");
+              router.replace("/settings/theme");
             }}
-            icon="translate"
+            icon="theme-light-dark"
           />
         </View>
       </ThemedView>

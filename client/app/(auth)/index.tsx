@@ -18,9 +18,7 @@ export default function AuthenticatedScreen() {
     },
     content: {
       flex: 1,
-      padding: 16,
       gap: 12,
-      paddingTop: 100,
     },
     buttons: {
       flexDirection: "row",
@@ -35,21 +33,17 @@ export default function AuthenticatedScreen() {
       backgroundColor: `${Colors[colorScheme ?? "light"].primary}10`,
     },
     settingGroup: {
-      gap: 12,
+      gap: 28,
+      backgroundColor: `${Colors[colorScheme ?? "light"].tabIconDefault}`,
+      paddingTop: 70,
+      padding: 16,
+      borderEndStartRadius: 24,
+      borderEndEndRadius: 24
     },
     title: {
       maxWidth: "80%",
-      fontSize: 20
-    },
-    topBarContainer: {
-      flexDirection: "column",
-      gap: 17,
-      color: Colors[colorScheme ?? "light"].text,
-      paddingVertical: 16,
-      paddingHorizontal: 16,
-      borderRadius: 24,
-      fontSize: 16,
-      backgroundColor: `${Colors[colorScheme ?? "light"].primary}70`,
+      fontSize: 22,
+      color: `${Colors[colorScheme ?? "light"].background}`,
     },
     topBar: {
       flexDirection: "column",
@@ -67,8 +61,8 @@ export default function AuthenticatedScreen() {
       flexDirection: "row",
       width: "100%",
       padding: 12,
-      paddingTop: 16,
-      paddingBottom: 16,
+      paddingTop: 20,
+      paddingBottom: 20,
       borderBottomWidth: 1,
       borderBottomColor: Colors[colorScheme ?? "light"].border,
       borderRadius: 12,
@@ -144,49 +138,63 @@ export default function AuthenticatedScreen() {
           <ThemedText type="title" style={styles.title}>
             {t("main.title")} {userData && userData.username}
           </ThemedText>
+          <ThemedView style={styles.topBar}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              {/* */}
+              {
+                lists.map(({ name, amount }: { name: string; amount?: number }, idx: number) => (
+                  <ThemedView style={styles.topBarItem} key={idx}>
+                    <View style={{ flexDirection: "row", gap: 16, alignItems: "center" }}>
+                      <View style={{
+                        width: 50,
+                        height: 50,
+                        backgroundColor: "black",
+                        borderRadius: "100%",
+                        justifyContent: "center",
+                        alignItems: "center"
+                      }} >
+                        <ThemedText style={{
+                          color: "white",
+                          fontSize: 30
+                        }}>{name.at(0)}</ThemedText>
+                      </View>
+                      <ThemedText type="defaultSemiBold" style={{ fontSize: 17 }}>
+                        {name}
+                      </ThemedText>
+                    </View>
+                    <ThemedText style={{ fontSize: 14, color: Colors[colorScheme ?? "light"].text }}>
+                      {amount ? amount : 1}x
+                    </ThemedText>
+                  </ThemedView>
+                ))
+              }
+              {/* */}
+            </ScrollView>
+          </ThemedView>
         </View>
-        <ThemedView style={styles.topBarContainer}>
-          <ThemedText style={{ fontSize: 15 }}>
-            Bevásárlólista
-          </ThemedText>
-          <ScrollView showsVerticalScrollIndicator={false} style={styles.topBar}>
-            {/* */}
-            {
-              lists.map(({ name, amount }: { name: string; amount?: number }, idx: number) => (
-                <ThemedView style={styles.topBarItem} key={idx}>
-                  <ThemedText type="defaultSemiBold" style={{ fontSize: 15 }}>
-                    {name}
-                  </ThemedText>
-                  <ThemedText style={{ fontSize: 12, color: Colors[colorScheme ?? "light"].text }}>
-                    {amount ? amount : 1}x
-                  </ThemedText>
-                </ThemedView>
-              ))
-            }
-            {/* */}
+        <View>
+          <ScrollView
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingLeft: offset }}
+          >
+            {items && items.map(({ nameDay, numberDay }: { nameDay: string, numberDay: number }, index: number) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => {
+                  setSelectedDay(numberDay);
+                  setOffset(0);
+                }}>
+                <View style={selectedDay === numberDay ? styles.activeCard : styles.card}>
+                  <View style={styles.cardTop}>
+                    <ThemedText type="defaultSemiBold">{nameDay}</ThemedText>
+                    <ThemedText>{numberDay}</ThemedText>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            ))}
           </ScrollView>
-        </ThemedView>
-        <ScrollView
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingLeft: offset }}
-        >
-          {items && items.map(({ nameDay, numberDay }: { nameDay: string, numberDay: number }, index: number) => (
-            <TouchableOpacity
-              key={index}
-              onPress={() => {
-          setSelectedDay(numberDay);
-          setOffset(-(index * 76));
-              }}>
-              <View style={selectedDay === numberDay ? styles.activeCard : styles.card}>
-          <View style={styles.cardTop}>
-            <ThemedText type="defaultSemiBold">{nameDay}</ThemedText>
-            <ThemedText>{numberDay}</ThemedText>
-          </View>
-              </View>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
+        </View>
       </ThemedView >
     </ThemedView >
   );

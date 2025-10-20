@@ -124,7 +124,7 @@ function AppContent() {
                   <MaterialCommunityIcons
                     name="cog"
                     size={24}
-                    color={Colors[scheme ?? "light"].tabIconDefault}
+                    color={Colors[scheme ?? "light"].tabIconSelected}
                   />
                 </TouchableOpacity>
               ),
@@ -150,7 +150,8 @@ function AppContent() {
                   <MaterialCommunityIcons
                     name="cog"
                     size={24}
-                    color={Colors[scheme ?? "light"].tabIconDefault}
+                    color={Colors[scheme ?? "light"].background}
+
                   />
                 </TouchableOpacity>
               ),
@@ -170,7 +171,7 @@ function AppContent() {
                   ? t("settings.languages.cta")
                   : pathname === "/settings/passwordchange"
                     ? t("settings.authenticated.password")
-                    : t("settings.title"),
+                    : pathname === "/settings/theme" ? t("settings.colortheme.cta") : t("settings.title"),
             headerLeft: () => (
               <TouchableOpacity
                 style={{
