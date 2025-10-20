@@ -1,5 +1,4 @@
 import Button from "@/components/button";
-import ThemeButton from "@/components/setttings/themebutton";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { Colors } from "@/constants/theme";

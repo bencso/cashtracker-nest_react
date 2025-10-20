@@ -1,6 +1,7 @@
 import { ThemedText } from "@/components/themed-text";
 import { Colors } from "@/constants/theme";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { ReactNode } from "react";
 import {
   ColorSchemeName,
   StyleSheet,
@@ -10,7 +11,7 @@ import {
 
 interface OptionsParam {
   label: string;
-  icon: keyof typeof MaterialCommunityIcons.glyphMap;
+  icon: keyof typeof MaterialCommunityIcons.glyphMap | ReactNode;
   value: string;
 }
 

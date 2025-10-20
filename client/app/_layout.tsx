@@ -179,6 +179,8 @@ function AppContent() {
                   alignItems: "center",
                   paddingLeft: 5,
                 }}
+                //TODO: Ezt átgondolni ez fixre nem jó igy...., 
+                // ha aloldalon van akkor az aloldal elötti dologra menjen egyébként meg vissz ahonnan megnyitotta
                 onPress={() => {
                   if (pathname === "/settings") {
                     if (router.canGoBack()) {

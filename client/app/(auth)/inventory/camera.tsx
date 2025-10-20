@@ -42,7 +42,7 @@ export default function CameraScreen() {
 
   useEffect(() => {
     if (product?.code != null) getProductByCode()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product?.code])
 
   const styles = StyleSheet.create({
@@ -138,7 +138,7 @@ export default function CameraScreen() {
             setTorch(!torch);
           }} />
           <Button icon={"pen"} label={t("camera.inventory.custominput")} chevron={false} coloredIcon action={() => {
-            setTorch(!torch);
+            router.replace("/(auth)/inventory/customInput")
           }} />
         </ThemedView>
       </ThemedView>
