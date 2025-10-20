@@ -48,7 +48,13 @@ export default function SettingsScreen() {
             }}
             icon="translate"
           />
-          <ThemeButton />
+            <Button
+            label={t("settings.languages.cta")}
+            action={() => {
+              router.replace("/settings/language");
+            }}
+            icon="translate"
+          />
         </View>
       </ThemedView>
     </ThemedView>
