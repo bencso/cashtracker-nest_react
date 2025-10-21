@@ -197,14 +197,12 @@ let AuthService = class AuthService {
             email: user.email,
             user_data: user_data,
         };
-        console.log(this.config.get('JWT_TOKEN_TIME'));
         return this.jwtService.signAsync(payload, {
             secret: this.config.get('JWT_TOKEN_SECRET'),
             expiresIn: Number(this.config.get('JWT_TOKEN_TIME')),
         });
     }
     async createRefreshToken(payload) {
-        console.log(this.config.get('JWT_REFRESH_TIME'));
         return this.jwtService.signAsync(payload, {
             secret: this.config.get('JWT_REFRESH_SECRET'),
             expiresIn: Number(this.config.get('JWT_REFRESH_TIME')),
@@ -300,7 +298,6 @@ let AuthService = class AuthService {
             const userData = userDataArr[0];
             if (!userData)
                 throw new common_1.UnauthorizedException('Nem érvényes bejelentkezési token!');
-            console.log(userData.email);
             return {
                 message: ['Sikeres lekérdezés!'],
                 statusCode: 200,

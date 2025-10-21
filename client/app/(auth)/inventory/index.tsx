@@ -19,7 +19,13 @@ export default function InventoryScreen() {
   const { t } = useTranslation();
   const [products, setProducts] = useState<Product[] | []>([]);
 
+  useEffect(() => {
+    async function getProducts(){
+      setProducts(await getItems());
+    }
 
+    getProducts();
+  }, []);
 
   const styles = StyleSheet.create({
     container: {

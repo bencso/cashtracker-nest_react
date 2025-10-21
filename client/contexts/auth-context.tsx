@@ -33,7 +33,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const accessToken = await SecureStore.getItemAsync("accessToken");
       const refreshToken = await SecureStore.getItemAsync("refreshToken");
-      console.log(accessToken, refreshToken);
       if (refreshToken && accessToken) {
         setAccessToken(accessToken);
         setRefreshToken(refreshToken);
@@ -89,8 +88,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         refresh: responseAPI.refreshToken,
       };
 
-      console.log(tokens);
-
       if (tokens && tokens.access && tokens.refresh) {
         await SecureStore.setItemAsync("accessToken", String(tokens.access));
         await SecureStore.setItemAsync("refreshToken", String(tokens.refresh));
@@ -124,7 +121,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         username,
         password,
       });
-      console.log(response);
       if (
         response.data.statusCode === 200 ||
         response.data.statusCode === 201

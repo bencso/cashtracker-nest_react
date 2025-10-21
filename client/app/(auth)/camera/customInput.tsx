@@ -1,4 +1,5 @@
 import {
+    Alert,
     StyleSheet,
     Text,
     TextInput,
@@ -10,14 +11,17 @@ import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { Colors } from "@/constants/theme";
 import { useTheme } from "@/contexts/theme-context";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { addItem } from "@/libs/inventory";
 
 export default function CustomInputScreen() {
     const { scheme } = useTheme();
     const [productName, setProductName] = useState<string>("");
     const [productCode, setProductCode] = useState<string>("");
+    const [expired, setExpired] = useState<Date>(new Date());
+    const [amount, setAmount] = useState<number>(1);
     const { t } = useTranslation();
     const disabledButton = productName.length < 0;
 
@@ -75,8 +79,21 @@ export default function CustomInputScreen() {
         setProductName(text);
     }
 
-    async function onSubmit() {
+    useEffect(() => {
+        if (amount && amount <= 1) setAmount(1);
+    }, [amount]);
 
+    async function onSubmit() {
+        try {
+            await addItem({
+                code: productCode,
+                product_name: productName,
+                amount: amount,
+                expiredAt: expired
+            });
+        } catch {
+            Alert.alert("Hiba történt a felvevés közben");
+        }
     }
 
     return (
@@ -93,10 +110,8 @@ export default function CustomInputScreen() {
                         placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
                         value={productName}
                         maxLength={150}
-                        autoComplete="name"
                         autoCorrect={false}
                         keyboardType="default"
-                        textContentType="name"
                         autoCapitalize="none"
                         onChangeText={(text) => {
                             productNameOnChange(text);
@@ -116,7 +131,29 @@ export default function CustomInputScreen() {
                             setProductCode(text);
                         }}
                     />
-                    <DateTimePicker mode="date" display="default" value={new Date()} maximumDate={new Date(new Date().getFullYear() + 10, 0, 1)}/>
+                    <TextInput
+                        style={styles.input}
+                        placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
+                        value={amount.toString()}
+                        maxLength={3}
+                        autoCorrect={false}
+                        keyboardType="number-pad"
+                        autoCapitalize="none"
+                        onChangeText={(text) => {
+                            setAmount(+text);
+                        }}
+                        placeholder={t("customInput.productName")}
+                    />
+                    <DateTimePicker
+                        mode="date"
+                        display="default"
+                        value={expired}
+                        onChange={(_, selectedDate) => {
+                            const currentDate = selectedDate || expired;
+                            setExpired(currentDate);
+                        }}
+                        maximumDate={new Date(new Date().getFullYear() + 10, 0, 1)}
+                    />
                     <TouchableOpacity
                         disabled={disabledButton}
                         onPress={onSubmit}
