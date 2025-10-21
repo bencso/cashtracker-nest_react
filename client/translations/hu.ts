@@ -15,18 +15,15 @@ export default {
         passwordChange: "Jelszóváltoztatás"
     },
     forms: {
-        password: "Írja be jelszavát",
-        repassword: "Írja be újra jelszavát",
-        email: "Írja be e-mail címét",
-        username: "Írja be felhasználónevét",
+        password: "Írja be a jelszavát",
+        repassword: "Írja be újra a jelszavát",
+        email: "Írja be az e-mail címét",
+        username: "Írja be a felhasználónevét",
     },
     tabs: {
         login: "Bejelentkezés",
         home: "Főoldal",
         settings: "Beállítások",
-        inventory:{
-            create: "Szkennelés"
-        }
     },
     settings: {
         title: "Beállítások",
@@ -36,7 +33,7 @@ export default {
             password: "Jelszóváltoztatás",
         },
         languages: {
-            cta: "Nyelv beállítások",
+            cta: "Nyelvi beállítások",
             hu: "Magyar",
             en: "Angol"
         },
@@ -50,36 +47,45 @@ export default {
     main: {
         title: "Üdvözlünk,"
     },
+    customInput:{
+        cta: "Termék felvitele",
+        productName: "Termék neve",
+        productCode: "Termék kódja",
+        send: "Felvitel"
+    },
     alerts: {
-        authErrorTitle: "Hiba történt a bejelentkezés során!",
+        authErrorTitle: "Hiba történt a bejelentkezéskor!",
         authErrorMessage: "Kérjük, ellenőrizze az adatait és próbálja újra.",
-        registrationErrorTitle: "Hiba történt a regisztráció során!",
+        registrationErrorTitle: "Hiba történt a regisztrációkor!",
         registrationErrorMessage: "Kérjük, ellenőrizze az adatait és próbálja újra.",
         registrationEmailErrorMessage: "Ez az e-mail cím már használatban van!",
         registrationSuccessTitle: "Sikeres regisztráció!",
-        registrationSuccessMessage: "Üdvözöljük az applikációnkban!",
-        authMissingEmail: "Kérem adja meg az email címét!",
-        authMissingPassword: "Kérem adja meg a jelszavát!",
-        authMissingRePassword: "Kérem adja meg újra jelszavát!",
-        registrationMissingUsername: "Kérem adja meg a felhasználónevét!",
+        registrationSuccessMessage: "Üdvözöljük az alkalmazásban!",
+        authMissingEmail: "Kérjük, adja meg az e-mail címét!",
+        authMissingPassword: "Kérjük, adja meg a jelszavát!",
+        authMissingRePassword: "Kérjük, adja meg újra a jelszavát!",
+        registrationMissingUsername: "Kérjük, adja meg a felhasználónevét!",
         loading: "Betöltés...",
         authPasswordMatchMessage: "A megadott jelszavak nem egyeznek!"
     },
-    camera: {
+    inventory: {
+        cta: "Kamra",
         permission: {
             title: "A kamera használatához engedély szükséges.",
-            description: 'Engedélyezze a kamera hozzáférést az alkalmazás beállításaiban, vagy nyomja meg az "Engedélykérés" gombot.',
-            cta: "Engedélykérés",
-            openSettings: "Beállítások megnyitása"
+            description:
+                'Engedélyezze a kamera hozzáférést az alkalmazás beállításaiban, vagy nyomja meg az "Engedély kérése" gombot.',
+            cta: "Engedély kérése",
+            openSettings: "Beállítások megnyitása",
         },
-        inventory: {
-            title: "Termék felvitele a spejzba",
-            code: "Termékkód",
-            name: "Terméknév",
-            rescan: "Újraszkennelés",
-            wrongscan: "Hibás felvitel javítása",
-            customadd: "Termék felvitele a rendszerbe",
-            custominput: "Kézzel bevitel"
-        }
-    }
+        camera: {
+            cta: "Kamera",
+            title: "Termék hozzáadása a kamrához",
+            code: "Termék kódja",
+            name: "Termék neve",
+            rescan: "Újra szkennelés",
+            wrongscan: "Hibás bevitel javítása",
+            customadd: "Termék hozzáadása a rendszerhez",
+            custominput: "Kézi bevitel",
+        },
+    },
 };

@@ -137,8 +137,8 @@ export default function CameraScreen() {
           <Button icon={torch ? "flashlight" : "flashlight-off"} label="" chevron={false} coloredIcon action={() => {
             setTorch(!torch);
           }} />
-          <Button icon={"pen"} label={t("camera.inventory.custominput")} chevron={false} coloredIcon action={() => {
-            router.replace("/(auth)/inventory/customInput")
+          <Button icon={"pen"} label={t("inventory.camera.custominput")} chevron={false} coloredIcon action={() => {
+            router.navigate("/(auth)/camera/customInput")
           }} />
         </ThemedView>
       </ThemedView>

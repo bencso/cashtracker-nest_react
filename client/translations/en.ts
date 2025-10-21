@@ -6,7 +6,7 @@ export default {
     registration: "Sign up",
     email: "Email address",
     password: "Password",
-    repassword: "Re-password",
+    repassword: "Re-enter password",
     noAccount: "Don't have an account?",
     haveAccount: "Already have an account?",
     register: "Sign up now",
@@ -33,7 +33,7 @@ export default {
     appearance: "General",
     authenticated: {
       title: "User settings",
-      password: "Password change",
+      password: "Change password",
     },
     languages: {
       cta: "Language",
@@ -50,22 +50,29 @@ export default {
   main: {
     title: "Welcome,",
   },
+  customInput: {
+    cta: "Add product",
+    productName: "Product name",
+    productCode: "Product code",
+    send: "Add"
+  },
   alerts: {
     authErrorTitle: "An error occurred during login!",
     authErrorMessage: "Please check your details and try again.",
     registrationErrorTitle: "An error occurred during registration!",
     registrationErrorMessage: "Please check your details and try again.",
     registrationEmailErrorMessage: "This email address is already in use!",
-    registrationSuccessTitle: "Successful registration!",
+    registrationSuccessTitle: "Registration successful!",
     registrationSuccessMessage: "Welcome to our app!",
     authMissingEmail: "Please enter your email address!",
     authMissingPassword: "Please enter your password!",
     authMissingRePassword: "Please enter your password again!",
     authMissingUsername: "Please enter your username!",
     loading: "Loading...",
-    authPasswordMatchMessage: "The passwords do not match!",
+    authPasswordMatchMessage: "Passwords do not match!",
   },
-  camera: {
+  inventory: {
+    cta: "Pantry",
     permission: {
       title: "Permission is required to use the camera.",
       description:
@@ -73,7 +80,8 @@ export default {
       cta: "Request permission",
       openSettings: "Open settings",
     },
-    inventory: {
+    camera: {
+      cta: "Camera",
       title: "Add product to pantry",
       code: "Product code",
       name: "Product name",

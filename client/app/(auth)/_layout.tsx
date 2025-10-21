@@ -20,17 +20,25 @@ export default function AuthenticatedLayout() {
           <Icon
             selectedColor={Colors[scheme ?? "light"].tabIconSelected}
             sf="house"
-            drawable="custom_login_drawable"
+            drawable="custom_house_drawable"
           />
           <Label>{t("tabs.home")}</Label>
         </NativeTabs.Trigger>
-        <NativeTabs.Trigger name="inventory" role="search">
+        <NativeTabs.Trigger name="inventory">
+          <Icon
+            selectedColor={Colors[scheme ?? "light"].tabIconSelected}
+            sf="cube.box.fill"
+            drawable="custom_cube_drawable"
+          />
+          <Label>{t("inventory.cta")}</Label>
+        </NativeTabs.Trigger>
+        <NativeTabs.Trigger name="camera" role="search">
           <Icon
             selectedColor={Colors[scheme ?? "light"].tabIconSelected}
             sf="plus"
-            drawable="custom_login_drawable"
+            drawable="custom_camera_drawable"
           />
-          <Label>{t("tabs.inventory.create")}</Label>
+          <Label>{t("inventory.camera.create")}</Label>
         </NativeTabs.Trigger>
       </NativeTabs>
     );
@@ -85,7 +93,7 @@ export default function AuthenticatedLayout() {
         options={{
           title: t("tabs.login"),
           tabBarIcon: () => (
-            <Icon sf="door.left.hand.open" drawable="custom_login_drawable" />
+            <Icon sf="door.left.hand.open" drawable="custom_door_open_drawable" />
           ),
         }}
       />
@@ -94,7 +102,7 @@ export default function AuthenticatedLayout() {
         options={{
           title: t("tabs.inventory.create"),
           tabBarIcon: () => (
-            <Icon sf="scanner" drawable="custom_login_drawable" />
+            <Icon sf="scanner" drawable="custom_scanner_drawable" />
           ),
         }}
       />

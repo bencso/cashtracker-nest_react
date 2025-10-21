@@ -20,7 +20,7 @@ export default function AuthLayout() {
           <Icon
             selectedColor={Colors[scheme ?? "light"].tabIconSelected}
             sf="door.left.hand.open"
-            drawable="custom_login_drawable"
+            drawable="custom_door_open_drawable"
           />
           <Label hidden>{t("tabs.login")}</Label>
         </NativeTabs.Trigger>
@@ -77,7 +77,7 @@ export default function AuthLayout() {
         options={{
           title: t("tabs.login"),
           tabBarIcon: () => (
-            <Icon sf="paperplane.fill" drawable="custom_login_drawable" />
+            <Icon sf="paperplane.fill" drawable="custom_paperplane_drawable" />
           ),
         }}
       />

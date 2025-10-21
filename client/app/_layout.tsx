@@ -163,7 +163,7 @@ function AppContent() {
           name="settings"
           options={{
             presentation: "modal",
-            animation: "fade",
+            animation: "fade_from_bottom",
             title:
               pathname === "/settings"
                 ? t("settings.title")
