@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePantryItemDto } from './dto/create-pantry-item.dto';
 import { UsersService } from 'src/users/users.service';
-import { DataSource, MoreThan, MoreThanOrEqual } from 'typeorm';
+import { DataSource, MoreThanOrEqual } from 'typeorm';
 import { SessionService } from 'src/sessions/sessions.service';
 import { Request } from 'express';
 import { ProductService } from 'src/product/product.service';
@@ -13,8 +13,8 @@ export class PantryService {
     private readonly usersService: UsersService,
     private readonly dataSource: DataSource,
     private readonly sessionsService: SessionService,
-    private readonly productService: ProductService
-  ) { }
+    private readonly productService: ProductService,
+  ) {}
   async create(request: Request, createPantryItemDto: CreatePantryItemDto) {
     const requestUser = await this.sessionsService.validateAccessToken(request);
     const user = await this.usersService.findUser(requestUser.email);
@@ -23,33 +23,35 @@ export class PantryService {
 
     try {
       if (user) {
-        productId = await this.productService.getItemId(createPantryItemDto.code);
+        productId = await this.productService.getItemId(
+          createPantryItemDto.code,
+        );
 
-        if (productId === null) {
+        if (!productId) {
           const createdProduct = await this.productService.create(request, {
             product_name: createPantryItemDto.product_name,
-            code: createPantryItemDto.code
+            code: createPantryItemDto.code,
           });
           productId = createdProduct?.id ?? createdProduct;
         }
 
-        const result = await this.dataSource.getRepository(Pantry)
+        await this.dataSource
+          .getRepository(Pantry)
           .createQueryBuilder()
           .insert()
           .values({
             user: { id: user.id },
             product: { id: productId },
             amount: createPantryItemDto.amount,
-            expiredAt: createPantryItemDto.expiredAt ?? new Date()
+            expiredAt: createPantryItemDto.expiredAt ?? new Date(),
           })
           .execute();
 
-        console.log(result);
-
-        return { message: ["Sikeres létrehozás"], statusCode: 200 }
+        return { message: ['Sikeres létrehozás'], statusCode: 200 };
       }
+    } catch {
+      return { message: ['Sikertelen létrehozás'], statusCode: 403 };
     }
-    catch { return { message: ["Sikertelen létrehozás"], statusCode: 403 } }
   }
 
   async getUserPantry(request: Request) {
@@ -60,18 +62,63 @@ export class PantryService {
       const products = await this.dataSource.getRepository(Pantry).find({
         where: {
           user: { id: user.id },
-          expiredAt: MoreThanOrEqual(new Date())
+          expiredAt: MoreThanOrEqual(new Date()),
         },
-        order: { id: 'ASC' }
+        relations: {
+          product: true,
+        },
+        order: { id: 'ASC' },
+        select: {
+          product: {
+            code: true,
+            product_name: true,
+          },
+          expiredAt: true,
+          amount: true,
+          id: true,
+        },
       });
 
-      return products.length > 0 ? {
-        message: ["Sikeres lekérdezés"],
-        statusCode: 200,
-        products: products
-      } : { message: ["Nincs semmi a raktárjában a felhasználónak!"], statusCode: 404, products: products }
-    } else return { message: ["Sikertelen lekérdezés"], statusCode: 404 }
+      return products.length > 0
+        ? {
+            message: ['Sikeres lekérdezés'],
+            statusCode: 200,
+            products: products,
+          }
+        : {
+            message: ['Nincs semmi a raktárjában a felhasználónak!'],
+            statusCode: 404,
+            products: products,
+          };
+    } else return { message: ['Sikertelen lekérdezés'], statusCode: 404 };
   }
 
-  remove(request: Request, id: number) { }
+  async remove(request: Request, id: number) {
+    const requestUser = await this.sessionsService.validateAccessToken(request);
+    const user = await this.usersService.findUser(requestUser.email);
+
+    if (user) {
+      const product = await this.dataSource
+        .getRepository(Pantry)
+        .createQueryBuilder()
+        .where({
+          id: id,
+          user: user,
+        })
+        .getCount();
+
+      if (product > 0) {
+        try {
+          this.dataSource.getRepository(Pantry).delete({
+            id: id,
+            user: user,
+          });
+
+          return { message: ['Sikeres törlés'], statusCode: 200 };
+        } catch {
+          return { message: ['Sikertelen törlés'], statusCode: 404 };
+        }
+      } else return { message: ['Sikertelen törlés'], statusCode: 404 };
+    }
+  }
 }

@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Param, Delete, HttpCode, HttpStatus, Req, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  HttpCode,
+  HttpStatus,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { PantryService } from './pantry.service';
 import { CreatePantryItemDto } from './dto/create-pantry-item.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
@@ -7,12 +18,15 @@ import { Request } from 'express';
 
 @Controller('pantry')
 export class PantryController {
-  constructor(private readonly pantryService: PantryService) { }
+  constructor(private readonly pantryService: PantryService) {}
 
   @Post()
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  create(@Req() request: Request, @Body() createPantryItemDto: CreatePantryItemDto) {
+  create(
+    @Req() request: Request,
+    @Body() createPantryItemDto: CreatePantryItemDto,
+  ) {
     return this.pantryService.create(request, createPantryItemDto);
   }
 
