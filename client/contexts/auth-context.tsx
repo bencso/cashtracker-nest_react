@@ -81,7 +81,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
 
       const responseAPI = response.data;
-      console.log(responseAPI);
 
       const tokens = {
         access: responseAPI.accessToken,
@@ -167,7 +166,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const passwordChange = async ({ password }: { password: string }) => {
     try {
       const response = await api.post("/auth/passwordChange", { password });
-      console.log(response);
       if (response.data.statusCode === 200) {
         router.back();
         return true;

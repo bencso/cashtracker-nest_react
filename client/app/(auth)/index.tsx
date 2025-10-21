@@ -9,15 +9,14 @@ import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 
 export default function AuthenticatedScreen() {
   const { scheme: colorScheme } = useTheme();
-  const { userData } = useAuth();
+  const { userData, loadAuth } = useAuth();
   const { t } = useTranslation();
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      height: "100%",
+      backgroundColor: Colors[colorScheme ?? "light"].background,
     },
     content: {
-      flex: 1,
       gap: 12,
     },
     buttons: {
@@ -35,14 +34,13 @@ export default function AuthenticatedScreen() {
     settingGroup: {
       gap: 28,
       backgroundColor: `${Colors[colorScheme ?? "light"].tabIconDefault}`,
-      paddingTop: 70,
-      padding: 16,
+      paddingTop: 50,
+      padding: 18,
       borderEndStartRadius: 24,
       borderEndEndRadius: 24
     },
     title: {
       maxWidth: "80%",
-      fontSize: 22,
       color: `${Colors[colorScheme ?? "light"].background}`,
     },
     topBar: {
@@ -50,7 +48,7 @@ export default function AuthenticatedScreen() {
       gap: 12,
       color: Colors[colorScheme ?? "light"].text,
       backgroundColor: "white",
-      paddingVertical: 16,
+
       paddingHorizontal: 16,
       borderRadius: 24,
       fontSize: 16,
@@ -102,6 +100,9 @@ export default function AuthenticatedScreen() {
   const nowDay = new Date().getDate();
   const nowDays = new Date(nowYear, nowMonth, 0).getDate();
 
+  useEffect(() => {
+    loadAuth()
+  }, [])
 
   //E-hónap napjai
   //TODO: Késöbb a többi hónap is lehet majd
@@ -135,9 +136,14 @@ export default function AuthenticatedScreen() {
     <ThemedView style={styles.container}>
       <ThemedView style={styles.content}>
         <View style={styles.settingGroup}>
-          <ThemedText type="title" style={styles.title}>
-            {t("main.title")} {userData && userData.username}
-          </ThemedText>
+          <View style={{ flexDirection: "column" }}>
+            <ThemedText type="title" style={styles.title}>
+              {t("main.title")}
+            </ThemedText>
+            <ThemedText type="subtitle" style={styles.title}>
+              {userData && userData.username}
+            </ThemedText>
+          </View>
           <ThemedView style={styles.topBar}>
             <ScrollView showsVerticalScrollIndicator={false}>
               {/* */}

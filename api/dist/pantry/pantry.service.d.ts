@@ -4,7 +4,6 @@ import { DataSource } from 'typeorm';
 import { SessionService } from 'src/sessions/sessions.service';
 import { Request } from 'express';
 import { ProductService } from 'src/product/product.service';
-import { Pantry } from './entities/pantry.entity';
 export declare class PantryService {
     private readonly usersService;
     private readonly dataSource;
@@ -18,7 +17,7 @@ export declare class PantryService {
     getUserPantry(request: Request): Promise<{
         message: string[];
         statusCode: number;
-        products: Pantry[];
+        products: any[];
     } | {
         message: string[];
         statusCode: number;

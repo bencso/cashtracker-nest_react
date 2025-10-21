@@ -29,6 +29,7 @@ export async function addItem({
       },
       { withCredentials: true }
     );
+
     return true;
   } catch {
     return null;

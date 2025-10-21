@@ -34,7 +34,7 @@ export class PantryController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
-  getUserPantry(@Req() request: Request) {
+  getUserPantry(@Req() request: Request): any {
     return this.pantryService.getUserPantry(request);
   }
 

@@ -72,6 +72,7 @@ export class PantryService {
           product: {
             code: true,
             product_name: true,
+            id: true,
           },
           expiredAt: true,
           amount: true,
@@ -79,11 +80,22 @@ export class PantryService {
         },
       });
 
+      const returnProducts = [];
+      products.map((value: Pantry) => {
+        returnProducts.push({
+          index: value.product.id,
+          name: value.product.product_name,
+          amount: value.amount,
+          expiredAt: value.expiredAt,
+          code: value.product.code,
+        });
+      });
+
       return products.length > 0
         ? {
             message: ['Sikeres lekérdezés'],
             statusCode: 200,
-            products: products,
+            products: returnProducts,
           }
         : {
             message: ['Nincs semmi a raktárjában a felhasználónak!'],

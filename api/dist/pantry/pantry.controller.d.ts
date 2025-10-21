@@ -8,15 +8,7 @@ export declare class PantryController {
         message: string[];
         statusCode: number;
     }>;
-    getUserPantry(request: Request): Promise<{
-        message: string[];
-        statusCode: number;
-        products: import("./entities/pantry.entity").Pantry[];
-    } | {
-        message: string[];
-        statusCode: number;
-        products?: undefined;
-    }>;
+    getUserPantry(request: Request): any;
     remove(request: Request, id: string): Promise<{
         message: string[];
         statusCode: number;
