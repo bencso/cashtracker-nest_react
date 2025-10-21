@@ -102,6 +102,7 @@ export default function RegistrationScreen() {
       email: email,
       password: password,
     });
+
     if (typeof result !== "boolean" && result !== true) {
       let error = t("alerts.registrationErrorMessage");
 

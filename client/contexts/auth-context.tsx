@@ -124,6 +124,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         username,
         password,
       });
+      console.log(response);
       if (
         response.data.statusCode === 200 ||
         response.data.statusCode === 201

@@ -30,29 +30,29 @@ let PantryService = class PantryService {
         try {
             if (user) {
                 productId = await this.productService.getItemId(createPantryItemDto.code);
-                if (productId === null) {
+                if (!productId) {
                     const createdProduct = await this.productService.create(request, {
                         product_name: createPantryItemDto.product_name,
-                        code: createPantryItemDto.code
+                        code: createPantryItemDto.code,
                     });
                     productId = createdProduct?.id ?? createdProduct;
                 }
-                const result = await this.dataSource.getRepository(pantry_entity_1.Pantry)
+                await this.dataSource
+                    .getRepository(pantry_entity_1.Pantry)
                     .createQueryBuilder()
                     .insert()
                     .values({
                     user: { id: user.id },
                     product: { id: productId },
                     amount: createPantryItemDto.amount,
-                    expiredAt: createPantryItemDto.expiredAt ?? new Date()
+                    expiredAt: createPantryItemDto.expiredAt ?? new Date(),
                 })
                     .execute();
-                console.log(result);
-                return { message: ["Sikeres létrehozás"], statusCode: 200 };
+                return { message: ['Sikeres létrehozás'], statusCode: 200 };
             }
         }
         catch {
-            return { message: ["Sikertelen létrehozás"], statusCode: 403 };
+            return { message: ['Sikertelen létrehozás'], statusCode: 403 };
         }
     }
     async getUserPantry(request) {
@@ -62,20 +62,65 @@ let PantryService = class PantryService {
             const products = await this.dataSource.getRepository(pantry_entity_1.Pantry).find({
                 where: {
                     user: { id: user.id },
-                    expiredAt: (0, typeorm_1.MoreThanOrEqual)(new Date())
+                    expiredAt: (0, typeorm_1.MoreThanOrEqual)(new Date()),
                 },
-                order: { id: 'ASC' }
+                relations: {
+                    product: true,
+                },
+                order: { id: 'ASC' },
+                select: {
+                    product: {
+                        code: true,
+                        product_name: true,
+                    },
+                    expiredAt: true,
+                    amount: true,
+                    id: true,
+                },
             });
-            return products.length > 0 ? {
-                message: ["Sikeres lekérdezés"],
-                statusCode: 200,
-                products: products
-            } : { message: ["Nincs semmi a raktárjában a felhasználónak!"], statusCode: 404, products: products };
+            return products.length > 0
+                ? {
+                    message: ['Sikeres lekérdezés'],
+                    statusCode: 200,
+                    products: products,
+                }
+                : {
+                    message: ['Nincs semmi a raktárjában a felhasználónak!'],
+                    statusCode: 404,
+                    products: products,
+                };
         }
         else
-            return { message: ["Sikertelen lekérdezés"], statusCode: 404 };
+            return { message: ['Sikertelen lekérdezés'], statusCode: 404 };
     }
-    remove(request, id) { }
+    async remove(request, id) {
+        const requestUser = await this.sessionsService.validateAccessToken(request);
+        const user = await this.usersService.findUser(requestUser.email);
+        if (user) {
+            const product = await this.dataSource
+                .getRepository(pantry_entity_1.Pantry)
+                .createQueryBuilder()
+                .where({
+                id: id,
+                user: user,
+            })
+                .getCount();
+            if (product > 0) {
+                try {
+                    this.dataSource.getRepository(pantry_entity_1.Pantry).delete({
+                        id: id,
+                        user: user,
+                    });
+                    return { message: ['Sikeres törlés'], statusCode: 200 };
+                }
+                catch {
+                    return { message: ['Sikertelen törlés'], statusCode: 404 };
+                }
+            }
+            else
+                return { message: ['Sikertelen törlés'], statusCode: 404 };
+        }
+    }
 };
 exports.PantryService = PantryService;
 exports.PantryService = PantryService = __decorate([

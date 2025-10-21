@@ -19,7 +19,6 @@ export class Pantry {
   @JoinTable()
   user: User;
 
-
   @PrimaryGeneratedColumn()
   id: number;
 

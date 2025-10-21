@@ -19,7 +19,7 @@ __decorate([
     __metadata("design:type", String)
 ], Product.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'text', nullable: true }),
+    (0, typeorm_1.Column)({ type: 'text', nullable: true, unique: true }),
     __metadata("design:type", String)
 ], Product.prototype, "code", void 0);
 __decorate([

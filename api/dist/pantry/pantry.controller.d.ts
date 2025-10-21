@@ -17,5 +17,8 @@ export declare class PantryController {
         statusCode: number;
         products?: undefined;
     }>;
-    remove(request: Request, id: string): void;
+    remove(request: Request, id: string): Promise<{
+        message: string[];
+        statusCode: number;
+    }>;
 }
