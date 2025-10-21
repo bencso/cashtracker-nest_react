@@ -119,7 +119,7 @@ function AppContent() {
                     justifyContent: "center",
                     paddingLeft: 6,
                   }}
-                  onPress={() => router.replace("/settings")}
+                  onPress={() => router.navigate("/settings")}
                 >
                   <MaterialCommunityIcons
                     name="cog"
@@ -145,7 +145,7 @@ function AppContent() {
                     justifyContent: "center",
                     paddingLeft: 6,
                   }}
-                  onPress={() => router.replace("/settings")}
+                  onPress={() => router.navigate("/settings")}
                 >
                   <MaterialCommunityIcons
                     name="cog"
@@ -179,19 +179,8 @@ function AppContent() {
                   alignItems: "center",
                   paddingLeft: 5,
                 }}
-                //TODO: Ezt átgondolni ez fixre nem jó igy...., 
-                // ha aloldalon van akkor az aloldal elötti dologra menjen egyébként meg vissz ahonnan megnyitotta
                 onPress={() => {
-                  if (pathname === "/settings") {
-                    if (router.canGoBack()) {
-                      router.back()
-                    } else {
-                      if (isAuthenticated) router.replace("/(auth)");
-                      else router.replace("/(notauth)");
-                    }
-                  } else {
-                    router.replace("/settings");
-                  }
+                  router.back();
                 }}
               >
                 <MaterialCommunityIcons

@@ -16,7 +16,7 @@ export default function SettingsScreen() {
     container: {
       flex: 1,
       height: "100%",
-      paddingTop: 120
+      paddingTop: 70
     },
     content: {
       flex: 1,
@@ -43,14 +43,14 @@ export default function SettingsScreen() {
           <Button
             label={t("settings.languages.cta")}
             action={() => {
-              router.replace("/settings/language");
+              router.navigate("/settings/language");
             }}
             icon="translate"
           />
           <Button
             label={t("settings.colortheme.cta")}
             action={() => {
-              router.replace("/settings/theme");
+              router.navigate("/settings/theme");
             }}
             icon="theme-light-dark"
           />
@@ -93,7 +93,7 @@ function AuthenticatedSection() {
       <Button
         label={t("settings.authenticated.password")}
         action={() => {
-          router.replace("/settings/passwordchange");
+          router.navigate("/settings/passwordchange");
         }}
         icon="form-textbox-password"
       />

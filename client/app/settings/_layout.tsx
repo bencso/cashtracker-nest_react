@@ -10,7 +10,7 @@ export default function SettingsLayout() {
           options={{
             headerShown: false,
           }} />
-          <Stack.Screen
+        <Stack.Screen
           name="theme"
           options={{
             headerShown: false,
@@ -19,8 +19,9 @@ export default function SettingsLayout() {
           name="passwordchange"
           options={{
             headerShown: false,
+            animation: "simple_push"
           }} />
-    </Stack>
+      </Stack>
     </>
   );
 }

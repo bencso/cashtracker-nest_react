@@ -31,7 +31,7 @@ export default function LanguageScreen() {
     container: {
       flex: 1,
       height: "100%",
-      paddingTop: 120
+      paddingTop: 70
     },
     content: {
       flex: 1,
