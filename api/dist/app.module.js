@@ -20,6 +20,7 @@ const users_service_1 = require("./users/users.service");
 const users_controller_1 = require("./users/users.controller");
 const product_controller_1 = require("./product/product.controller");
 const product_service_1 = require("./product/product.service");
+const pantry_module_1 = require("./pantry/pantry.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -42,6 +43,7 @@ exports.AppModule = AppModule = __decorate([
                 logging: true,
             }),
             auth_module_1.AuthModule,
+            pantry_module_1.PantryModule,
         ],
         controllers: [
             app_controller_1.AppController,

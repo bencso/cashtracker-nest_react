@@ -11,6 +11,7 @@ import { UsersService } from './users/users.service';
 import { UsersController } from './users/users.controller';
 import { ProductController } from './product/product.controller';
 import { ProductService } from './product/product.service';
+import { PantryModule } from './pantry/pantry.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ProductService } from './product/product.service';
       logging: true,
     }),
     AuthModule,
+    PantryModule,
   ],
   controllers: [
     AppController,
