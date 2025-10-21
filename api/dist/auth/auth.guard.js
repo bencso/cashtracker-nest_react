@@ -19,7 +19,7 @@ let AuthGuard = class AuthGuard {
     async canActivate(context) {
         const request = context.switchToHttp().getRequest();
         try {
-            const isValid = this.sessionService.validateAccessToken(request);
+            const isValid = await this.sessionService.validateAccessToken(request);
             if (isValid == null)
                 throw new common_1.UnauthorizedException({
                     message: 'Érvénytelen bejelentkezési adat(ok)',

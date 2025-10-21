@@ -30,7 +30,7 @@ export class AuthService {
     private readonly config: ConfigService,
     private readonly sessionsService: SessionService,
     private readonly dataSource: DataSource,
-  ) {}
+  ) { }
 
   async login(
     @Body() body: BodyLogin,
@@ -53,14 +53,7 @@ export class AuthService {
         });
 
         return response.json({
-          message: returnData.message,
-          statusCode: returnData.statusCode || 404,
-          data: returnData.data || null,
-          tokens: returnData,
-          userData: {
-            email: returnData.email,
-            username: returnData.username,
-          },
+          ...returnData
         });
       } else {
         throw new UnauthorizedException({
@@ -239,16 +232,18 @@ export class AuthService {
       email: user.email,
       user_data: user_data,
     };
+    console.log(this.config.get<number>('JWT_TOKEN_TIME'));
     return this.jwtService.signAsync(payload, {
       secret: this.config.get<string>('JWT_TOKEN_SECRET'),
-      expiresIn: this.config.get<number>('JWT_TOKEN_TIME'),
+      expiresIn: Number(this.config.get<any>('JWT_TOKEN_TIME')),
     } as JwtSignOptions);
   }
 
   async createRefreshToken(payload: any) {
+    console.log(this.config.get<number>('JWT_REFRESH_TIME'));
     return this.jwtService.signAsync(payload, {
       secret: this.config.get<string>('JWT_REFRESH_SECRET'),
-      expiresIn: this.config.get<number>('JWT_REFRESH_TIME'),
+      expiresIn: Number(this.config.get<any>('JWT_REFRESH_TIME')),
     } as JwtSignOptions);
   }
 

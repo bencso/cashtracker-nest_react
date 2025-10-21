@@ -1,6 +1,6 @@
 import { ProductService } from './product.service';
 export declare class ProductController {
-    private readonly pantryService;
-    constructor(pantryService: ProductService);
-    getItemByCode(code: string): Promise<import("./dto/PantryItem").PantryItemDto>;
+    private readonly productService;
+    constructor(productService: ProductService);
+    getItemByCode(code: string): Promise<import("./dto/Product").ProductDto>;
 }

@@ -1,4 +1,4 @@
-export declare class PantryItemDto {
+export declare class ProductDto {
     code: string;
     product_name: string;
     brands?: string;

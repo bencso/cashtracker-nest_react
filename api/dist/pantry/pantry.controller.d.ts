@@ -1,10 +1,21 @@
 import { PantryService } from './pantry.service';
-import { CreatePantryDto } from './dto/create-pantry.dto';
+import { CreatePantryItemDto } from './dto/create-pantry-item.dto';
+import { Request } from 'express';
 export declare class PantryController {
     private readonly pantryService;
     constructor(pantryService: PantryService);
-    create(createPantryDto: CreatePantryDto): string;
-    findAll(): string;
-    findOne(id: string): string;
-    remove(id: string): string;
+    create(request: Request, createPantryItemDto: CreatePantryItemDto): Promise<{
+        message: string[];
+        statusCode: number;
+    }>;
+    getUserPantry(request: Request): Promise<{
+        message: string[];
+        statusCode: number;
+        products: import("./entities/pantry.entity").Pantry[];
+    } | {
+        message: string[];
+        statusCode: number;
+        products?: undefined;
+    }>;
+    remove(request: Request, id: string): void;
 }

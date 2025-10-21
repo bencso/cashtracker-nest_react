@@ -14,7 +14,7 @@ export class SessionService {
     private jwtService: JwtService,
     private config: ConfigService,
     private userService: UsersService,
-  ) {}
+  ) { }
   async createSessionInDb(
     sub: number,
     token: string,
@@ -96,6 +96,7 @@ export class SessionService {
 
       if (!accessToken) return null;
 
+      //? IGNORE EXPIRATION !!!
       const payload = await this.jwtService.verifyAsync(accessToken, {
         secret: this.config.get<string>('JWT_TOKEN_SECRET'),
       });

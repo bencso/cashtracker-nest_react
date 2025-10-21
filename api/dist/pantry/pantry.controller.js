@@ -15,50 +15,52 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PantryController = void 0;
 const common_1 = require("@nestjs/common");
 const pantry_service_1 = require("./pantry.service");
-const create_pantry_dto_1 = require("./dto/create-pantry.dto");
+const create_pantry_item_dto_1 = require("./dto/create-pantry-item.dto");
+const swagger_1 = require("@nestjs/swagger");
+const auth_guard_1 = require("../auth/auth.guard");
 let PantryController = class PantryController {
     constructor(pantryService) {
         this.pantryService = pantryService;
     }
-    create(createPantryDto) {
-        return this.pantryService.create(createPantryDto);
+    create(request, createPantryItemDto) {
+        return this.pantryService.create(request, createPantryItemDto);
     }
-    findAll() {
-        return this.pantryService.findAll();
+    getUserPantry(request) {
+        return this.pantryService.getUserPantry(request);
     }
-    findOne(id) {
-        return this.pantryService.findOne(+id);
-    }
-    remove(id) {
-        return this.pantryService.remove(+id);
+    remove(request, id) {
+        return this.pantryService.remove(request, +id);
     }
 };
 exports.PantryController = PantryController;
 __decorate([
     (0, common_1.Post)(),
-    __param(0, (0, common_1.Body)()),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_pantry_dto_1.CreatePantryDto]),
+    __metadata("design:paramtypes", [Object, create_pantry_item_dto_1.CreatePantryItemDto]),
     __metadata("design:returntype", void 0)
 ], PantryController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
-], PantryController.prototype, "findAll", null);
-__decorate([
-    (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], PantryController.prototype, "findOne", null);
+], PantryController.prototype, "getUserPantry", null);
 __decorate([
     (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", void 0)
 ], PantryController.prototype, "remove", null);
 exports.PantryController = PantryController = __decorate([

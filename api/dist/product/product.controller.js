@@ -18,11 +18,11 @@ const product_service_1 = require("./product.service");
 const swagger_1 = require("@nestjs/swagger");
 const auth_guard_1 = require("../auth/auth.guard");
 let ProductController = class ProductController {
-    constructor(pantryService) {
-        this.pantryService = pantryService;
+    constructor(productService) {
+        this.productService = productService;
     }
     async getItemByCode(code) {
-        return this.pantryService.getItemById(code);
+        return this.productService.getItemById(code);
     }
 };
 exports.ProductController = ProductController;

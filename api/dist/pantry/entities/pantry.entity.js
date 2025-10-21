@@ -11,16 +11,24 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Pantry = void 0;
 const product_entity_1 = require("../../product/entities/product.entity");
+const user_entity_1 = require("../../users/entities/user.entity");
 const typeorm_1 = require("typeorm");
 let Pantry = class Pantry {
 };
 exports.Pantry = Pantry;
 __decorate([
+    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, {
+        cascade: true,
+    }),
+    (0, typeorm_1.JoinTable)(),
+    __metadata("design:type", user_entity_1.User)
+], Pantry.prototype, "user", void 0);
+__decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
 ], Pantry.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.ManyToMany)(() => product_entity_1.Product, {
+    (0, typeorm_1.ManyToOne)(() => product_entity_1.Product, {
         cascade: true,
     }),
     (0, typeorm_1.JoinTable)(),
@@ -28,7 +36,7 @@ __decorate([
 ], Pantry.prototype, "product", void 0);
 __decorate([
     (0, typeorm_1.Column)({
-        type: 'number',
+        type: 'int',
         default: 1,
     }),
     __metadata("design:type", Number)

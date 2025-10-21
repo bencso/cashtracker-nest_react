@@ -43,14 +43,7 @@ let AuthService = class AuthService {
                     secure: true,
                 });
                 return response.json({
-                    message: returnData.message,
-                    statusCode: returnData.statusCode || 404,
-                    data: returnData.data || null,
-                    tokens: returnData,
-                    userData: {
-                        email: returnData.email,
-                        username: returnData.username,
-                    },
+                    ...returnData
                 });
             }
             else {
@@ -204,15 +197,17 @@ let AuthService = class AuthService {
             email: user.email,
             user_data: user_data,
         };
+        console.log(this.config.get('JWT_TOKEN_TIME'));
         return this.jwtService.signAsync(payload, {
             secret: this.config.get('JWT_TOKEN_SECRET'),
-            expiresIn: this.config.get('JWT_TOKEN_TIME'),
+            expiresIn: Number(this.config.get('JWT_TOKEN_TIME')),
         });
     }
     async createRefreshToken(payload) {
+        console.log(this.config.get('JWT_REFRESH_TIME'));
         return this.jwtService.signAsync(payload, {
             secret: this.config.get('JWT_REFRESH_SECRET'),
-            expiresIn: this.config.get('JWT_REFRESH_TIME'),
+            expiresIn: Number(this.config.get('JWT_REFRESH_TIME')),
         });
     }
     async logout(response, request) {

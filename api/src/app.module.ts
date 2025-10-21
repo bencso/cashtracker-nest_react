@@ -12,6 +12,8 @@ import { UsersController } from './users/users.controller';
 import { ProductController } from './product/product.controller';
 import { ProductService } from './product/product.service';
 import { PantryModule } from './pantry/pantry.module';
+import { PantryController } from './pantry/pantry.controller';
+import { PantryService } from './pantry/pantry.service';
 
 @Module({
   imports: [
@@ -31,15 +33,15 @@ import { PantryModule } from './pantry/pantry.module';
       logging: true,
     }),
     AuthModule,
-    PantryModule,
   ],
   controllers: [
     AppController,
     SessionsController,
     UsersController,
     ProductController,
+    PantryController
   ],
-  providers: [AppService, SessionService, UsersService, ProductService],
+  providers: [AppService, SessionService, UsersService, ProductService, PantryService],
   exports: [TypeOrmModule],
 })
-export class AppModule {}
+export class AppModule { }

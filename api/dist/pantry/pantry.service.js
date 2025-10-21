@@ -5,28 +5,84 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PantryService = void 0;
 const common_1 = require("@nestjs/common");
+const users_service_1 = require("../users/users.service");
+const typeorm_1 = require("typeorm");
+const sessions_service_1 = require("../sessions/sessions.service");
+const product_service_1 = require("../product/product.service");
+const pantry_entity_1 = require("./entities/pantry.entity");
 let PantryService = class PantryService {
-    create(createPantryDto) {
-        return 'This action adds a new pantry';
+    constructor(usersService, dataSource, sessionsService, productService) {
+        this.usersService = usersService;
+        this.dataSource = dataSource;
+        this.sessionsService = sessionsService;
+        this.productService = productService;
     }
-    findAll() {
-        return `This action returns all pantry`;
+    async create(request, createPantryItemDto) {
+        const requestUser = await this.sessionsService.validateAccessToken(request);
+        const user = await this.usersService.findUser(requestUser.email);
+        let productId = null;
+        try {
+            if (user) {
+                productId = await this.productService.getItemId(createPantryItemDto.code);
+                if (productId === null) {
+                    const createdProduct = await this.productService.create(request, {
+                        product_name: createPantryItemDto.product_name,
+                        code: createPantryItemDto.code
+                    });
+                    productId = createdProduct?.id ?? createdProduct;
+                }
+                const result = await this.dataSource.getRepository(pantry_entity_1.Pantry)
+                    .createQueryBuilder()
+                    .insert()
+                    .values({
+                    user: { id: user.id },
+                    product: { id: productId },
+                    amount: createPantryItemDto.amount,
+                    expiredAt: createPantryItemDto.expiredAt ?? new Date()
+                })
+                    .execute();
+                console.log(result);
+                return { message: ["Sikeres létrehozás"], statusCode: 200 };
+            }
+        }
+        catch {
+            return { message: ["Sikertelen létrehozás"], statusCode: 403 };
+        }
     }
-    findOne(id) {
-        return `This action returns a #${id} pantry`;
+    async getUserPantry(request) {
+        const requestUser = await this.sessionsService.validateAccessToken(request);
+        const user = await this.usersService.findUser(requestUser.email);
+        if (user) {
+            const products = await this.dataSource.getRepository(pantry_entity_1.Pantry).find({
+                where: {
+                    user: { id: user.id },
+                    expiredAt: (0, typeorm_1.MoreThanOrEqual)(new Date())
+                },
+                order: { id: 'ASC' }
+            });
+            return products.length > 0 ? {
+                message: ["Sikeres lekérdezés"],
+                statusCode: 200,
+                products: products
+            } : { message: ["Nincs semmi a raktárjában a felhasználónak!"], statusCode: 404, products: products };
+        }
+        else
+            return { message: ["Sikertelen lekérdezés"], statusCode: 404 };
     }
-    update(id, updatePantryDto) {
-        return `This action updates a #${id} pantry`;
-    }
-    remove(id) {
-        return `This action removes a #${id} pantry`;
-    }
+    remove(request, id) { }
 };
 exports.PantryService = PantryService;
 exports.PantryService = PantryService = __decorate([
-    (0, common_1.Injectable)()
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [users_service_1.UsersService,
+        typeorm_1.DataSource,
+        sessions_service_1.SessionService,
+        product_service_1.ProductService])
 ], PantryService);
 //# sourceMappingURL=pantry.service.js.map
