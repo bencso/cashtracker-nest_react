@@ -5,11 +5,12 @@ import { useTheme } from "@/contexts/theme-context";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { Alert, ScrollView, StyleSheet, View } from "react-native";
-import api from "@/interceptor/api";
+import { getItems } from "@/libs/inventory";
 
 interface Product {
   code: string;
   name?: string;
+  amount?: number;
   inDb?: boolean;
 }
 
@@ -18,21 +19,7 @@ export default function InventoryScreen() {
   const { t } = useTranslation();
   const [products, setProducts] = useState<Product[] | []>([]);
 
-  async function getProducts() {
-    try {
-      await api.get("/items").then((data) => {
-        setProducts(data.data);
-      })
-    }
-    catch {
-      // Alert.alert("Hiba történt a lekérdezés során!");
-      setProducts([]);
-    }
-  }
 
-  useEffect(()=>{
-    getProducts()
-  }, []);
 
   const styles = StyleSheet.create({
     container: {
@@ -111,6 +98,9 @@ export default function InventoryScreen() {
                 </View>
                 <ThemedText style={{ fontSize: 14, color: Colors[colorScheme ?? "light"].text }}>
                   {product.code}
+                </ThemedText>
+                <ThemedText style={{ fontSize: 14, color: Colors[colorScheme ?? "light"].text }}>
+                  {product.amount}
                 </ThemedText>
               </ThemedView>
             ))
