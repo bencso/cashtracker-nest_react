@@ -102,81 +102,17 @@ export default function CameraScreen() {
   }
 
   return <ThemedView style={styles.container}>
-
-    {
-      (product === null) &&
-      <ThemedView style={styles.content}>
-        <CameraOverlay facing={facing} torch={torch} />
-        <ThemedView style={styles.cameraTools}>
-          <Button icon={torch ? "flashlight" : "flashlight-off"} label="" chevron={false} coloredIcon action={() => {
-            setTorch(!torch);
-          }} />
-          <Button icon={"pen"} label={t("inventory.camera.custominput")} chevron={false} coloredIcon action={() => {
-            router.navigate("/(auth)/camera/customInput");
-          }} />
-        </ThemedView>
+    <ThemedView style={styles.content}>
+      <CameraOverlay facing={facing} torch={torch} />
+      <ThemedView style={styles.cameraTools}>
+        <Button icon={torch ? "flashlight" : "flashlight-off"} label="" chevron={false} coloredIcon action={() => {
+          setTorch(!torch);
+        }} />
+        <Button icon={"pen"} label={t("inventory.camera.custominput")} chevron={false} coloredIcon action={() => {
+          router.navigate("/(auth)/camera/customInput");
+        }} />
       </ThemedView>
-    }
-    {
-      (product !== null) && <ThemedView style={styles.content}>
-        <TouchableOpacity
-          style={{
-            padding: 8,
-            borderRadius: 24,
-            alignItems: "center",
-            justifyContent: "center",
-            position: "absolute",
-            top: 60,
-            left: 18,
-            overflow: "hidden",
-            zIndex: 10,
-          }}
-          onPress={() => {
-            router.replace("/settings");
-          }}
-        >
-          <MaterialCommunityIcons
-            name="bug"
-            size={24}
-            color={Colors[colorScheme ?? "light"].text}
-          />
-        </TouchableOpacity>
-        <ThemedText type="title">
-          {t("camera.inventory.title")}
-        </ThemedText>
-        {/* */}
-        <ThemedView style={styles.textContainer}>
-          <ThemedText style={styles.productTitle}>
-            {t("camera.inventory.code")}:
-          </ThemedText>
-          <ThemedText style={styles.productSecond}>
-            {product?.code}
-          </ThemedText>
-        </ThemedView>
-        {/* */}
-        {/* */}
-        <ThemedView style={styles.textContainer}>
-          <ThemedText style={styles.productTitle}>
-            {t("camera.inventory.name")}:
-          </ThemedText>
-          <ThemedText style={styles.productSecond}>
-            {product?.name}
-          </ThemedText>
-        </ThemedView>
-        {/* */}
-        <ThemedView style={styles.buttonsContainer}>
-          <Button label={t("camera.inventory.rescan")} icon="barcode" chevron action={() => {
-            setProduct(null);
-            setTorch(false);
-          }} />
-          {
-            !product.code && <Button label={t("camera.inventory.customadd")} icon="plus" chevron action={() => {
-              setProduct(null);
-            }} />
-          }
-        </ThemedView>
-      </ThemedView>
-    }
+    </ThemedView>
   </ThemedView>;
 }
 
@@ -324,7 +260,7 @@ function CameraOverlay({
         mute
         autofocus="on"
         facing={facing}
-        onBarcodeScanned={handleBarCodeScanned}
+        onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
       />
       <ThemedView style={styles.maskContainer} pointerEvents="none">
         <ThemedView style={styles.overlayTop} />

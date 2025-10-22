@@ -103,7 +103,8 @@ export default function CustomInputScreen() {
                 expiredAt: expired
             });
             setProduct(null);
-            router.replace("/(auth)/inventory");
+            router.dismiss();
+            router.navigate("/(auth)/inventory");
         } catch {
             Alert.alert("Hiba történt a felvevés közben");
         }
