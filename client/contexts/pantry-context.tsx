@@ -38,6 +38,7 @@ export function PantryProvider({ children }: { children: ReactNode }) {
     const loadPantry = async () => {
         try {
             const pantryItems = await getItems();
+            console.log("LOAD PANTRY LEFUT!")
             setPantry(pantryItems || []);
         } catch (error) {
             console.error(error);
@@ -84,10 +85,10 @@ export function PantryProvider({ children }: { children: ReactNode }) {
                 amount,
                 expiredAt,
             });
+            loadPantry();
         } catch (error) {
             console.error(error);
         } finally {
-            loadPantry();
             setIsLoading(false);
         }
     }
@@ -101,10 +102,11 @@ export function PantryProvider({ children }: { children: ReactNode }) {
             await deleteItem({
                 id
             });
+            loadPantry()
         } catch (error) {
             console.error(error);
         } finally {
-            loadPantry();
+            
             setIsLoading(false);
         }
     }

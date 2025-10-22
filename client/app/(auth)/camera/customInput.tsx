@@ -25,6 +25,7 @@ export default function CustomInputScreen() {
     const [amount, setAmount] = useState<number>(1);
     const { addPantryItem, product, setProduct } = usePantry();
     const { t } = useTranslation();
+    const {loadPantry} = usePantry();
     const disabledButton = productName.length === 0;
 
     useEffect(() => {
@@ -104,6 +105,7 @@ export default function CustomInputScreen() {
             });
             setProduct(null);
             router.dismiss();
+            loadPantry();
             router.navigate("/(auth)/inventory");
         } catch {
             Alert.alert("Hiba történt a felvevés közben");

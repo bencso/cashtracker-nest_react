@@ -13,11 +13,14 @@ import Reanimated, {
 import { Product, usePantry } from "@/contexts/pantry-context";
 import { useEffect } from "react";
 
-
 export default function InventoryScreen() {
   const { scheme: colorScheme } = useTheme();
   const { t } = useTranslation();
-  const { pantry, deletePantryItem } = usePantry();
+  const { pantry, deletePantryItem, loadPantry } = usePantry();
+  
+  useEffect(() => {
+    loadPantry();
+  }, []);
 
   const styles = StyleSheet.create({
     container: {
