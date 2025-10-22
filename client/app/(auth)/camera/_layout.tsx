@@ -1,4 +1,5 @@
 import { Colors } from "@/constants/theme";
+import { PantryProvider } from "@/contexts/pantry-context";
 import { useTheme } from "@/contexts/theme-context";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router, Stack } from "expo-router";
@@ -8,6 +9,7 @@ export default function CameraLayout() {
   const { scheme } = useTheme();
 
   return (
+    <PantryProvider>
     <Stack>
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="customInput" options={{
@@ -36,5 +38,6 @@ export default function CameraLayout() {
         }
       }} />
     </Stack>
+    </PantryProvider>
   );
 }

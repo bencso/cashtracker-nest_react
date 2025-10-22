@@ -18,7 +18,7 @@ export async function addItem({
 }) {
   try {
     if (!code || !product_name || !amount || !expiredAt) throw new Error();
-    
+
     await api.post(
       "/pantry",
       {
@@ -33,5 +33,15 @@ export async function addItem({
     return true;
   } catch {
     return null;
+  }
+}
+
+export async function deleteItem({ id }: { id: number }) {
+  try {
+    await api.post("/pantry/delete/" + id, {}, { withCredentials: true });
+
+    return true;
+  } catch {
+    return false;
   }
 }

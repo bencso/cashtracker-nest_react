@@ -3,37 +3,21 @@ import { ThemedView } from "@/components/themed-view";
 import { Colors, Fonts } from "@/constants/theme";
 import { useTheme } from "@/contexts/theme-context";
 import { useTranslation } from "react-i18next";
-import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
-import { getItems } from "@/libs/inventory";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Reanimated, {
   SharedValue,
   useAnimatedStyle,
 } from 'react-native-reanimated';
+import { Product, usePantry } from "@/contexts/pantry-context";
+import { useEffect } from "react";
 
-
-interface Product {
-  index?: number;
-  code?: string;
-  name?: string;
-  amount?: number;
-  expiredAt? :string;
-}
 
 export default function InventoryScreen() {
   const { scheme: colorScheme } = useTheme();
   const { t } = useTranslation();
-  const [products, setProducts] = useState<Product[]>([]);
-
-
-  useEffect(() => {
-    (async () => {
-      const items = await getItems();
-      setProducts(items);
-    })();
-  }, [])
+  const { pantry, deletePantryItem } = usePantry();
 
   const styles = StyleSheet.create({
     container: {
@@ -96,9 +80,10 @@ export default function InventoryScreen() {
         ]}
       >
         <TouchableOpacity onPress={async () => {
+          if (index) await deletePantryItem({ id: index });
         }}>
           <ThemedText type="defaultSemiBold" style={{ color: 'white' }}>
-            Törlés {index}
+            Törlés
           </ThemedText>
         </TouchableOpacity>
       </Reanimated.View>
@@ -108,12 +93,12 @@ export default function InventoryScreen() {
   return <ThemedView style={styles.container}>
     <ThemedText type="title">Raktár</ThemedText>
     {
-      (products !== null) && <ThemedView style={styles.content}>
+      (pantry !== null) && <ThemedView style={styles.content}>
         <ScrollView showsVerticalScrollIndicator={false}>
           {/* */}
           <GestureHandlerRootView >
             {
-              products.length > 0 && products.map((product: Product, idx: number) => (
+              pantry.length > 0 && pantry.map((product: Product, idx: number) => (
                 <ReanimatedSwipeable
                   key={idx}
                   friction={1}

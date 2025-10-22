@@ -1,5 +1,6 @@
 import { HapticTab } from "@/components/haptic-tab";
 import { Colors } from "@/constants/theme";
+import { PantryProvider } from "@/contexts/pantry-context";
 import { useTheme } from "@/contexts/theme-context";
 import { Tabs } from "expo-router";
 import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
@@ -12,6 +13,7 @@ export default function AuthenticatedLayout() {
 
   if (Platform.OS === "ios") {
     return (
+      <PantryProvider>
       <NativeTabs
         minimizeBehavior="onScrollDown"
         shadowColor={Colors[scheme ?? "light"].button}
@@ -41,10 +43,12 @@ export default function AuthenticatedLayout() {
           <Label>{t("inventory.camera.create")}</Label>
         </NativeTabs.Trigger>
       </NativeTabs>
+      </PantryProvider>
     );
   }
 
   return (
+    <PantryProvider>
     <Tabs
       screenOptions={{
         tabBarStyle: {
@@ -107,5 +111,6 @@ export default function AuthenticatedLayout() {
         }}
       />
     </Tabs>
+    </PantryProvider>
   );
 }

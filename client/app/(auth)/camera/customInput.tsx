@@ -14,7 +14,8 @@ import { useTheme } from "@/contexts/theme-context";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { addItem } from "@/libs/inventory";
+import { usePantry } from "@/contexts/pantry-context";
+import { router } from "expo-router";
 
 export default function CustomInputScreen() {
     const { scheme } = useTheme();
@@ -22,8 +23,18 @@ export default function CustomInputScreen() {
     const [productCode, setProductCode] = useState<string>("");
     const [expired, setExpired] = useState<Date>(new Date());
     const [amount, setAmount] = useState<number>(1);
+    const { addPantryItem, product, setProduct } = usePantry();
     const { t } = useTranslation();
-    const disabledButton = productName.length < 0;
+    const disabledButton = productName.length === 0;
+
+    useEffect(() => {
+        if (product?.code) {
+            setProductCode(product.code);
+        }
+        if (product?.name) {
+            setProductName(product.name);
+        }
+    }, [product])
 
     const styles = StyleSheet.create({
         titleContainer: {
@@ -85,12 +96,14 @@ export default function CustomInputScreen() {
 
     async function onSubmit() {
         try {
-            await addItem({
+            await addPantryItem({
                 code: productCode,
                 product_name: productName,
                 amount: amount,
                 expiredAt: expired
             });
+            setProduct(null);
+            router.replace("/(auth)/inventory");
         } catch {
             Alert.alert("Hiba történt a felvevés közben");
         }

@@ -213,8 +213,8 @@ export default function RootLayout() {
     <AuthProvider>
       <LanguageProvider>
         <ThemeProvider>
-          <SplashScreenController />
-          <AppContent />
+            <SplashScreenController />
+            <AppContent />
         </ThemeProvider>
       </LanguageProvider>
     </AuthProvider>

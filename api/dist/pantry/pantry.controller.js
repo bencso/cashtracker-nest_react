@@ -29,6 +29,7 @@ let PantryController = class PantryController {
         return this.pantryService.getUserPantry(request);
     }
     remove(request, id) {
+        console.log('ID:' + id);
         return this.pantryService.remove(request, +id);
     }
 };
@@ -54,7 +55,7 @@ __decorate([
     __metadata("design:returntype", Object)
 ], PantryController.prototype, "getUserPantry", null);
 __decorate([
-    (0, common_1.Delete)(':id'),
+    (0, common_1.Post)('/delete/:id'),
     (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     __param(0, (0, common_1.Req)()),

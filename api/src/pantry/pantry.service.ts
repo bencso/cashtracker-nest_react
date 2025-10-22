@@ -83,7 +83,7 @@ export class PantryService {
       const returnProducts = [];
       products.map((value: Pantry) => {
         returnProducts.push({
-          index: value.product.id,
+          index: value.id,
           name: value.product.product_name,
           amount: value.amount,
           expiredAt: value.expiredAt,
@@ -109,6 +109,7 @@ export class PantryService {
     const requestUser = await this.sessionsService.validateAccessToken(request);
     const user = await this.usersService.findUser(requestUser.email);
 
+    console.log(id);
     if (user) {
       const product = await this.dataSource
         .getRepository(Pantry)

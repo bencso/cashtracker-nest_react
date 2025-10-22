@@ -4,7 +4,6 @@ import {
   Post,
   Body,
   Param,
-  Delete,
   HttpCode,
   HttpStatus,
   Req,
@@ -38,10 +37,11 @@ export class PantryController {
     return this.pantryService.getUserPantry(request);
   }
 
-  @Delete(':id')
+  @Post('/delete/:id')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   remove(@Req() request: Request, @Param('id') id: string) {
+    console.log('ID:' + id);
     return this.pantryService.remove(request, +id);
   }
 }

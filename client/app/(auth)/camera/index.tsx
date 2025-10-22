@@ -9,41 +9,15 @@ import { useEffect, useState } from "react";
 import { Alert, Linking, StyleSheet, TouchableOpacity } from "react-native";
 import { router } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import api from "@/interceptor/api";
-
-interface Product {
-  code: string;
-  name?: string;
-  inDb?: boolean;
-}
+import { usePantry } from "@/contexts/pantry-context";
 
 export default function CameraScreen() {
   const { scheme: colorScheme } = useTheme();
   const { t } = useTranslation();
+  const { product, setProduct } = usePantry();
   const facing = "back";
   const [permission, requestPermission] = useCameraPermissions();
   const [torch, setTorch] = useState<boolean>(false);
-  const [product, setProduct] = useState<Product | null>(null);
-
-  async function getProductByCode() {
-    try {
-      await api.get("/item/" + product?.code).then((data) => {
-      })
-    }
-    catch {
-      Alert.alert("Hiba történt a lekérdezés során!");
-      setProduct({
-        code: product?.code ?? "",
-        name: "Ismeretlen",
-        inDb: false
-      })
-    }
-  }
-
-  useEffect(() => {
-    if (product?.code != null) getProductByCode()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [product?.code])
 
   const styles = StyleSheet.create({
     container: {
@@ -132,13 +106,13 @@ export default function CameraScreen() {
     {
       (product === null) &&
       <ThemedView style={styles.content}>
-        <CameraOverlay facing={facing} torch={torch} setProduct={setProduct} />
+        <CameraOverlay facing={facing} torch={torch} />
         <ThemedView style={styles.cameraTools}>
           <Button icon={torch ? "flashlight" : "flashlight-off"} label="" chevron={false} coloredIcon action={() => {
             setTorch(!torch);
           }} />
           <Button icon={"pen"} label={t("inventory.camera.custominput")} chevron={false} coloredIcon action={() => {
-            router.navigate("/(auth)/camera/customInput")
+            router.navigate("/(auth)/camera/customInput");
           }} />
         </ThemedView>
       </ThemedView>
@@ -196,7 +170,7 @@ export default function CameraScreen() {
             setTorch(false);
           }} />
           {
-            !product.inDb && <Button label={t("camera.inventory.customadd")} icon="plus" chevron action={() => {
+            !product.code && <Button label={t("camera.inventory.customadd")} icon="plus" chevron action={() => {
               setProduct(null);
             }} />
           }
@@ -209,14 +183,13 @@ export default function CameraScreen() {
 
 function CameraOverlay({
   torch,
-  setProduct,
   facing
 }: {
   torch: any;
-  setProduct: any;
   facing: any;
 }) {
   const [scanned, setScanned] = useState<boolean>(false);
+  const { setProduct } = usePantry();
 
   const styles = StyleSheet.create({
     maskContainer: {
@@ -334,11 +307,10 @@ function CameraOverlay({
     if (scanned) return;
     setScanned(true);
 
-    setProduct({
-      code: data,
-      inDb: false
-    });
-    setTimeout(() => setScanned(false), 2000);
+    if (data) setProduct(data);
+    router.navigate("/(auth)/camera/customInput");
+    setScanned(false);
+
   };
   return (
     <>
@@ -352,7 +324,7 @@ function CameraOverlay({
         mute
         autofocus="on"
         facing={facing}
-        onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
+        onBarcodeScanned={handleBarCodeScanned}
       />
       <ThemedView style={styles.maskContainer} pointerEvents="none">
         <ThemedView style={styles.overlayTop} />
