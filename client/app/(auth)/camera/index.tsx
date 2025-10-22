@@ -6,15 +6,14 @@ import { useTheme } from "@/contexts/theme-context";
 import { useTranslation } from "react-i18next";
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useEffect, useState } from "react";
-import { Alert, Linking, StyleSheet, TouchableOpacity } from "react-native";
+import { Linking, StyleSheet } from "react-native";
 import { router } from "expo-router";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { usePantry } from "@/contexts/pantry-context";
 
 export default function CameraScreen() {
   const { scheme: colorScheme } = useTheme();
   const { t } = useTranslation();
-  const { product, setProduct } = usePantry();
+  const { setProduct } = usePantry();
   const facing = "back";
   const [permission, requestPermission] = useCameraPermissions();
   const [torch, setTorch] = useState<boolean>(false);
@@ -109,6 +108,7 @@ export default function CameraScreen() {
           setTorch(!torch);
         }} />
         <Button icon={"pen"} label={t("inventory.camera.custominput")} chevron={false} coloredIcon action={() => {
+          setProduct(null);
           router.navigate("/(auth)/camera/customInput");
         }} />
       </ThemedView>
@@ -124,8 +124,7 @@ function CameraOverlay({
   torch: any;
   facing: any;
 }) {
-  const [scanned, setScanned] = useState<boolean>(false);
-  const { setProduct } = usePantry();
+  const { setProduct, scanned, setScanned } = usePantry();
 
   const styles = StyleSheet.create({
     maskContainer: {
@@ -239,15 +238,16 @@ function CameraOverlay({
       zIndex: 0,
     },
   })
+
   const handleBarCodeScanned = ({ type, data }: { type: any, data: any }) => {
     if (scanned) return;
     setScanned(true);
-
+    console.log(data);
     if (data) setProduct(data);
     router.navigate("/(auth)/camera/customInput");
-    setScanned(false);
-
   };
+
+
   return (
     <>
       <CameraView
@@ -258,7 +258,6 @@ function CameraOverlay({
         }}
         videoQuality="720p"
         mute
-        autofocus="on"
         facing={facing}
         onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
       />

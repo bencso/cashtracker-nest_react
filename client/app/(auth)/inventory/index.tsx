@@ -17,7 +17,7 @@ export default function InventoryScreen() {
   const { scheme: colorScheme } = useTheme();
   const { t } = useTranslation();
   const { pantry, deletePantryItem, loadPantry } = usePantry();
-  
+
   useEffect(() => {
     loadPantry();
   }, []);
@@ -49,7 +49,6 @@ export default function InventoryScreen() {
       fontFamily: Fonts.bold,
       color: Colors[colorScheme ?? "light"].text,
       width: "70%",
-
     },
     productSecond: {
       fontSize: 16,
@@ -99,7 +98,7 @@ export default function InventoryScreen() {
       (pantry !== null) && <ThemedView style={styles.content}>
         <ScrollView showsVerticalScrollIndicator={false}>
           {/* */}
-          <GestureHandlerRootView >
+          <GestureHandlerRootView style={{ gap: 12 }}>
             {
               pantry.length > 0 && pantry.map((product: Product, idx: number) => (
                 <ReanimatedSwipeable
@@ -114,7 +113,7 @@ export default function InventoryScreen() {
                     <View style={{ flexDirection: "row", gap: 16, alignItems: "center" }}>
                       <View style={styles.productIcon} >
                         <ThemedText type="subtitle" style={{ color: "white" }}>{
-                          product.name?.at(0)
+                          product.name?.at(0)?.toUpperCase()
                         }</ThemedText>
                       </View>
                       <ThemedText numberOfLines={1} type="defaultSemiBold" style={styles.productTitle}>

@@ -4,9 +4,9 @@ import { Stack } from "expo-router";
 export default function InventoryLayout() {
   return (
     <PantryProvider>
-    <Stack>
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-    </Stack>
+      <Stack>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+      </Stack>
     </PantryProvider>
   );
 }

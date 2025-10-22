@@ -1,5 +1,5 @@
 import { Colors } from "@/constants/theme";
-import { PantryProvider } from "@/contexts/pantry-context";
+import { PantryProvider, usePantry } from "@/contexts/pantry-context";
 import { useTheme } from "@/contexts/theme-context";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router, Stack } from "expo-router";

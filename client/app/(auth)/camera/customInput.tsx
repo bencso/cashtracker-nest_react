@@ -23,10 +23,9 @@ export default function CustomInputScreen() {
     const [productCode, setProductCode] = useState<string>("");
     const [expired, setExpired] = useState<Date>(new Date());
     const [amount, setAmount] = useState<number>(1);
-    const { addPantryItem, product, setProduct } = usePantry();
+    const { addPantryItem, product, setProduct, loadPantry, setScanned } = usePantry();
     const { t } = useTranslation();
-    const {loadPantry} = usePantry();
-    const disabledButton = productName.length === 0;
+    const disabledButton = productName?.length === 0;
 
     useEffect(() => {
         if (product?.code) {
@@ -95,20 +94,26 @@ export default function CustomInputScreen() {
         if (amount && amount <= 1) setAmount(1);
     }, [amount]);
 
+    {/* TODO: MAGYAROSÍTÁSOK */ }
     async function onSubmit() {
         try {
-            await addPantryItem({
-                code: productCode,
-                product_name: productName,
-                amount: amount,
-                expiredAt: expired
-            });
-            setProduct(null);
+            if (productCode && productName && amount) {
+                await addPantryItem({
+                    code: productCode,
+                    product_name: productName,
+                    amount: amount,
+                    expiredAt: expired
+                });
+            } else throw new Error("Kérem adja meg a kötelező mezőket!");
             router.dismiss();
-            loadPantry();
             router.navigate("/(auth)/inventory");
+            loadPantry();
         } catch {
             Alert.alert("Hiba történt a felvevés közben");
+        }
+        finally {
+            setProduct(null);
+            setScanned(false);
         }
     }
 
@@ -122,25 +127,31 @@ export default function CustomInputScreen() {
             <ThemedView>
                 <View style={styles.inputContainer}>
                     <TextInput
-                        style={styles.input}
+                        style={{ ...styles.input, color: !product?.name ? Colors[scheme ?? "light"].text : `${Colors[scheme ?? "light"].text}80` }}
                         placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
                         value={productName}
                         maxLength={150}
                         autoCorrect={false}
                         keyboardType="default"
+                        editable={!product?.name}
                         autoCapitalize="none"
+                        returnKeyType="next"
+                        returnKeyLabel="Következő"
                         onChangeText={(text) => {
                             productNameOnChange(text);
                         }}
                         placeholder={t("customInput.productName")}
                     />
                     <TextInput
-                        style={styles.input}
+                        style={{ ...styles.input, color: !product?.code ? Colors[scheme ?? "light"].text : `${Colors[scheme ?? "light"].text}80` }}
                         value={productCode}
                         maxLength={150}
                         placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
                         autoCorrect={false}
                         keyboardType="number-pad"
+                        returnKeyType="next"
+                        returnKeyLabel="Következő"
+                        editable={!product?.code}
                         autoCapitalize="none"
                         placeholder={t("customInput.productCode")}
                         onChangeText={(text) => {
@@ -154,6 +165,8 @@ export default function CustomInputScreen() {
                         maxLength={3}
                         autoCorrect={false}
                         keyboardType="number-pad"
+                        returnKeyType="done"
+                        returnKeyLabel="Kész"
                         autoCapitalize="none"
                         onChangeText={(text) => {
                             setAmount(+text);

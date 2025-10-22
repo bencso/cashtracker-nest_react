@@ -26,6 +26,8 @@ type PantryContextType = {
     isLoading: boolean;
     product: Product | null;
     setProduct: any;
+    scanned: boolean;
+    setScanned: any;
 };
 
 const PantryContext = createContext<PantryContextType | undefined>(undefined);
@@ -33,12 +35,12 @@ const PantryContext = createContext<PantryContextType | undefined>(undefined);
 export function PantryProvider({ children }: { children: ReactNode }) {
     const [pantry, setPantry] = useState<Product[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [scanned, setScanned] = useState(false);
     const [product, setProduct] = useState<Product | null>(null);
 
     const loadPantry = async () => {
         try {
             const pantryItems = await getItems();
-            console.log("LOAD PANTRY LEFUT!")
             setPantry(pantryItems || []);
         } catch (error) {
             console.error(error);
@@ -49,18 +51,17 @@ export function PantryProvider({ children }: { children: ReactNode }) {
 
     const setProductItem = async (code: string) => {
         try {
-            const response = await api.get("/product/items/" + code);
-            const item = response.data;
-            setProduct({
-                code: code,
-                name: item[0].Product_product_name || "null",
-            });
-        } catch {
-            if (product && product.code) {
+                const response = await api.get("/product/items/" + code);
+                const item = response.data;
                 setProduct({
-                    code: product?.code,
-                })
-            } else setProduct(null);
+                    code: code,
+                    name: item[0].Product_product_name || "null",
+                });
+        } catch {
+            if (code) setProduct({
+                code: code
+            })
+            else setProduct(null)
         }
         finally {
             setIsLoading(false);
@@ -85,10 +86,11 @@ export function PantryProvider({ children }: { children: ReactNode }) {
                 amount,
                 expiredAt,
             });
-            loadPantry();
         } catch (error) {
             console.error(error);
         } finally {
+            setScanned(false);
+            loadPantry();
             setIsLoading(false);
         }
     }
@@ -106,7 +108,7 @@ export function PantryProvider({ children }: { children: ReactNode }) {
         } catch (error) {
             console.error(error);
         } finally {
-            
+
             setIsLoading(false);
         }
     }
@@ -117,7 +119,7 @@ export function PantryProvider({ children }: { children: ReactNode }) {
     }, []);
 
     return (
-        <PantryContext.Provider value={{ pantry, loadPantry, isLoading, addPantryItem, deletePantryItem, product, setProduct: setProductItem }}>
+        <PantryContext.Provider value={{ pantry, loadPantry, isLoading, addPantryItem, deletePantryItem, product, setProduct: setProductItem, scanned, setScanned }}>
             {children}
         </PantryContext.Provider>
     );
