@@ -1,36 +1,19 @@
 import Button from "@/components/button";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
-import { Colors } from "@/constants/theme";
 import { useAuth } from "@/contexts/auth-context";
 import { useTheme } from "@/contexts/theme-context";
+import { settingsStyles } from "@/styles/settings";
+import { getAuthenticatedStyles } from "@/styles/settings/authenticated";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 
 export default function SettingsScreen() {
   const { isAuthenticated } = useAuth();
   const { t } = useTranslation();
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      height: "100%",
-      paddingTop: 70
-    },
-    content: {
-      flex: 1,
-      padding: 16,
-      gap: 24,
-    },
-    settingGroup: {
-      gap: 12,
-    },
-    settingGroupTitle: {
-      marginBottom: 8,
-      marginLeft: 4,
-    },
-  });
+  const styles = settingsStyles;
 
   return (
     <ThemedView style={styles.container}>
@@ -65,26 +48,7 @@ function AuthenticatedSection() {
   const { logout } = useAuth();
   const { t } = useTranslation();
 
-  const styles = StyleSheet.create({
-    buttons: {
-      alignItems: "center",
-      backgroundColor: Colors[colorScheme ?? "light"].button,
-      borderRadius: 40,
-      padding: 15,
-      paddingTop: 18,
-      paddingBottom: 18,
-      fontWeight: "bold",
-      width: "100%",
-      fontSize: 20,
-    },
-    settingGroup: {
-      gap: 12,
-    },
-    settingGroupTitle: {
-      marginBottom: 8,
-      marginLeft: 4,
-    },
-  });
+  const styles = getAuthenticatedStyles({colorScheme});
   return (
     <ThemedView style={styles.settingGroup}>
       <ThemedText type="defaultSemiBold" style={styles.settingGroupTitle}>

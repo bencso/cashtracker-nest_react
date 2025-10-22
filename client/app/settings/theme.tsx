@@ -1,10 +1,10 @@
 import { RadioButtons } from "@/components/radiobutton";
 import { ThemedView } from "@/components/themed-view";
-import { Colors } from "@/constants/theme";
 import { useTheme } from "@/contexts/theme-context";
+import { getThemeStyles } from "@/styles/settings/theme";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 
 export default function ThemeScreen() {
     const { scheme, setScheme } = useTheme();
@@ -12,9 +12,7 @@ export default function ThemeScreen() {
     const { t } = useTranslation();
 
     useEffect(() => {
-        if (selectedTheme !== scheme) {
-            setSelectedTheme(scheme);
-        }
+        if (selectedTheme !== scheme) setSelectedTheme(scheme);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [scheme]);
 
@@ -23,27 +21,7 @@ export default function ThemeScreen() {
         setScheme(value ?? "light");
     };
 
-    const styles = StyleSheet.create({
-        container: {
-            flex: 1,
-            height: "100%",
-            paddingTop: 70
-        },
-        content: {
-            flex: 1,
-            padding: 16,
-            gap: 12,
-        },
-        group: {
-            flexDirection: "column",
-            gap: 12,
-            justifyContent: "space-between",
-            paddingVertical: 16,
-            paddingHorizontal: 16,
-            borderRadius: 24,
-            backgroundColor: `${Colors[scheme ?? "light"].primary}40`,
-        },
-    });
+    const styles = getThemeStyles({ scheme });
 
     return (
         <ThemedView style={styles.container}>

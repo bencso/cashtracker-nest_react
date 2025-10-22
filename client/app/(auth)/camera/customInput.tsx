@@ -1,6 +1,5 @@
 import {
     Alert,
-    StyleSheet,
     Text,
     TextInput,
     TouchableOpacity,
@@ -16,75 +15,23 @@ import { useTranslation } from "react-i18next";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { usePantry } from "@/contexts/pantry-context";
 import { router } from "expo-router";
+import { getCustomInputStyles } from "@/styles/camera/customInput";
 
 export default function CustomInputScreen() {
-    const { scheme } = useTheme();
     const [productName, setProductName] = useState<string>("");
     const [productCode, setProductCode] = useState<string>("");
     const [expired, setExpired] = useState<Date>(new Date());
     const [amount, setAmount] = useState<number>(1);
+    const { scheme } = useTheme();
     const { addPantryItem, product, setProduct, loadPantry, setScanned } = usePantry();
     const { t } = useTranslation();
-    const disabledButton = productName?.length === 0;
 
     useEffect(() => {
-        if (product?.code) {
-            setProductCode(product.code);
-        }
-        if (product?.name) {
-            setProductName(product.name);
-        }
+        if (product?.code) setProductCode(product.code);
+        if (product?.name) setProductName(product.name);
     }, [product])
 
-    const styles = StyleSheet.create({
-        titleContainer: {
-            flexDirection: "column",
-            gap: 8,
-        },
-        mainContainer: {
-            flex: 1,
-            display: "flex",
-            justifyContent: "center",
-            gap: 24,
-            paddingVertical: 40,
-            paddingHorizontal: 24,
-        },
-        input: {
-            color: Colors[scheme ?? "light"].text,
-            paddingTop: 16,
-            paddingBottom: 16,
-            paddingStart: 10,
-            borderWidth: 1,
-            borderColor: Colors[scheme ?? "light"].border,
-            borderRadius: 12,
-            fontSize: 16,
-            backgroundColor: Colors[scheme ?? "light"].border,
-        },
-        inputContainer: {
-            display: "flex",
-            gap: 16,
-            justifyContent: "center",
-        },
-        button: {
-            alignItems: "center",
-            backgroundColor: Colors[scheme ?? "light"].button,
-            borderRadius: 40,
-            padding: 15,
-            paddingTop: 18,
-            paddingBottom: 18,
-            fontWeight: "bold",
-            width: "100%",
-            fontSize: 20,
-            opacity: !disabledButton ? 1 : 0.7,
-        },
-        notHaveAccount: {
-            display: "flex",
-            flexDirection: "row",
-            gap: 4,
-            justifyContent: "center",
-            alignItems: "center",
-        },
-    });
+    const disabledButton = productName?.length === 0;
 
     function productNameOnChange(text: string) {
         setProductName(text);
@@ -97,14 +44,14 @@ export default function CustomInputScreen() {
     {/* TODO: MAGYAROSÍTÁSOK */ }
     async function onSubmit() {
         try {
-            if (productCode && productName && amount) {
+            if (productCode && productName && amount)
                 await addPantryItem({
                     code: productCode,
                     product_name: productName,
                     amount: amount,
                     expiredAt: expired
                 });
-            } else throw new Error("Kérem adja meg a kötelező mezőket!");
+            else throw new Error("Kérem adja meg a kötelező mezőket!");
             router.dismiss();
             router.navigate("/(auth)/inventory");
             loadPantry();
@@ -116,6 +63,8 @@ export default function CustomInputScreen() {
             setScanned(false);
         }
     }
+
+    const styles = getCustomInputStyles({ scheme, disabledButton });
 
     return (
         <ThemedView style={styles.mainContainer}>
@@ -136,7 +85,7 @@ export default function CustomInputScreen() {
                         editable={!product?.name}
                         autoCapitalize="none"
                         returnKeyType="next"
-                        returnKeyLabel="Következő"
+                        returnKeyLabel={t("buttons.next")}
                         onChangeText={(text) => {
                             productNameOnChange(text);
                         }}
@@ -150,7 +99,7 @@ export default function CustomInputScreen() {
                         autoCorrect={false}
                         keyboardType="number-pad"
                         returnKeyType="next"
-                        returnKeyLabel="Következő"
+                        returnKeyLabel={t("buttons.next")}
                         editable={!product?.code}
                         autoCapitalize="none"
                         placeholder={t("customInput.productCode")}
@@ -166,7 +115,7 @@ export default function CustomInputScreen() {
                         autoCorrect={false}
                         keyboardType="number-pad"
                         returnKeyType="done"
-                        returnKeyLabel="Kész"
+                        returnKeyLabel={t("buttons.done")}
                         autoCapitalize="none"
                         onChangeText={(text) => {
                             setAmount(+text);

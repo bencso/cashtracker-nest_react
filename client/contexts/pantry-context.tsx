@@ -7,16 +7,7 @@ import React, {
     useEffect,
     useState,
 } from "react";
-
-
-//TODO: Külön fájlba tenni, illetve refkatorálni az egész codebaset.
-export interface Product {
-    index?: number;
-    code?: string;
-    name?: string;
-    amount?: number;
-    expiredAt?: string;
-}
+import { Product } from "@/constants/product.interface"
 
 type PantryContextType = {
     pantry: Product[];
@@ -51,12 +42,12 @@ export function PantryProvider({ children }: { children: ReactNode }) {
 
     const setProductItem = async (code: string) => {
         try {
-                const response = await api.get("/product/items/" + code);
-                const item = response.data;
-                setProduct({
-                    code: code,
-                    name: item[0].Product_product_name || "null",
-                });
+            const response = await api.get("/product/items/" + code);
+            const item = response.data;
+            setProduct({
+                code: code,
+                name: item[0].Product_product_name || "null",
+            });
         } catch {
             if (code) setProduct({
                 code: code
@@ -112,7 +103,6 @@ export function PantryProvider({ children }: { children: ReactNode }) {
             setIsLoading(false);
         }
     }
-
 
     useEffect(() => {
         loadPantry();

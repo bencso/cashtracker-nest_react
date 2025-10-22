@@ -2,6 +2,7 @@ import { HapticTab } from "@/components/haptic-tab";
 import { Colors } from "@/constants/theme";
 import { PantryProvider } from "@/contexts/pantry-context";
 import { useTheme } from "@/contexts/theme-context";
+import { tabBar } from "@/styles/tabBar";
 import { Tabs } from "expo-router";
 import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
 import { t } from "i18next";
@@ -14,103 +15,69 @@ export default function AuthenticatedLayout() {
   if (Platform.OS === "ios") {
     return (
       <PantryProvider>
-      <NativeTabs
-        minimizeBehavior="onScrollDown"
-        shadowColor={Colors[scheme ?? "light"].button}
-      >
-        <NativeTabs.Trigger name="index">
-          <Icon
-            selectedColor={Colors[scheme ?? "light"].tabIconSelected}
-            sf="house"
-            drawable="custom_house_drawable"
-          />
-          <Label>{t("tabs.home")}</Label>
-        </NativeTabs.Trigger>
-        <NativeTabs.Trigger name="inventory">
-          <Icon
-            selectedColor={Colors[scheme ?? "light"].tabIconSelected}
-            sf="cube.box.fill"
-            drawable="custom_cube_drawable"
-          />
-          <Label>{t("inventory.cta")}</Label>
-        </NativeTabs.Trigger>
-        <NativeTabs.Trigger name="camera" role="search">
-          <Icon
-            selectedColor={Colors[scheme ?? "light"].tabIconSelected}
-            sf="plus"
-            drawable="custom_camera_drawable"
-          />
-          <Label>{t("inventory.camera.create")}</Label>
-        </NativeTabs.Trigger>
-      </NativeTabs>
+        <NativeTabs
+          minimizeBehavior="onScrollDown"
+          shadowColor={Colors[scheme ?? "light"].button}
+        >
+          <NativeTabs.Trigger name="index">
+            <Icon
+              selectedColor={Colors[scheme ?? "light"].tabIconSelected}
+              sf="house"
+              drawable="custom_house_drawable"
+            />
+            <Label>{t("tabs.home")}</Label>
+          </NativeTabs.Trigger>
+          <NativeTabs.Trigger name="inventory">
+            <Icon
+              selectedColor={Colors[scheme ?? "light"].tabIconSelected}
+              sf="cube.box.fill"
+              drawable="custom_cube_drawable"
+            />
+            <Label>{t("inventory.cta")}</Label>
+          </NativeTabs.Trigger>
+          <NativeTabs.Trigger name="camera" role="search">
+            <Icon
+              selectedColor={Colors[scheme ?? "light"].tabIconSelected}
+              sf="plus"
+              drawable="custom_camera_drawable"
+            />
+            <Label>{t("inventory.camera.create")}</Label>
+          </NativeTabs.Trigger>
+        </NativeTabs>
       </PantryProvider>
     );
   }
 
+  const screenOptions = tabBar({ scheme, HapticTab });
+
   return (
     <PantryProvider>
-    <Tabs
-      screenOptions={{
-        tabBarStyle: {
-          backgroundColor: Colors[scheme ?? "light"].neutral + "CC",
-          bottom: 20,
-          width: "95%",
-          borderRadius: 28,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          alignSelf: "center",
-          paddingBottom: 8,
-          paddingTop: 8,
-          paddingStart: 8,
-          paddingEnd: 8,
-          minHeight: 70,
-          zIndex: 30,
-          height: "auto",
-          position: "absolute",
-          transform: [{ translateX: "2.5%" }],
-          shadowColor: "#000",
-          shadowOffset: {
-            width: 0,
-            height: 0,
-          },
-          shadowOpacity: 0.2,
-          shadowRadius: 2,
-          elevation: 3,
-          borderWidth: 1,
-          borderColor: Colors[scheme ?? "light"].neutral + "40",
-        },
-        tabBarLabelStyle: {
-          marginTop: 4,
-          fontSize: 12,
-          fontFamily: "ZalandoSans_700Bold",
-        },
-        tabBarActiveTintColor: Colors[scheme ?? "light"].background,
-        tabBarInactiveTintColor: Colors[scheme ?? "light"].icon,
-        headerShown: false,
-        tabBarButton: HapticTab,
-        animation: "shift",
-      }}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: t("tabs.login"),
-          tabBarIcon: () => (
-            <Icon sf="door.left.hand.open" drawable="custom_door_open_drawable" />
-          ),
+      <Tabs
+        screenOptions={{
+          ...screenOptions,
+          headerShown: false,
+          animation: "shift",
         }}
-      />
-      <Tabs.Screen
-        name="inventory"
-        options={{
-          title: t("tabs.inventory.create"),
-          tabBarIcon: () => (
-            <Icon sf="scanner" drawable="custom_scanner_drawable" />
-          ),
-        }}
-      />
-    </Tabs>
+      >
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: t("tabs.login"),
+            tabBarIcon: () => (
+              <Icon sf="door.left.hand.open" drawable="custom_door_open_drawable" />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="inventory"
+          options={{
+            title: t("tabs.inventory.create"),
+            tabBarIcon: () => (
+              <Icon sf="scanner" drawable="custom_scanner_drawable" />
+            ),
+          }}
+        />
+      </Tabs>
     </PantryProvider>
   );
 }

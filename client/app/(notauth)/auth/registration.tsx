@@ -1,6 +1,5 @@
 import {
   Alert,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -14,6 +13,8 @@ import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/auth-context";
+import getRegistrationStyles from "@/styles/auth/registration";
+import { emailRegex } from "@/constants/regex";
 
 export default function RegistrationScreen() {
   const { registration } = useAuth();
@@ -22,7 +23,6 @@ export default function RegistrationScreen() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [emailCorrect, setEmailCorrect] = useState<boolean>(false);
-  const emailRegex = new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/);
   const emailTextInput = useRef<TextInput>(null);
   const { t } = useTranslation();
   const disabledButton =
@@ -31,60 +31,12 @@ export default function RegistrationScreen() {
     email.length < 0 ||
     username.length < 0;
 
-  const styles = StyleSheet.create({
-    titleContainer: {
-      flexDirection: "column",
-      gap: 8,
-    },
-    mainContainer: {
-      flex: 1,
-      display: "flex",
-      justifyContent: "center",
-      gap: 24,
-      paddingVertical: 40,
-      paddingHorizontal: 24,
-    },
- input: {
-      color: Colors[scheme ?? "light"].text,
-      paddingTop: 16,
-      paddingBottom: 16,
-      paddingStart: 10,
-      borderWidth: 1,
-      borderColor: Colors[scheme ?? "light"].border,
-      borderRadius: 12,
-      fontSize: 16,
-      backgroundColor: Colors[scheme ?? "light"].border,
-    },
-    inputContainer: {
-      display: "flex",
-      gap: 16,
-      justifyContent: "center",
-    },
-    button: {
-      alignItems: "center",
-      backgroundColor: Colors[scheme ?? "light"].button,
-      borderRadius: 40,
-      padding: 15,
-      paddingTop: 18,
-      paddingBottom: 18,
-      fontWeight: "bold",
-      width: "100%",
-      fontSize: 20,
-      opacity: !disabledButton ? 1 : 0.7,
-    },
-    haveAccount: {
-      display: "flex",
-      flexDirection: "row",
-      gap: 4,
-      justifyContent: "center",
-      alignItems: "center",
-    },
-  });
-
   function emailOnChange(text: string) {
     setEmail(text);
     setEmailCorrect(emailRegex.test(text));
   }
+
+  const styles = getRegistrationStyles({ scheme: scheme, disabledButton: disabledButton });
 
   async function onSubmit() {
     if (email.length === 0 || password.length === 0 || username.length === 0) {

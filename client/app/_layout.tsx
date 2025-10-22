@@ -15,7 +15,7 @@ import { router, Stack, usePathname } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import i18next from "i18next";
-import { useEffect } from "react";
+import { Fragment, useEffect } from "react";
 import { initReactI18next, useTranslation } from "react-i18next";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import "react-native-reanimated";
@@ -83,7 +83,7 @@ function AppContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authLoading]);
 
-  if (!loaded && !error) {
+  if (!loaded && !error && languageLoading && themeLoading && authLoading) {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <ActivityIndicator
@@ -96,7 +96,7 @@ function AppContent() {
   }
 
   return (
-    <NavigationThemeProvider value={scheme === "dark" ? DarkTheme : DefaultTheme}>
+    <Fragment>
       <Stack
         screenOptions={{
           headerShown: true,
@@ -202,21 +202,24 @@ function AppContent() {
           }}
         />
       </Stack>
-
       <StatusBar style="auto" />
-    </NavigationThemeProvider>
+    </Fragment>
   );
 }
 
 export default function RootLayout() {
+  const { scheme } = useTheme();
+
   return (
-    <AuthProvider>
-      <LanguageProvider>
-        <ThemeProvider>
+    <NavigationThemeProvider value={scheme === "dark" ? DarkTheme : DefaultTheme}>
+      <AuthProvider>
+        <LanguageProvider>
+          <ThemeProvider>
             <SplashScreenController />
             <AppContent />
-        </ThemeProvider>
-      </LanguageProvider>
-    </AuthProvider>
+          </ThemeProvider>
+        </LanguageProvider>
+      </AuthProvider>
+    </NavigationThemeProvider>
   );
 }

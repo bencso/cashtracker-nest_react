@@ -1,6 +1,5 @@
 import {
   Alert,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -15,73 +14,29 @@ import { useTheme } from "@/contexts/theme-context";
 import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import getLoginStyles from "@/styles/auth/login";
+import { emailRegex } from "@/constants/regex";
 
 export default function LoginScreen() {
   const { scheme } = useTheme();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [emailCorrect, setEmailCorrect] = useState<boolean>(false);
-  const emailRegex = new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/);
   const emailTextInput = useRef<TextInput>(null);
   const { t } = useTranslation();
   const disabledButton =
     !emailCorrect || password.length < 0 || email.length < 0;
 
   const { login } = useAuth();
-  const styles = StyleSheet.create({
-    titleContainer: {
-      flexDirection: "column",
-      gap: 8,
-    },
-    mainContainer: {
-      flex: 1,
-      display: "flex",
-      justifyContent: "center",
-      gap: 24,
-      paddingVertical: 40,
-      paddingHorizontal: 24,
-    },
-    input: {
-      color: Colors[scheme ?? "light"].text,
-      paddingTop: 16,
-      paddingBottom: 16,
-      paddingStart: 10,
-      borderWidth: 1,
-      borderColor: Colors[scheme ?? "light"].border,
-      borderRadius: 12,
-      fontSize: 16,
-      backgroundColor: Colors[scheme ?? "light"].border,
-    },
-    inputContainer: {
-      display: "flex",
-      gap: 16,
-      justifyContent: "center",
-    },
-    button: {
-      alignItems: "center",
-      backgroundColor: Colors[scheme ?? "light"].button,
-      borderRadius: 40,
-      padding: 15,
-      paddingTop: 18,
-      paddingBottom: 18,
-      fontWeight: "bold",
-      width: "100%",
-      fontSize: 20,
-      opacity: !disabledButton ? 1 : 0.7,
-    },
-    notHaveAccount: {
-      display: "flex",
-      flexDirection: "row",
-      gap: 4,
-      justifyContent: "center",
-      alignItems: "center",
-    },
-  });
 
   function emailOnChange(text: string) {
     setEmail(text);
     setEmailCorrect(emailRegex.test(text));
   }
+
+  const styles = getLoginStyles({
+    disabledButton: disabledButton, scheme: scheme
+  });
 
   async function onSubmit() {
     if (email.length === 0 || password.length === 0) {
@@ -97,6 +52,7 @@ export default function LoginScreen() {
     if (typeof result !== "boolean" && result !== true)
       Alert.alert(t("alerts.authErrorTitle"), t("alerts.authErrorMessage"));
   }
+
 
   useEffect(() => {
     if (emailTextInput.current) {
