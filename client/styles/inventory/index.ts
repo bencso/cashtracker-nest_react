@@ -1,0 +1,46 @@
+import { Colors, Fonts } from "@/constants/theme";
+import { StyleSheet } from "react-native";
+
+export const getInventoryStyle = ({colorScheme} : {colorScheme: keyof typeof Colors}) =>{
+   return StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: Colors[colorScheme ?? "light"].background,
+      padding: 18
+    },
+    content: {
+      padding: 10,
+      paddingTop: 24,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    textContainer: {
+      flexDirection: "row",
+      gap: 12,
+      alignItems: "center",
+      alignContent: "center",
+      marginVertical: 8,
+    },
+    productTitle: {
+      fontWeight: "bold",
+      fontSize: 18,
+      textTransform: "uppercase",
+      fontFamily: Fonts.bold,
+      color: Colors[colorScheme ?? "light"].text,
+      width: "70%",
+    },
+    productSecond: {
+      fontSize: 16,
+      color: Colors[colorScheme ?? "light"].text,
+    },
+    productIcon: {
+      width: 50,
+      height: 50,
+      backgroundColor: "black",
+      borderRadius: "100%",
+      justifyContent: "center",
+      alignItems: "center",
+      color: "white"
+    }
+  });
+}

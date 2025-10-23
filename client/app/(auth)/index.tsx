@@ -1,8 +1,10 @@
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
+import { Colors } from "@/constants/theme";
 import { useAuth } from "@/contexts/auth-context";
 import { useTheme } from "@/contexts/theme-context";
 import getAuthenticatedIndexStyles from "@/styles/authenticatedIndex";
+import getNavbarStyles from "@/styles/navbar";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollView, TouchableOpacity, View } from "react-native";
@@ -21,6 +23,7 @@ export default function AuthenticatedScreen() {
   const nowDays = new Date(nowYear, nowMonth, 0).getDate();
 
   const styles = getAuthenticatedIndexStyles({ colorScheme });
+  const navbarStyles = getNavbarStyles({colorScheme});
 
   useEffect(() => {
     loadAuth()
@@ -56,16 +59,16 @@ export default function AuthenticatedScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedView style={styles.content}>
-        <View style={styles.settingGroup}>
-          <View style={{ flexDirection: "column" }}>
-            <ThemedText type="title" style={styles.title}>
+      <View style={{...navbarStyles.navbar,backgroundColor: `${Colors[colorScheme ?? "light"].tabIconDefault}`}}>
+            <ThemedText type="title" style={{...navbarStyles.title,color: `${Colors[colorScheme ?? "light"].background}`,}}>
               {t("main.title")}
             </ThemedText>
-            <ThemedText type="subtitle" style={styles.title}>
+            <ThemedText type="subtitle" style={{...navbarStyles.title,color: `${Colors[colorScheme ?? "light"].background}`,}}>
               {userData && userData.username}
             </ThemedText>
           </View>
+      <ThemedView style={styles.content}>
+        <View style={styles.settingGroup}>
           <ThemedView style={styles.topBar}>
             <ScrollView showsVerticalScrollIndicator={false}>
               {/* */}

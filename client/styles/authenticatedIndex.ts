@@ -29,7 +29,6 @@ export default function getAuthenticatedIndexStyles({
     settingGroup: {
       gap: 28,
       backgroundColor: `${Colors[colorScheme ?? "light"].tabIconDefault}`,
-      paddingTop: 50,
       padding: 18,
       borderEndStartRadius: 24,
       borderEndEndRadius: 24,
@@ -94,6 +93,6 @@ export default function getAuthenticatedIndexStyles({
       paddingHorizontal: 5,
     },
     flexRow: { flexDirection: "row", gap: 16, alignItems: "center" },
-    amountText: { fontSize: 14, color: Colors[colorScheme ?? "light"].text }
+    amountText: { fontSize: 14, color: Colors[colorScheme ?? "light"].text },
   });
 }

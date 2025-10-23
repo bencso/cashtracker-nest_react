@@ -45,7 +45,7 @@ let PantryService = class PantryService {
                     user: { id: user.id },
                     product: { id: productId },
                     amount: createPantryItemDto.amount,
-                    expiredAt: createPantryItemDto.expiredAt ?? new Date(),
+                    expiredAt: createPantryItemDto.expiredAt || new Date(),
                 })
                     .execute();
                 return { message: ['Sikeres létrehozás'], statusCode: 200 };
@@ -59,36 +59,30 @@ let PantryService = class PantryService {
         const requestUser = await this.sessionsService.validateAccessToken(request);
         const user = await this.usersService.findUser(requestUser.email);
         if (user) {
-            const products = await this.dataSource.getRepository(pantry_entity_1.Pantry).find({
-                where: {
-                    user: { id: user.id },
-                    expiredAt: (0, typeorm_1.MoreThanOrEqual)(new Date()),
-                },
-                relations: {
-                    product: true,
-                },
-                order: { id: 'ASC' },
-                select: {
-                    product: {
-                        code: true,
-                        product_name: true,
-                        id: true,
-                    },
-                    expiredAt: true,
-                    amount: true,
-                    id: true,
-                },
-            });
-            const returnProducts = [];
-            products.map((value) => {
-                returnProducts.push({
-                    index: value.id,
-                    name: value.product.product_name,
-                    amount: value.amount,
-                    expiredAt: value.expiredAt,
-                    code: value.product.code,
-                });
-            });
+            const products = await this.dataSource
+                .getRepository(pantry_entity_1.Pantry)
+                .createQueryBuilder('pantry')
+                .select([
+                'MIN(pantry.id) AS index',
+                'product.product_name AS name',
+                'SUM(pantry.amount) AS amount',
+                'pantry.expiredAt AS expiredAt',
+                'product.code AS code',
+            ])
+                .innerJoin('pantry.product', 'product')
+                .where('pantry.user = :userId', { userId: user.id })
+                .andWhere('pantry.expiredAt >= :now', { now: new Date() })
+                .groupBy('product.code')
+                .addGroupBy('pantry.expiredAt')
+                .addGroupBy('product.product_name')
+                .getRawMany();
+            const returnProducts = products.map((value) => ({
+                index: value.index,
+                name: value.name,
+                amount: value.amount,
+                expiredAt: value.expiredAt,
+                code: value.code,
+            }));
             return products.length > 0
                 ? {
                     message: ['Sikeres lekérdezés'],

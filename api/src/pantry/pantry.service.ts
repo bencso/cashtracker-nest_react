@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePantryItemDto } from './dto/create-pantry-item.dto';
 import { UsersService } from 'src/users/users.service';
-import { DataSource, MoreThanOrEqual } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { SessionService } from 'src/sessions/sessions.service';
 import { Request } from 'express';
 import { ProductService } from 'src/product/product.service';
 import { Pantry } from './entities/pantry.entity';
+import { PantryDto } from './dto/get-pantryitems.dto';
 
 @Injectable()
 export class PantryService {
@@ -43,7 +44,7 @@ export class PantryService {
             user: { id: user.id },
             product: { id: productId },
             amount: createPantryItemDto.amount,
-            expiredAt: createPantryItemDto.expiredAt ?? new Date(),
+            expiredAt: createPantryItemDto.expiredAt || new Date(),
           })
           .execute();
 
@@ -59,37 +60,31 @@ export class PantryService {
     const user = await this.usersService.findUser(requestUser.email);
 
     if (user) {
-      const products = await this.dataSource.getRepository(Pantry).find({
-        where: {
-          user: { id: user.id },
-          expiredAt: MoreThanOrEqual(new Date()),
-        },
-        relations: {
-          product: true,
-        },
-        order: { id: 'ASC' },
-        select: {
-          product: {
-            code: true,
-            product_name: true,
-            id: true,
-          },
-          expiredAt: true,
-          amount: true,
-          id: true,
-        },
-      });
+      const products = await this.dataSource
+        .getRepository(Pantry)
+        .createQueryBuilder('pantry')
+        .select([
+          'MIN(pantry.id) AS index',
+          'product.product_name AS name',
+          'SUM(pantry.amount) AS amount',
+          'pantry.expiredAt AS expiredAt',
+          'product.code AS code',
+        ])
+        .innerJoin('pantry.product', 'product')
+        .where('pantry.user = :userId', { userId: user.id })
+        .andWhere('pantry.expiredAt >= :now', { now: new Date() })
+        .groupBy('product.code')
+        .addGroupBy('pantry.expiredAt')
+        .addGroupBy('product.product_name')
+        .getRawMany();
 
-      const returnProducts = [];
-      products.map((value: Pantry) => {
-        returnProducts.push({
-          index: value.id,
-          name: value.product.product_name,
-          amount: value.amount,
-          expiredAt: value.expiredAt,
-          code: value.product.code,
-        });
-      });
+      const returnProducts = products.map((value: PantryDto) => ({
+        index: value.index,
+        name: value.name,
+        amount: value.amount,
+        expiredAt: value.expiredAt,
+        code: value.code,
+      }));
 
       return products.length > 0
         ? {

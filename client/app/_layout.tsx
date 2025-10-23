@@ -15,11 +15,12 @@ import { router, Stack, usePathname } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import i18next from "i18next";
-import { Fragment, useEffect } from "react";
+import { useEffect } from "react";
 import { initReactI18next, useTranslation } from "react-i18next";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import "react-native-reanimated";
 import SplashScreenController from "./splash";
+import { ThemedText } from "@/components/themed-text";
 
 //TODO: Folyamatos hiba a splash screen miatt ez után utánnézni
 
@@ -96,12 +97,11 @@ function AppContent() {
   }
 
   return (
-    <Fragment>
+    <NavigationThemeProvider value={scheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack
         screenOptions={{
           headerShown: true,
           headerTransparent: true,
-          title: "",
           gestureEnabled: true,
           gestureDirection: "horizontal",
         }}
@@ -110,9 +110,10 @@ function AppContent() {
           <Stack.Screen
             name="(notauth)"
             options={{
+              title: "",
               animation: "fade",
-              headerRight: () => (
-                <TouchableOpacity
+              headerRight: () => {
+                return <TouchableOpacity
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
@@ -127,7 +128,7 @@ function AppContent() {
                     color={Colors[scheme ?? "light"].tabIconSelected}
                   />
                 </TouchableOpacity>
-              ),
+              }
             }}
           />
         </Stack.Protected>
@@ -136,9 +137,10 @@ function AppContent() {
           <Stack.Screen
             name="(auth)"
             options={{
+              title: "",
               animation: "fade",
-              headerRight: () => (
-                <TouchableOpacity
+              headerRight: () => {
+                return <TouchableOpacity
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
@@ -150,11 +152,9 @@ function AppContent() {
                   <MaterialCommunityIcons
                     name="cog"
                     size={24}
-                    color={Colors[scheme ?? "light"].background}
-
                   />
                 </TouchableOpacity>
-              ),
+              }
             }}
           />
         </Stack.Protected>
@@ -193,33 +193,22 @@ function AppContent() {
           }}
         />
 
-        <Stack.Screen
-          name="modal"
-          options={{
-            presentation: "modal",
-            animation: "fade_from_bottom",
-            title: "Modal",
-          }}
-        />
       </Stack>
       <StatusBar style="auto" />
-    </Fragment>
+    </NavigationThemeProvider>
   );
 }
 
 export default function RootLayout() {
-  const { scheme } = useTheme();
 
   return (
-    <NavigationThemeProvider value={scheme === "dark" ? DarkTheme : DefaultTheme}>
-      <AuthProvider>
-        <LanguageProvider>
-          <ThemeProvider>
-            <SplashScreenController />
-            <AppContent />
-          </ThemeProvider>
-        </LanguageProvider>
-      </AuthProvider>
-    </NavigationThemeProvider>
+    <AuthProvider>
+      <LanguageProvider>
+        <ThemeProvider>
+          <SplashScreenController />
+          <AppContent />
+        </ThemeProvider>
+      </LanguageProvider>
+    </AuthProvider>
   );
 }
