@@ -4,9 +4,9 @@ import { ThemedView } from "@/components/themed-view";
 import { useTheme } from "@/contexts/theme-context";
 import { useTranslation } from "react-i18next";
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Linking } from "react-native";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { usePantry } from "@/contexts/pantry-context";
 import { cameraOverlayStyles, cameraStyles } from "@/styles/camera";
 
@@ -17,8 +17,17 @@ export default function CameraScreen() {
   const facing = "back";
   const [permission, requestPermission] = useCameraPermissions();
   const [torch, setTorch] = useState<boolean>(false);
+  const [active, setActive] = useState<boolean>(false);
 
   const styles = cameraStyles({ colorScheme });
+
+  useFocusEffect(
+    useCallback(() => {
+      setActive(true);
+      return () => setActive(false);
+    }, [])
+  );
+
 
   if (!permission) {
     return <ThemedView style={styles.content}>
@@ -52,7 +61,9 @@ export default function CameraScreen() {
 
   return <ThemedView style={styles.container}>
     <ThemedView style={styles.content}>
-      <CameraOverlay facing={facing} torch={torch} />
+      {
+        active && <CameraOverlay facing={facing} torch={torch} />
+      }
       <ThemedView style={styles.cameraTools}>
         <Button icon={torch ? "flashlight" : "flashlight-off"} label="" chevron={false} coloredIcon action={() => {
           setTorch(!torch);
@@ -76,6 +87,14 @@ function CameraOverlay({
 }) {
   const { setProduct, scanned, setScanned } = usePantry();
 
+  useFocusEffect(
+    useCallback(() => {
+      setScanned(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+  );
+
+
   const styles = cameraOverlayStyles;
 
   const handleBarCodeScanned = ({ data }: { data: string }) => {
@@ -93,7 +112,7 @@ function CameraOverlay({
         barcodeScannerSettings={{
           barcodeTypes: ["ean13", "ean8"],
         }}
-        videoQuality="720p"
+        videoQuality="480p"
         mute
         facing={facing}
         onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
