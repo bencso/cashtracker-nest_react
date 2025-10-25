@@ -10,6 +10,7 @@ export declare class ProductService {
     private readonly sessionsService;
     constructor(usersService: UsersService, dataSource: DataSource, sessionsService: SessionService);
     getItemById(code: string): Promise<ProductDto>;
+    getItemByKeyword(keyword: string): Promise<ProductDto>;
     getItemId(code: string): Promise<any>;
     create(request: Request, createProductDto: CreateProductDto): Promise<any>;
 }

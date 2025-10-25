@@ -24,10 +24,13 @@ let ProductController = class ProductController {
     async getItemByCode(code) {
         return this.productService.getItemById(code);
     }
+    async getItemByKeyword(keyword) {
+        return this.productService.getItemByKeyword(keyword);
+    }
 };
 exports.ProductController = ProductController;
 __decorate([
-    (0, common_1.Get)('/items/:code'),
+    (0, common_1.Get)('/items/code/:code'),
     (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
@@ -36,6 +39,16 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "getItemByCode", null);
+__decorate([
+    (0, common_1.Get)('/items/keyword/:keyword'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Param)('keyword')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ProductController.prototype, "getItemByKeyword", null);
 exports.ProductController = ProductController = __decorate([
     (0, common_1.Controller)('product'),
     __metadata("design:paramtypes", [product_service_1.ProductService])

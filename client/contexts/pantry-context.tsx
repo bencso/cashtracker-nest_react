@@ -16,17 +16,19 @@ type PantryContextType = {
     deletePantryItem: any;
     isLoading: boolean;
     product: Product | null;
-    setProduct: any;
+    setProductItemByCode: any;
+    setProductItemByKeyword: any;
     scanned: boolean;
     setScanned: any;
+    setProduct: any;
 };
 
 const PantryContext = createContext<PantryContextType | undefined>(undefined);
 
 export function PantryProvider({ children }: { children: ReactNode }) {
     const [pantry, setPantry] = useState<Product[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [scanned, setScanned] = useState(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [scanned, setScanned] = useState<boolean>(false);
     const [product, setProduct] = useState<Product | null>(null);
 
     const loadPantry = async () => {
@@ -40,17 +42,39 @@ export function PantryProvider({ children }: { children: ReactNode }) {
         }
     };
 
-    const setProductItem = async (code: string) => {
+    const setProductItemByCode = async (code: string) => {
         try {
-            const response = await api.get("/product/items/" + code);
+            const response = await api.get("/product/items/code/" + code);
             const item = response.data;
+            if (!item.code && !item.product_name) throw new Error("Nincs ilyen termék");
             setProduct({
-                code: code,
-                name: item[0].Product_product_name || "null",
+                code: item.code,
+                name: item.product_name ? item.product_name : null,
             });
         } catch {
             if (code) setProduct({
-                code: code
+                code: code,
+                name: null
+            })
+            else setProduct(null)
+        }
+        finally {
+            setIsLoading(false);
+        }
+    }
+
+    const setProductItemByKeyword = async (keyword: string) => {
+        try {
+            const response = await api.get("/product/items/keyword/" + keyword);
+            const item = response.data;
+            setProduct({
+                code: item.code || null,
+                name: item.product_name || null,
+            });
+        } catch {
+            if (keyword) setProduct({
+                name: keyword,
+                code: null
             })
             else setProduct(null)
         }
@@ -109,7 +133,7 @@ export function PantryProvider({ children }: { children: ReactNode }) {
     }, []);
 
     return (
-        <PantryContext.Provider value={{ pantry, loadPantry, isLoading, addPantryItem, deletePantryItem, product, setProduct: setProductItem, scanned, setScanned }}>
+        <PantryContext.Provider value={{ pantry, loadPantry, isLoading, addPantryItem, deletePantryItem, product, setProductItemByCode, setProductItemByKeyword, scanned, setScanned, setProduct }}>
             {children}
         </PantryContext.Provider>
     );

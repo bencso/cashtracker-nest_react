@@ -2,7 +2,7 @@ import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { useTheme } from "@/contexts/theme-context";
 import { useTranslation } from "react-i18next";
-import { ScrollView, View } from "react-native";
+import { ScrollView, TouchableOpacity, View } from "react-native";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Reanimated, {
@@ -14,7 +14,6 @@ import { useCallback } from "react";
 import { Product } from "@/constants/product.interface";
 import getNavbarStyles from "@/styles/navbar";
 import { getInventoryStyle } from "@/styles/inventory";
-import Button from "@/components/button";
 import { useFocusEffect } from "expo-router";
 
 export default function InventoryScreen() {
@@ -25,7 +24,7 @@ export default function InventoryScreen() {
   useFocusEffect(
     useCallback(() => {
       loadPantry();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
   );
 
@@ -44,9 +43,11 @@ export default function InventoryScreen() {
 
     return (
       <Reanimated.View style={{ ...animatedStyle }}>
-        <Button chevron={false} icon="tray" label="" action={async () => {
+        <TouchableOpacity style={styles.deleteButton} onPress={async () => {
           if (index) await deletePantryItem({ id: index });
-        }} />
+        }} >
+          <ThemedText style={styles.deleteButtonText}>{t("inventory.delete")}</ThemedText>
+        </TouchableOpacity>
       </Reanimated.View>
     );
   };

@@ -85,12 +85,12 @@ function CameraOverlay({
   torch: any;
   facing: any;
 }) {
-  const { setProduct, scanned, setScanned } = usePantry();
+  const { setProductItemByCode, scanned, setScanned } = usePantry();
 
   useFocusEffect(
     useCallback(() => {
       setScanned(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
   );
 
@@ -100,7 +100,7 @@ function CameraOverlay({
   const handleBarCodeScanned = ({ data }: { data: string }) => {
     if (scanned) return;
     setScanned(true);
-    if (data) setProduct(data);
+    if (data) setProductItemByCode(data);
     router.navigate("/(auth)/camera/customInput");
   };
 

@@ -23,7 +23,7 @@ export default function CustomInputScreen() {
     const [expired, setExpired] = useState<Date>(new Date());
     const [amount, setAmount] = useState<number>(1);
     const { scheme } = useTheme();
-    const { addPantryItem, product, setProduct, loadPantry, setScanned } = usePantry();
+    const { addPantryItem, product, setProduct, loadPantry, setScanned, setProductItemByKeyword, setProductItemByCode, scanned } = usePantry();
     const { t } = useTranslation();
 
     useEffect(() => {
@@ -76,15 +76,18 @@ export default function CustomInputScreen() {
             <ThemedView>
                 <View style={styles.inputContainer}>
                     <TextInput
-                        style={{ ...styles.input, color: !product?.name ? Colors[scheme ?? "light"].text : `${Colors[scheme ?? "light"].text}80` }}
+                        style={{ ...styles.input, color: (product?.name === null) ? Colors[scheme ?? "light"].text : `${Colors[scheme ?? "light"].text}80` }}
                         placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
                         value={productName}
                         maxLength={150}
                         autoCorrect={false}
                         keyboardType="default"
-                        editable={!product?.name}
                         autoCapitalize="none"
                         returnKeyType="next"
+                        editable={product?.name === null}
+                        onBlur={() => {
+                            setProductItemByKeyword(productName);
+                        }}
                         returnKeyLabel={t("buttons.next")}
                         onChangeText={(text) => {
                             productNameOnChange(text);
@@ -92,16 +95,19 @@ export default function CustomInputScreen() {
                         placeholder={t("customInput.productName")}
                     />
                     <TextInput
-                        style={{ ...styles.input, color: !product?.code ? Colors[scheme ?? "light"].text : `${Colors[scheme ?? "light"].text}80` }}
+                        style={{ ...styles.input, color: (product?.code === null) ? Colors[scheme ?? "light"].text : `${Colors[scheme ?? "light"].text}80` }}
                         value={productCode}
                         maxLength={150}
                         placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
                         autoCorrect={false}
                         keyboardType="number-pad"
                         returnKeyType="next"
+                        editable={product?.code === null} 
                         returnKeyLabel={t("buttons.next")}
-                        editable={!product?.code}
                         autoCapitalize="none"
+                        onBlur={() => {
+                            setProductItemByCode(productCode);
+                        }}
                         placeholder={t("customInput.productCode")}
                         onChangeText={(text) => {
                             setProductCode(text);

@@ -26,10 +26,20 @@ let ProductService = class ProductService {
             .getRepository(product_entity_1.Product)
             .createQueryBuilder()
             .select()
-            .where({
-            code: code,
-        })
-            .execute();
+            .where({ code: code })
+            .getOne();
+        if (product)
+            return product;
+        else
+            return null;
+    }
+    async getItemByKeyword(keyword) {
+        const product = await this.dataSource
+            .getRepository(product_entity_1.Product)
+            .createQueryBuilder()
+            .select()
+            .where('product_name LIKE :keyword', { keyword: `%${keyword}%` })
+            .getOne();
         if (product)
             return product;
         else
@@ -59,17 +69,17 @@ let ProductService = class ProductService {
                     .createQueryBuilder()
                     .insert()
                     .values({
-                    ...createProductDto
+                    ...createProductDto,
                 })
                     .execute();
-                return product.identifiers[0]["id"];
+                return product.identifiers[0]['id'];
             }
             catch {
-                throw new Error("Hiba történt az új termék felvitel közben");
+                throw new Error('Hiba történt az új termék felvitel közben');
             }
         }
         else
-            throw new Error("Hiba történt az új termék felvitel közben");
+            throw new Error('Hiba történt az új termék felvitel közben');
     }
 };
 exports.ProductService = ProductService;

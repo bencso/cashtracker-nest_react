@@ -12,18 +12,28 @@ export class ProductService {
   constructor(
     private readonly usersService: UsersService,
     private readonly dataSource: DataSource,
-    private readonly sessionsService: SessionService) {
-  }
+    private readonly sessionsService: SessionService,
+  ) {}
 
   async getItemById(code: string): Promise<ProductDto> {
     const product = await this.dataSource
       .getRepository(Product)
       .createQueryBuilder()
       .select()
-      .where({
-        code: code,
-      })
-      .execute();
+      .where({ code: code })
+      .getOne();
+
+    if (product) return product;
+    else return null;
+  }
+
+  async getItemByKeyword(keyword: string): Promise<ProductDto> {
+    const product = await this.dataSource
+      .getRepository(Product)
+      .createQueryBuilder()
+      .select()
+      .where('product_name LIKE :keyword', { keyword: `%${keyword}%` })
+      .getOne();
 
     if (product) return product;
     else return null;
@@ -54,15 +64,14 @@ export class ProductService {
           .createQueryBuilder()
           .insert()
           .values({
-            ...createProductDto
+            ...createProductDto,
           })
           .execute();
 
-        return product.identifiers[0]["id"];
+        return product.identifiers[0]['id'];
+      } catch {
+        throw new Error('Hiba történt az új termék felvitel közben');
       }
-      catch {
-        throw new Error("Hiba történt az új termék felvitel közben")
-      }
-    } else throw new Error("Hiba történt az új termék felvitel közben")
+    } else throw new Error('Hiba történt az új termék felvitel közben');
   }
 }

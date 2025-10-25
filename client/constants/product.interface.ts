@@ -1,7 +1,7 @@
 export interface Product {
     index?: number;
-    code?: string;
-    name?: string;
+    code?: string | null;
+    name?: string | null;
     amount?: number;
     expiredAt?: string;
 }

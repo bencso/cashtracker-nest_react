@@ -41,6 +41,20 @@ export const getInventoryStyle = ({colorScheme} : {colorScheme: keyof typeof Col
       justifyContent: "center",
       alignItems: "center",
       color: "white"
+    },
+    deleteButton: {
+      paddingTop: 10,
+      paddingBottom: 10,
+      paddingLeft: 5,
+      paddingRight: 5,
+      backgroundColor: Colors[colorScheme??"light"].button,
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      borderRadius: 20
+    },
+    deleteButtonText:{
+      color: Colors[colorScheme??"light"].buttomText,
     }
   });
 }
