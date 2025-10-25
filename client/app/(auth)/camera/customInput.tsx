@@ -23,7 +23,7 @@ export default function CustomInputScreen() {
     const [expired, setExpired] = useState<Date>(new Date());
     const [amount, setAmount] = useState<number>(1);
     const { scheme } = useTheme();
-    const { addPantryItem, product, setProduct, loadPantry, setScanned, setProductItemByKeyword, setProductItemByCode, scanned } = usePantry();
+    const { addPantryItem, product, setProduct, loadPantry, setScanned, setProductItemByKeyword, setProductItemByCode } = usePantry();
     const { t } = useTranslation();
 
     useEffect(() => {
