@@ -37,6 +37,7 @@ export default function ThemeButton() {
       opacity: 0.5,
     },
   });
+  
   useEffect(() => {
     if (selectedTheme !== scheme) {
       setSelectedTheme(scheme);

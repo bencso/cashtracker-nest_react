@@ -6,6 +6,7 @@ export default function InventoryModifyLayout() {
     <PantryProvider>
       <Stack>
         <Stack.Screen name="deleteItem" options={{ headerShown: false }} />
+        <Stack.Screen name="editItem" options={{ headerShown: false }} />
       </Stack>
     </PantryProvider>
   );

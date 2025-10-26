@@ -1,8 +1,9 @@
 import { Colors } from "@/constants/theme";
 import { useTheme } from "@/contexts/theme-context";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { ThemedText } from "./themed-text";
+import { getButtonStyles } from "@/styles/button";
 
 export default function Button({
   label,
@@ -18,31 +19,7 @@ export default function Button({
   coloredIcon?: boolean;
 }) {
   const { scheme } = useTheme();
-  const styles = StyleSheet.create({
-    button: {
-      display: "flex",
-      flexDirection: "row",
-      alignItems: "center",
-      backgroundColor: Colors[scheme ?? "light"].button,
-      borderRadius: 40,
-      padding: 20,
-      paddingTop: 18,
-      paddingBottom: 18,
-      fontWeight: "bold",
-      fontSize: 20,
-      justifyContent: "space-between"
-    },
-    buttonLeft: {
-      flexDirection: "row",
-      alignItems: "center",
-    },
-    chevron: {
-      opacity: .9,
-    },
-    icon: {
-      marginRight: 20,
-    },
-  });
+  const styles = getButtonStyles(scheme);
   return (
     <TouchableOpacity style={styles.button} onPress={action}>
       <View style={styles.buttonLeft}>
