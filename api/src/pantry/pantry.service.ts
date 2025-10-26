@@ -6,7 +6,6 @@ import { SessionService } from 'src/sessions/sessions.service';
 import { Request } from 'express';
 import { ProductService } from 'src/product/product.service';
 import { Pantry } from './entities/pantry.entity';
-import { PantryDto } from './dto/get-pantryitems.dto';
 
 @Injectable()
 export class PantryService {
@@ -60,31 +59,49 @@ export class PantryService {
     const user = await this.usersService.findUser(requestUser.email);
 
     if (user) {
+      // const products = await this.dataSource
+      //   .getRepository(Pantry)
+      //   .createQueryBuilder('pantry')
+      //   .select([
+      //     'MIN(pantry.id) AS index',
+      //     'product.product_name AS name',
+      //     'SUM(pantry.amount) AS amount',
+      //     'pantry.expiredAt AS expiredAt',
+      //     'product.code AS code',
+      //   ])
+      //   .innerJoin('pantry.product', 'product')
+      //   .where('pantry.user = :userId', { userId: user.id })
+      //   .andWhere('pantry.expiredAt >= :now', { now: new Date() })
+      //   .groupBy('product.code')
+      //   .addGroupBy('pantry.expiredAt')
+      //   .addGroupBy('product.product_name')
+      //   .getRawMany();
+
       const products = await this.dataSource
         .getRepository(Pantry)
         .createQueryBuilder('pantry')
         .select([
-          'MIN(pantry.id) AS index',
+          'pantry.id AS index',
           'product.product_name AS name',
-          'SUM(pantry.amount) AS amount',
+          'pantry.amount AS amount',
           'pantry.expiredAt AS expiredAt',
           'product.code AS code',
         ])
         .innerJoin('pantry.product', 'product')
         .where('pantry.user = :userId', { userId: user.id })
         .andWhere('pantry.expiredAt >= :now', { now: new Date() })
-        .groupBy('product.code')
-        .addGroupBy('pantry.expiredAt')
-        .addGroupBy('product.product_name')
         .getRawMany();
 
-      const returnProducts = products.map((value: PantryDto) => ({
-        index: value.index,
-        name: value.name,
-        amount: value.amount,
-        expiredAt: value.expiredAt,
-        code: value.code,
-      }));
+      // GROUP BY
+      const returnProducts = [
+        products.reduce((acc, curr) => {
+          acc[curr.code] = acc[curr.code] || [];
+          acc[curr.code].push(curr);
+          return acc;
+        }, {}),
+      ];
+
+      console.log(returnProducts);
 
       return products.length > 0
         ? {

@@ -63,26 +63,24 @@ let PantryService = class PantryService {
                 .getRepository(pantry_entity_1.Pantry)
                 .createQueryBuilder('pantry')
                 .select([
-                'MIN(pantry.id) AS index',
+                'pantry.id AS index',
                 'product.product_name AS name',
-                'SUM(pantry.amount) AS amount',
+                'pantry.amount AS amount',
                 'pantry.expiredAt AS expiredAt',
                 'product.code AS code',
             ])
                 .innerJoin('pantry.product', 'product')
                 .where('pantry.user = :userId', { userId: user.id })
                 .andWhere('pantry.expiredAt >= :now', { now: new Date() })
-                .groupBy('product.code')
-                .addGroupBy('pantry.expiredAt')
-                .addGroupBy('product.product_name')
                 .getRawMany();
-            const returnProducts = products.map((value) => ({
-                index: value.index,
-                name: value.name,
-                amount: value.amount,
-                expiredAt: value.expiredAt,
-                code: value.code,
-            }));
+            const returnProducts = [
+                products.reduce((acc, curr) => {
+                    acc[curr.code] = acc[curr.code] || [];
+                    acc[curr.code].push(curr);
+                    return acc;
+                }, {}),
+            ];
+            console.log(returnProducts);
             return products.length > 0
                 ? {
                     message: ['Sikeres lekérdezés'],

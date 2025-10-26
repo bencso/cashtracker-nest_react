@@ -45,8 +45,19 @@ export const getInventoryStyle = ({colorScheme} : {colorScheme: keyof typeof Col
     deleteButton: {
       paddingTop: 10,
       paddingBottom: 10,
-      paddingLeft: 5,
-      paddingRight: 5,
+      paddingLeft: 15,
+      paddingRight: 15,
+      backgroundColor: `${Colors[colorScheme??"light"].uncorrect}40`,
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      borderRadius: 20
+    },
+    editButton: {
+      paddingTop: 10,
+      paddingBottom: 10,
+      paddingLeft: 15,
+      paddingRight: 15,
       backgroundColor: Colors[colorScheme??"light"].button,
       display: "flex",
       justifyContent: "center",

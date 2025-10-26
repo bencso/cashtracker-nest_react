@@ -3,5 +3,5 @@ export interface Product {
     code?: string | null;
     name?: string | null;
     amount?: number;
-    expiredAt?: string;
+    expiredat?: string;
 }

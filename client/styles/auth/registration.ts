@@ -56,5 +56,8 @@ export default function getRegistrationStyles({
       justifyContent: "center",
       alignItems: "center",
     },
+    icon: {
+      color: Colors[scheme ?? "light"].buttomText,
+    },
   });
 }

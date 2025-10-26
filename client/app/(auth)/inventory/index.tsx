@@ -9,17 +9,17 @@ import Reanimated, {
   SharedValue,
   useAnimatedStyle,
 } from 'react-native-reanimated';
-import { usePantry } from "@/contexts/pantry-context";
+import { PantryType, usePantry } from "@/contexts/pantry-context";
 import { useCallback } from "react";
-import { Product } from "@/constants/product.interface";
 import getNavbarStyles from "@/styles/navbar";
 import { getInventoryStyle } from "@/styles/inventory";
 import { useFocusEffect } from "expo-router";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function InventoryScreen() {
   const { scheme: colorScheme } = useTheme();
   const { t } = useTranslation();
-  const { pantry, deletePantryItem, loadPantry } = usePantry();
+  const { pantry, loadPantry } = usePantry();
 
   useFocusEffect(
     useCallback(() => {
@@ -32,26 +32,6 @@ export default function InventoryScreen() {
   const styles = getInventoryStyle({ colorScheme });
   const navbarStyle = getNavbarStyles({ colorScheme });
 
-  const RightAction = ({ progress, dragX, index }: { progress: SharedValue<number>; dragX: SharedValue<number>; index?: number }) => {
-    const animatedStyle = useAnimatedStyle(() => {
-      const translateX = Math.max(0, dragX.value);
-      return {
-        transform: [{ translateX }],
-        opacity: progress.value,
-      };
-    });
-
-    return (
-      <Reanimated.View style={{ ...animatedStyle }}>
-        <TouchableOpacity style={styles.deleteButton} onPress={async () => {
-          if (index) await deletePantryItem({ id: index });
-        }} >
-          <ThemedText style={styles.deleteButtonText}>{t("inventory.delete")}</ThemedText>
-        </TouchableOpacity>
-      </Reanimated.View>
-    );
-  };
-
   return (
     <><View style={navbarStyle.navbar}>
       <ThemedText type="title" style={navbarStyle.title}>
@@ -61,37 +41,13 @@ export default function InventoryScreen() {
       <ThemedView style={styles.container}>
         {
           (pantry !== null) && <ThemedView style={styles.content}>
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView showsVerticalScrollIndicator={false} scrollToOverflowEnabled style={{ height: "100%", overflow: "hidden" }}>
               {/* */}
               <GestureHandlerRootView style={{ gap: 12 }}>
                 {
-                  pantry.length > 0 && pantry.map((product: Product, idx: number) => (
-                    <ReanimatedSwipeable
-                      containerStyle={{ padding: 20, paddingTop: 0, paddingBottom: 0 }}
-                      key={idx}
-                      friction={1}
-                      enableTrackpadTwoFingerGesture
-                      rightThreshold={80}
-                      renderRightActions={(progress, dragX, _) => (
-                        <RightAction progress={progress} dragX={dragX} index={product.index} />
-                      )}>
-                      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
-                        <View style={{ flexDirection: "row", gap: 16, alignItems: "center" }}>
-                          <View style={styles.productIcon} >
-                            <ThemedText type="subtitle" style={{ color: "white" }}>{
-                              product.name?.at(0)?.toUpperCase()
-                            }</ThemedText>
-                          </View>
-                          <ThemedText numberOfLines={1} type="defaultSemiBold" style={styles.productTitle}>
-                            {product.name}
-                          </ThemedText>
-                        </View>
-                        <ThemedText style={styles.productSecond}>
-                          {product.amount} x
-                        </ThemedText>
-                      </View>
-                    </ReanimatedSwipeable>
-                  ))
+                  pantry && pantry.map((item: PantryType, idx: number) => {
+                    return <InventoryItem key={idx} product={item} idx={idx} />
+                  })
                 }
               </GestureHandlerRootView>
               {/* */}
@@ -101,4 +57,76 @@ export default function InventoryScreen() {
         }
       </ThemedView>
     </>)
+}
+
+function InventoryItem({ product, idx }: {
+  product: PantryType;
+  idx: number
+}) {
+
+  const { deletePantryItem } = usePantry();
+  const { scheme: colorScheme } = useTheme();
+  const styles = getInventoryStyle({ colorScheme });
+
+  const RightAction = ({ progress, dragX, index }: { progress: SharedValue<number>; dragX: SharedValue<number>; index?: number }) => {
+    const animatedStyle = useAnimatedStyle(() => {
+      const translateX = Math.max(0, dragX.value);
+      return {
+        transform: [{ translateX }],
+        opacity: progress.value,
+        display: "flex",
+        flexDirection: "row",
+        gap: 12
+      };
+    });
+
+    //TODO: Ezt ugy kell, hogy majd egy modal elöjön ahol ki lehet választani mit szeretne törölni ha összesített akkor csak igy lehet majd
+    //TODO: továbbá módosításnál is így lesz
+    return (
+      <Reanimated.View style={{ ...animatedStyle }}>
+        <TouchableOpacity style={styles.editButton} onPress={async () => {
+          if (index) await deletePantryItem({ id: index });
+        }} >
+          <ThemedText style={styles.deleteButtonText}>
+            <MaterialCommunityIcons name="pen" size={24} />
+          </ThemedText>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.deleteButton} onPress={async () => {
+          if (index) await deletePantryItem({ id: index });
+        }} >
+          <ThemedText style={styles.deleteButtonText}><MaterialCommunityIcons name="trash-can" size={24} /></ThemedText>
+        </TouchableOpacity>
+      </Reanimated.View>
+    );
+  };
+
+  return (
+    product.amount.map((_, index) => {
+      return <ReanimatedSwipeable
+        containerStyle={{ padding: 20, paddingTop: 0, paddingBottom: 0 }}
+        key={idx - index}
+        friction={1}
+        enableTrackpadTwoFingerGesture
+        rightThreshold={80}
+        renderRightActions={(progress, dragX, _) => (
+          <RightAction progress={progress} dragX={dragX} index={index} />
+        )}>
+        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+          <View style={{ flexDirection: "row", gap: 16, alignItems: "center" }}>
+            <View style={styles.productIcon} >
+              <ThemedText type="subtitle" style={{ color: "white" }}>{
+                product.name?.at(0)?.toUpperCase()
+              }</ThemedText>
+            </View>
+            <ThemedText numberOfLines={1} type="defaultSemiBold" style={styles.productTitle}>
+              {product.name}
+            </ThemedText>
+          </View>
+          <ThemedText style={styles.productSecond}>
+            {product.amount[index]} x
+          </ThemedText>
+        </View>
+      </ReanimatedSwipeable>
+    })
+  )
 }

@@ -57,5 +57,8 @@ export default function getLoginStyles({
       justifyContent: "center",
       alignItems: "center",
     },
+    icon: {
+      color:  Colors[scheme ?? "light"].buttomText
+    }
   });
 }

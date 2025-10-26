@@ -24,6 +24,7 @@ export default function CameraScreen() {
   useFocusEffect(
     useCallback(() => {
       setActive(true);
+      setTorch(false);
       return () => setActive(false);
     }, [])
   );
