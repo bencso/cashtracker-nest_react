@@ -117,6 +117,55 @@ export class PantryService {
     } else return { message: ['Sikertelen lekérdezés'], statusCode: 404 };
   }
 
+  async getUserPantryItemByCode(request: Request, code: string) {
+    const requestUser = await this.sessionsService.validateAccessToken(request);
+    const user = await this.usersService.findUser(requestUser.email);
+
+    if (user) {
+      const products = await this.dataSource
+        .getRepository(Pantry)
+        .createQueryBuilder('pantry')
+        .select([
+          'pantry.id AS index',
+          'product.product_name AS name',
+          'pantry.amount AS amount',
+          'pantry.expiredAt AS expiredAt',
+          'product.code AS code',
+        ])
+        .innerJoin('pantry.product', 'product')
+        .where('pantry.user = :userId', { userId: user.id })
+        .andWhere('pantry.code >= :code', { code: code })
+        .andWhere('pantry.expiredAt >= :now', { now: new Date() })
+        .getRawMany();
+
+      //TODO: A returnProducts késöbbi átdolgozása
+      // GROUP BY
+      const returnProducts = [
+        products.reduce((acc, curr) => {
+          acc[curr.code] = acc[curr.code] || [];
+          acc[curr.code].push(curr);
+          return acc;
+        }, {}),
+      ];
+
+      console.log(returnProducts);
+
+      return products.length > 0
+        ? {
+            message: ['Sikeres lekérdezés'],
+            statusCode: 200,
+            products: returnProducts,
+          }
+        : {
+            message: [
+              'Nincs semmi a raktárjában a felhasználónak az alábbi kóddal!',
+            ],
+            statusCode: 404,
+            products: products,
+          };
+    } else return { message: ['Sikertelen lekérdezés'], statusCode: 404 };
+  }
+
   async remove(request: Request, id: number) {
     const requestUser = await this.sessionsService.validateAccessToken(request);
     const user = await this.usersService.findUser(requestUser.email);
