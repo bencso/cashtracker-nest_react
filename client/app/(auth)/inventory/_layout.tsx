@@ -6,6 +6,7 @@ export default function InventoryLayout() {
     <PantryProvider>
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="modify" options={{ headerShown: false, presentation:"modal"}} />
       </Stack>
     </PantryProvider>
   );

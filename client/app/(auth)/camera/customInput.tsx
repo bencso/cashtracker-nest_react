@@ -102,7 +102,7 @@ export default function CustomInputScreen() {
                         autoCorrect={false}
                         keyboardType="number-pad"
                         returnKeyType="next"
-                        editable={product?.code === null} 
+                        editable={product?.code === null}
                         returnKeyLabel={t("buttons.next")}
                         autoCapitalize="none"
                         onBlur={() => {

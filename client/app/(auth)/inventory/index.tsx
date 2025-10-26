@@ -13,7 +13,7 @@ import { PantryType, usePantry } from "@/contexts/pantry-context";
 import { useCallback } from "react";
 import getNavbarStyles from "@/styles/navbar";
 import { getInventoryStyle } from "@/styles/inventory";
-import { useFocusEffect } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function InventoryScreen() {
@@ -41,7 +41,7 @@ export default function InventoryScreen() {
       <ThemedView style={styles.container}>
         {
           (pantry !== null) && <ThemedView style={styles.content}>
-            <ScrollView showsVerticalScrollIndicator={false} scrollToOverflowEnabled style={{ height: "100%", overflow: "hidden" }}>
+            <ScrollView showsVerticalScrollIndicator={false} scrollToOverflowEnabled style={{ height: "100%", overflow: "hidden", width: "100%" }}>
               {/* */}
               <GestureHandlerRootView style={{ gap: 12 }}>
                 {
@@ -52,8 +52,10 @@ export default function InventoryScreen() {
               </GestureHandlerRootView>
               {/* */}
             </ScrollView>
-
           </ThemedView>
+        }
+        {
+          (pantry === null) && <ThemedText>{t("inventory.empty")}</ThemedText>
         }
       </ThemedView>
     </>)
@@ -64,11 +66,10 @@ function InventoryItem({ product, idx }: {
   idx: number
 }) {
 
-  const { deletePantryItem } = usePantry();
   const { scheme: colorScheme } = useTheme();
   const styles = getInventoryStyle({ colorScheme });
 
-  const RightAction = ({ progress, dragX, index }: { progress: SharedValue<number>; dragX: SharedValue<number>; index?: number }) => {
+  const RightAction = ({ progress, dragX, code }: { progress: SharedValue<number>; dragX: SharedValue<number>; code?: string }) => {
     const animatedStyle = useAnimatedStyle(() => {
       const translateX = Math.max(0, dragX.value);
       return {
@@ -76,7 +77,8 @@ function InventoryItem({ product, idx }: {
         opacity: progress.value,
         display: "flex",
         flexDirection: "row",
-        gap: 12
+        gap: 12,
+        paddingRight: 6
       };
     });
 
@@ -85,14 +87,14 @@ function InventoryItem({ product, idx }: {
     return (
       <Reanimated.View style={{ ...animatedStyle }}>
         <TouchableOpacity style={styles.editButton} onPress={async () => {
-          if (index) await deletePantryItem({ id: index });
+          if (code) router.navigate("/(auth)/inventory/modify/deleteItem")
         }} >
           <ThemedText style={styles.deleteButtonText}>
             <MaterialCommunityIcons name="pen" size={24} />
           </ThemedText>
         </TouchableOpacity>
         <TouchableOpacity style={styles.deleteButton} onPress={async () => {
-          if (index) await deletePantryItem({ id: index });
+          if (code) router.navigate("/(auth)/inventory/modify/deleteItem")
         }} >
           <ThemedText style={styles.deleteButtonText}><MaterialCommunityIcons name="trash-can" size={24} /></ThemedText>
         </TouchableOpacity>
@@ -104,12 +106,12 @@ function InventoryItem({ product, idx }: {
     product.amount.map((_, index) => {
       return <ReanimatedSwipeable
         containerStyle={{ padding: 20, paddingTop: 0, paddingBottom: 0 }}
-        key={idx - index}
+        key={idx + "-" + index}
         friction={1}
         enableTrackpadTwoFingerGesture
         rightThreshold={80}
         renderRightActions={(progress, dragX, _) => (
-          <RightAction progress={progress} dragX={dragX} index={index} />
+          <RightAction progress={progress} dragX={dragX} key={idx + "-" + index} code={product.code} />
         )}>
         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
           <View style={{ flexDirection: "row", gap: 16, alignItems: "center" }}>

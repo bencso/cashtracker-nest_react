@@ -6,10 +6,9 @@ export const getInventoryStyle = ({colorScheme} : {colorScheme: keyof typeof Col
     container: {
       flex: 1,
       backgroundColor: Colors[colorScheme ?? "light"].background,
-      padding: 18
     },
     content: {
-      padding: 10,
+      padding: 12,
       paddingTop: 24,
       alignItems: "center",
       justifyContent: "center",
