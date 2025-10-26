@@ -29,6 +29,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState<UserData | null>(null);
 
+
   const loadAuth = async () => {
     try {
       const accessToken = await SecureStore.getItemAsync("accessToken");
