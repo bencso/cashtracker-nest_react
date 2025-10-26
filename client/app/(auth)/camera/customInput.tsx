@@ -66,6 +66,8 @@ export default function CustomInputScreen() {
 
     const styles = getCustomInputStyles({ scheme, disabledButton });
 
+    console.log(product);
+
     return (
         <ThemedView style={styles.mainContainer}>
             <ThemedView style={styles.titleContainer}>
@@ -76,7 +78,7 @@ export default function CustomInputScreen() {
             <ThemedView>
                 <View style={styles.inputContainer}>
                     <TextInput
-                        style={{ ...styles.input, color: (product?.name === null) ? Colors[scheme ?? "light"].text : `${Colors[scheme ?? "light"].text}80` }}
+                        style={{ ...styles.input, color: (product?.name === null || product?.name === undefined) ? Colors[scheme ?? "light"].text : `${Colors[scheme ?? "light"].text}80` }}
                         placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
                         value={productName}
                         maxLength={150}
@@ -84,7 +86,7 @@ export default function CustomInputScreen() {
                         keyboardType="default"
                         autoCapitalize="none"
                         returnKeyType="next"
-                        editable={product?.name === null}
+                        editable={product?.name === null || product?.name === undefined}
                         onBlur={() => {
                             setProductItemByKeyword(productName);
                         }}
@@ -95,14 +97,14 @@ export default function CustomInputScreen() {
                         placeholder={t("customInput.productName")}
                     />
                     <TextInput
-                        style={{ ...styles.input, color: (product?.code === null) ? Colors[scheme ?? "light"].text : `${Colors[scheme ?? "light"].text}80` }}
+                        style={{ ...styles.input, color: (product?.code === null || product?.code === undefined) ? Colors[scheme ?? "light"].text : `${Colors[scheme ?? "light"].text}80` }}
                         value={productCode}
                         maxLength={150}
                         placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
                         autoCorrect={false}
                         keyboardType="number-pad"
                         returnKeyType="next"
-                        editable={product?.code === null}
+                        editable={product?.code === null || product?.code === undefined}
                         returnKeyLabel={t("buttons.next")}
                         autoCapitalize="none"
                         onBlur={() => {
