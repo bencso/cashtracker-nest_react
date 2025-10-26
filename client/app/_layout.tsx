@@ -20,7 +20,6 @@ import { initReactI18next, useTranslation } from "react-i18next";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import "react-native-reanimated";
 import SplashScreenController from "./splash";
-import { ThemedText } from "@/components/themed-text";
 
 //TODO: Folyamatos hiba a splash screen miatt ez után utánnézni
 
