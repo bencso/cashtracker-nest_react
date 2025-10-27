@@ -10,18 +10,22 @@ export default function Button({
   action,
   chevron,
   icon,
-  coloredIcon
+  coloredIcon,
+  disabled
 }: {
   label: string;
   action: any;
   chevron?: boolean;
   icon?: keyof typeof MaterialCommunityIcons.glyphMap;
   coloredIcon?: boolean;
+  disabled?: boolean;
 }) {
   const { scheme } = useTheme();
-  const styles = getButtonStyles(scheme);
+  let disabledButton = false;
+  if (disabled) disabledButton = disabled;
+  const styles = getButtonStyles({ scheme, disabled: disabledButton });
   return (
-    <TouchableOpacity style={styles.button} onPress={action}>
+    <TouchableOpacity style={styles.button} disabled={disabledButton} onPress={action} >
       <View style={styles.buttonLeft}>
         {icon && (
           <MaterialCommunityIcons

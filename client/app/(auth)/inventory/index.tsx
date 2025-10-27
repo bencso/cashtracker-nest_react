@@ -87,14 +87,18 @@ function InventoryItem({ product, idx }: {
     return (
       <Reanimated.View style={{ ...animatedStyle }}>
         <TouchableOpacity style={styles.editButton} onPress={async () => {
-          if (code) router.navigate("/(auth)/inventory/modify/editItem")
+          if (code) {
+            router.navigate({ pathname: "/inventory/modify/editItem", params: { code } });
+          }
         }} >
           <ThemedText style={styles.deleteButtonText}>
             <MaterialCommunityIcons name="pen" size={24} />
           </ThemedText>
         </TouchableOpacity>
         <TouchableOpacity style={styles.deleteButton} onPress={async () => {
-          if (code) router.navigate("/(auth)/inventory/modify/deleteItem")
+          if (code) {
+            router.navigate({ pathname: "/inventory/modify/deleteItem", params: { code } });
+          }
         }} >
           <ThemedText style={styles.deleteButtonText}><MaterialCommunityIcons name="trash-can" size={24} /></ThemedText>
         </TouchableOpacity>

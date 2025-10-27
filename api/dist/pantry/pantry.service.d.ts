@@ -23,6 +23,15 @@ export declare class PantryService {
         statusCode: number;
         products?: undefined;
     }>;
+    getUserPantryItemByCode(request: Request, code: string): Promise<{
+        message: string[];
+        statusCode: number;
+        products: any[];
+    } | {
+        message: string[];
+        statusCode: number;
+        products?: undefined;
+    }>;
     remove(request: Request, id: number): Promise<{
         message: string[];
         statusCode: number;

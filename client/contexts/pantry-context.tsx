@@ -29,6 +29,7 @@ type PantryContextType = {
     scanned: boolean;
     setScanned: any;
     setProduct: any;
+    getItemsById: any;
 };
 
 const PantryContext = createContext<PantryContextType | undefined>(undefined);
@@ -79,6 +80,20 @@ export function PantryProvider({ children }: { children: ReactNode }) {
             setIsLoading(false);
         }
     };
+
+    const getItemsById = async (code: any) => {
+try {
+            const response = await api.get("/pantry/" + code.code);
+            const item = response.data;
+            console.log(item);
+            return item;
+        } catch {
+           return null
+        }
+        finally {
+            setIsLoading(false);
+        }
+    }
 
     const setProductItemByCode = async (code: string) => {
         try {
@@ -171,7 +186,7 @@ export function PantryProvider({ children }: { children: ReactNode }) {
     }, []);
 
     return (
-        <PantryContext.Provider value={{ pantry, loadPantry, isLoading, addPantryItem, deletePantryItem, product, setProductItemByCode, setProductItemByKeyword, scanned, setScanned, setProduct }}>
+        <PantryContext.Provider value={{ pantry, loadPantry, isLoading, addPantryItem, deletePantryItem, product, getItemsById,setProductItemByCode, setProductItemByKeyword, scanned, setScanned, setProduct }}>
             {children}
         </PantryContext.Provider>
     );
