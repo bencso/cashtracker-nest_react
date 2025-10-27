@@ -48,7 +48,7 @@ export default function InventoryScreen() {
                 {
                   pantry && pantry.map((item: PantryType, idx: number) => {
                     return <>
-                      <ThemedText style={{ paddingTop: 20 }}>{item.name}</ThemedText>
+                      <ThemedText type="defaultSemiBold" style={{ marginBottom: 10, marginTop: 10 }}>{item.name}</ThemedText>
                       <InventoryItem key={idx} product={item} idx={idx} /></>
                   })
                 }
@@ -87,8 +87,6 @@ function InventoryItem({ product, idx }: {
       };
     });
 
-    //TODO: Ezt ugy kell, hogy majd egy modal elöjön ahol ki lehet választani mit szeretne törölni ha összesített akkor csak igy lehet majd
-    //TODO: továbbá módosításnál is így lesz
     return (
       <Reanimated.View style={{ ...animatedStyle }}>
         <TouchableOpacity style={styles.editButton} onPress={async () => {
