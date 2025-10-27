@@ -71,7 +71,6 @@ export default function AuthenticatedScreen() {
         <View style={styles.settingGroup}>
           <ThemedView style={styles.topBar}>
             <ScrollView showsVerticalScrollIndicator={false}>
-              {/* */}
               {
                 lists.map(({ name, amount }: { name: string; amount?: number }, idx: number) => (
                   <ThemedView style={styles.topBarItem} key={idx}>

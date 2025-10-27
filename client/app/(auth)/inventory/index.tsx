@@ -15,6 +15,7 @@ import getNavbarStyles from "@/styles/navbar";
 import { getInventoryStyle } from "@/styles/inventory";
 import { router, useFocusEffect } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Colors } from "@/constants/theme";
 
 export default function InventoryScreen() {
   const { scheme: colorScheme } = useTheme();
@@ -46,7 +47,9 @@ export default function InventoryScreen() {
               <GestureHandlerRootView style={{ gap: 12 }}>
                 {
                   pantry && pantry.map((item: PantryType, idx: number) => {
-                    return <InventoryItem key={idx} product={item} idx={idx} />
+                    return <>
+                      <ThemedText style={{ paddingTop: 20 }}>{item.name}</ThemedText>
+                      <InventoryItem key={idx} product={item} idx={idx} /></>
                   })
                 }
               </GestureHandlerRootView>
@@ -78,7 +81,9 @@ function InventoryItem({ product, idx }: {
         display: "flex",
         flexDirection: "row",
         gap: 12,
-        paddingRight: 6
+        paddingRight: 6,
+        paddingBottom: 6,
+        paddingTop: 6,
       };
     });
 
@@ -109,7 +114,10 @@ function InventoryItem({ product, idx }: {
   return (
     product.amount.map((_, index) => {
       return <ReanimatedSwipeable
-        containerStyle={{ padding: 20, paddingTop: 0, paddingBottom: 0 }}
+        containerStyle={{
+          padding: 20, paddingTop: 0, paddingBottom: 12, borderBottomWidth: 1, borderBottomColor: Colors[colorScheme ?? "light"].border,
+          borderRadius: 12,
+        }}
         key={idx + "-" + index}
         friction={1}
         enableTrackpadTwoFingerGesture
