@@ -6,9 +6,10 @@ import { useTranslation } from "react-i18next";
 import { usePantry } from "@/contexts/pantry-context";
 import { getInventoryModifyStyles } from "@/styles/inventory/modify";
 import Button from "@/components/button";
-import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { TouchableOpacity, View } from "react-native";
+import { Colors } from "@/constants/theme";
 
 type ItemType = {
     index: number;
@@ -18,13 +19,12 @@ type ItemType = {
     code: string;
 }
 
-//TODO: Külön routera rá lehet tenni apira majd hogy ne frontenden kelljen intézni a szürést az itemekre mikor betöltjük,
-// és akkor csak megmondja melyik code alapján keressen a backend és a frontend megkapja az adott itemek mik lehetnek
+//TODO: Loadingok megcsinálása, ezenfelül refaktorálás stb.
 export default function DeleteItemScreen() {
     const [selectedItemsId, setSelectedItemsId] = useState<number[]>([]);
     const [products, setProducts] = useState([]);
     const { scheme } = useTheme();
-    // const { deletePantryItem } = usePantry();
+    const { deletePantryItem } = usePantry();
     const { t } = useTranslation();
     const params = useLocalSearchParams();
     const { getItemsById } = usePantry();
@@ -58,10 +58,14 @@ export default function DeleteItemScreen() {
                 <ThemedText type="title" style={{ textTransform: "uppercase" }}>
                     {t("inventory.deleteItem.title")}
                 </ThemedText>
-                <View style={{ flex: 1, height: "100%" }}>
+                <View style={{ flex: 1, height: "100%", gap: 16, marginTop: 16 }}>
                     {products?.map((product: ItemType, idx) => (
                         <TouchableOpacity
-                            style={{ flexDirection: "row", width: "100%", justifyContent: "space-between", padding: 16, alignItems: "center" }}
+                            style={{
+                                flexDirection: "row", width: "100%", justifyContent: "space-between", padding: 16, alignItems: "center", borderRadius: 24, borderWidth: 1, borderColor: selectedItemsId.includes(product.index)
+                                    ? Colors[scheme ?? "light"].primary : Colors[scheme ?? "light"].border, backgroundColor: selectedItemsId.includes(product.index)
+                                        ? Colors[scheme ?? "light"].primary : Colors[scheme ?? "light"].border
+                            }}
                             onPress={() => selectItem({
                                 productId: product.index
                             })}
@@ -79,8 +83,8 @@ export default function DeleteItemScreen() {
                                 <MaterialCommunityIcons
                                     name={
                                         selectedItemsId.includes(product.index)
-                                            ? "radiobox-marked"
-                                            : "radiobox-blank"
+                                            ? "check-circle-outline"
+                                            : "circle-outline"
                                     }
                                     size={24}
                                 />
@@ -92,12 +96,18 @@ export default function DeleteItemScreen() {
             <ThemedView style={{
                 gap: 12,
             }}>
-                <Button label={t("inventory.deleteItem.cta")} icon="trash-can" disabled={selectedItemsId.length === 0} action={() => {
-                    console.log("TÖRLÉS!");
-                }} />
                 {
-                    selectedItemsId.length > 0 && <Button disabled={selectedItemsId.length === 0} label={selectedItemsId.length + " " + t("inventory.deleteItem.cta")} icon="trash-can" action={() => {
-                        console.log("TÖRLÉS!");
+                    selectedItemsId.length > 0 && <Button disabled={selectedItemsId.length === 0} label={selectedItemsId.length + " " + t("inventory.deleteItem.cta")} icon="trash-can" action={async () => {
+                        if (selectedItemsId.length > 0) {
+                            //TODO: Késöbb jobb megoldást irni rá, most csak ugy betettem ezt is addig
+                            try {
+                                selectedItemsId.map(async (index) => await deletePantryItem({ id: index }));
+                                if (router.canGoBack()) router.back();
+                                router.replace("/inventory");
+                            } catch {
+                                console.log("Hiba történt a törlés közben!");
+                            }
+                        }
                     }} />
                 }
             </ThemedView>

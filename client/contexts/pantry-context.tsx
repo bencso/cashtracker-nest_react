@@ -8,6 +8,7 @@ import React, {
     useState,
 } from "react";
 import { Product } from "@/constants/product.interface"
+import { Alert } from "react-native";
 
 export type PantryType = {
     code: string;
@@ -85,7 +86,6 @@ export function PantryProvider({ children }: { children: ReactNode }) {
 try {
             const response = await api.get("/pantry/" + code.code);
             const item = response.data;
-            console.log(item);
             return item;
         } catch {
            return null
@@ -172,8 +172,8 @@ try {
             await deleteItem({
                 id
             });
-            loadPantry()
         } catch (error) {
+            Alert.alert("Hiba történt a törlés közben!", "Hiba");
             console.error(error);
         } finally {
 
@@ -186,7 +186,7 @@ try {
     }, []);
 
     return (
-        <PantryContext.Provider value={{ pantry, loadPantry, isLoading, addPantryItem, deletePantryItem, product, getItemsById,setProductItemByCode, setProductItemByKeyword, scanned, setScanned, setProduct }}>
+        <PantryContext.Provider value={{ pantry, loadPantry, isLoading, addPantryItem, deletePantryItem, product, getItemsById, setProductItemByCode, setProductItemByKeyword, scanned, setScanned, setProduct }}>
             {children}
         </PantryContext.Provider>
     );
