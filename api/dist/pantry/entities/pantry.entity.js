@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Pantry = void 0;
+const class_validator_1 = require("class-validator");
 const product_entity_1 = require("../../product/entities/product.entity");
 const user_entity_1 = require("../../users/entities/user.entity");
 const typeorm_1 = require("typeorm");
@@ -39,6 +40,8 @@ __decorate([
         type: 'int',
         default: 1,
     }),
+    (0, class_validator_1.IsInt)(),
+    (0, class_validator_1.Min)(1),
     __metadata("design:type", Number)
 ], Pantry.prototype, "amount", void 0);
 __decorate([
@@ -46,6 +49,8 @@ __decorate([
         type: 'date',
         default: () => "CURRENT_DATE + INTERVAL '1 week'",
     }),
+    (0, class_validator_1.IsDate)(),
+    (0, class_validator_1.MinDate)(new Date()),
     __metadata("design:type", Date)
 ], Pantry.prototype, "expiredAt", void 0);
 __decorate([

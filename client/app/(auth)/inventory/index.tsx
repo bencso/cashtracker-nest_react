@@ -10,7 +10,7 @@ import Reanimated, {
   useAnimatedStyle,
 } from 'react-native-reanimated';
 import { PantryType, usePantry } from "@/contexts/pantry-context";
-import { useCallback } from "react";
+import { Fragment, useCallback } from "react";
 import getNavbarStyles from "@/styles/navbar";
 import { getInventoryStyle } from "@/styles/inventory";
 import { router, useFocusEffect } from "expo-router";
@@ -47,9 +47,9 @@ export default function InventoryScreen() {
               <GestureHandlerRootView style={{ gap: 12 }}>
                 {
                   pantry && pantry.map((item: PantryType, idx: number) => {
-                    return <>
+                    return <Fragment key={idx}>
                       <ThemedText type="defaultSemiBold" style={{ marginBottom: 10, marginTop: 10 }}>{item.name}</ThemedText>
-                      <InventoryItem key={idx} product={item} idx={idx} /></>
+                      <InventoryItem key={idx} product={item} idx={idx} /></Fragment>
                   })
                 }
               </GestureHandlerRootView>

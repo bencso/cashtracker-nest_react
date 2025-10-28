@@ -10,7 +10,7 @@ export declare class PantryController {
     }>;
     getUserPantry(request: Request): any;
     getUserPantryItemByCode(request: Request, code: string): any;
-    remove(request: Request, id: string): Promise<{
+    remove(request: Request, id: number[]): Promise<{
         message: string[];
         statusCode: number;
     }>;

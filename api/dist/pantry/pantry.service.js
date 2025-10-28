@@ -136,20 +136,19 @@ let PantryService = class PantryService {
     async remove(request, id) {
         const requestUser = await this.sessionsService.validateAccessToken(request);
         const user = await this.usersService.findUser(requestUser.email);
-        console.log(id);
         if (user) {
             const product = await this.dataSource
                 .getRepository(pantry_entity_1.Pantry)
                 .createQueryBuilder()
                 .where({
-                id: id,
+                id: (0, typeorm_1.In)(id),
                 user: user,
             })
                 .getCount();
             if (product > 0) {
                 try {
                     this.dataSource.getRepository(pantry_entity_1.Pantry).delete({
-                        id: id,
+                        id: (0, typeorm_1.In)(id),
                         user: user,
                     });
                     return { message: ['Sikeres törlés'], statusCode: 200 };

@@ -36,9 +36,15 @@ export async function addItem({
   }
 }
 
-export async function deleteItem({ id }: { id: number }) {
+export async function deleteItem({ id }: { id: number[] }) {
   try {
-    await api.post("/pantry/delete/" + id, {}, { withCredentials: true });
+    await api.post(
+      "/pantry/delete",
+      {
+        id,
+      },
+      { withCredentials: true }
+    );
 
     return true;
   } catch {

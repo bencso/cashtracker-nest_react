@@ -32,7 +32,7 @@ export declare class PantryService {
         statusCode: number;
         products?: undefined;
     }>;
-    remove(request: Request, id: number): Promise<{
+    remove(request: Request, id: number[]): Promise<{
         message: string[];
         statusCode: number;
     }>;

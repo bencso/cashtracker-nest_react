@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Product = void 0;
+const class_validator_1 = require("class-validator");
 const typeorm_1 = require("typeorm");
 let Product = class Product {
 };
@@ -20,10 +21,12 @@ __decorate([
 ], Product.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'text', nullable: true, unique: true }),
+    (0, class_validator_1.MinLength)(1),
     __metadata("design:type", String)
 ], Product.prototype, "code", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'text', nullable: true }),
+    (0, class_validator_1.MinLength)(5),
     __metadata("design:type", String)
 ], Product.prototype, "product_name", void 0);
 __decorate([
@@ -38,6 +41,8 @@ __decorate([
         type: 'varchar',
         nullable: true,
     }),
+    (0, class_validator_1.IsInt)(),
+    (0, class_validator_1.Min)(1),
     __metadata("design:type", String)
 ], Product.prototype, "quantity", void 0);
 __decorate([
@@ -52,42 +57,53 @@ __decorate([
         type: 'varchar',
         nullable: true,
     }),
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.Min)(1),
     __metadata("design:type", String)
 ], Product.prototype, "serving_size", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'float', nullable: true }),
+    (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], Product.prototype, "energy_kcal_100g", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'float', nullable: true }),
+    (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], Product.prototype, "fat_100g", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'float', nullable: true }),
+    (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], Product.prototype, "saturated_fat_100g", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'float', nullable: true }),
+    (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], Product.prototype, "carbohydrates_100g", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'float', nullable: true }),
+    (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], Product.prototype, "sugars_100g", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'float', nullable: true }),
+    (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], Product.prototype, "fiber_100g", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'float', nullable: true }),
+    (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], Product.prototype, "proteins_100g", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'float', nullable: true }),
+    (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], Product.prototype, "salt_100g", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'varchar', nullable: true }),
+    (0, class_validator_1.IsUrl)(),
     __metadata("design:type", String)
 ], Product.prototype, "image_url", void 0);
 __decorate([

@@ -48,11 +48,10 @@ export class PantryController {
     return this.pantryService.getUserPantryItemByCode(request, code);
   }
 
-  @Post('/delete/:id')
+  @Post('/delete')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  remove(@Req() request: Request, @Param('id') id: string) {
-    console.log('ID:' + id);
-    return this.pantryService.remove(request, +id);
+  remove(@Req() request: Request, @Body('id') id: number[]) {
+    return this.pantryService.remove(request, id);
   }
 }

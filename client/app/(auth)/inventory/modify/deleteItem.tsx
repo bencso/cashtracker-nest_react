@@ -99,9 +99,8 @@ export default function DeleteItemScreen() {
                 {
                     selectedItemsId.length > 0 && <Button disabled={selectedItemsId.length === 0} label={selectedItemsId.length + " " + t("inventory.deleteItem.cta")} icon="trash-can" action={async () => {
                         if (selectedItemsId.length > 0) {
-                            //TODO: Késöbb jobb megoldást irni rá, most csak ugy betettem ezt is addig
                             try {
-                                selectedItemsId.map(async (index) => await deletePantryItem({ id: index }));
+                                await deletePantryItem({ id: selectedItemsId });
                                 if (router.canGoBack()) router.back();
                                 router.replace("/inventory");
                             } catch {

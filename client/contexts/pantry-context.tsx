@@ -166,7 +166,7 @@ try {
     const deletePantryItem = async ({
         id
     }: {
-        id: number
+        id: number[]
     }) => {
         try {
             await deleteItem({

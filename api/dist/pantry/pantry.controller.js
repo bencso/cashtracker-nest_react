@@ -32,8 +32,7 @@ let PantryController = class PantryController {
         return this.pantryService.getUserPantryItemByCode(request, code);
     }
     remove(request, id) {
-        console.log('ID:' + id);
-        return this.pantryService.remove(request, +id);
+        return this.pantryService.remove(request, id);
     }
 };
 exports.PantryController = PantryController;
@@ -69,13 +68,13 @@ __decorate([
     __metadata("design:returntype", Object)
 ], PantryController.prototype, "getUserPantryItemByCode", null);
 __decorate([
-    (0, common_1.Post)('/delete/:id'),
+    (0, common_1.Post)('/delete'),
     (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:paramtypes", [Object, Array]),
     __metadata("design:returntype", void 0)
 ], PantryController.prototype, "remove", null);
 exports.PantryController = PantryController = __decorate([

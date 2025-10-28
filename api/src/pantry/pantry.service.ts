@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePantryItemDto } from './dto/create-pantry-item.dto';
 import { UsersService } from 'src/users/users.service';
-import { DataSource } from 'typeorm';
+import { DataSource, In } from 'typeorm';
 import { SessionService } from 'src/sessions/sessions.service';
 import { Request } from 'express';
 import { ProductService } from 'src/product/product.service';
@@ -156,17 +156,16 @@ export class PantryService {
     } else return { message: ['Sikertelen lekérdezés'], statusCode: 404 };
   }
 
-  async remove(request: Request, id: number) {
+  async remove(request: Request, id: number[]) {
     const requestUser = await this.sessionsService.validateAccessToken(request);
     const user = await this.usersService.findUser(requestUser.email);
 
-    console.log(id);
     if (user) {
       const product = await this.dataSource
         .getRepository(Pantry)
         .createQueryBuilder()
         .where({
-          id: id,
+          id: In(id),
           user: user,
         })
         .getCount();
@@ -174,7 +173,7 @@ export class PantryService {
       if (product > 0) {
         try {
           this.dataSource.getRepository(Pantry).delete({
-            id: id,
+            id: In(id),
             user: user,
           });
 
