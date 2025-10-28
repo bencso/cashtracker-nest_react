@@ -1,7 +1,6 @@
 import { Colors } from "@/constants/theme";
 import { StyleSheet } from "react-native";
 
-//TODO: Type-ok normalizálása
 export default function getLoginStyles({
   scheme,
   disabledButton,

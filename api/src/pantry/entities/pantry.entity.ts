@@ -1,3 +1,4 @@
+import { IsDate, IsInt, Min, MinDate } from 'class-validator';
 import { Product } from 'src/product/entities/product.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
@@ -9,7 +10,6 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-//TODO: Validációk megírása
 @Entity({ name: 'pantry' })
 export class Pantry {
   @ManyToOne(() => User, {
@@ -31,12 +31,16 @@ export class Pantry {
     type: 'int',
     default: 1,
   })
+  @IsInt()
+  @Min(1)
   amount: number;
 
   @Column({
     type: 'date',
     default: () => "CURRENT_DATE + INTERVAL '1 week'",
   })
+  @IsDate()
+  @MinDate(new Date())
   expiredAt: Date;
 
   @CreateDateColumn()

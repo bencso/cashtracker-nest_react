@@ -41,7 +41,7 @@ export default function CustomInputScreen() {
         if (amount && amount <= 1) setAmount(1);
     }, [amount]);
 
-    {/* TODO: MAGYAROSÍTÁSOK */ }
+    {/* TODO: A translationok beirása a HU-ENbe :) */ }
     async function onSubmit() {
         try {
             if (productCode && productName && amount)
@@ -51,12 +51,12 @@ export default function CustomInputScreen() {
                     amount: amount,
                     expiredAt: expired
                 });
-            else throw new Error("Kérem adja meg a kötelező mezőket!");
+            else throw new Error(t("alerts.addPantryItemError"));
             router.dismiss();
             router.navigate("/(auth)/inventory");
             loadPantry();
         } catch {
-            Alert.alert("Hiba történt a felvevés közben");
+            Alert.alert(t("alerts.addPantryItemErrorTitle"),t("alerts.addPantryItemError"));
         }
         finally {
             setProduct(null);
