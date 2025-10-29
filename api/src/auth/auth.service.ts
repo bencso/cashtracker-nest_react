@@ -30,7 +30,7 @@ export class AuthService {
     private readonly config: ConfigService,
     private readonly sessionsService: SessionService,
     private readonly dataSource: DataSource,
-  ) { }
+  ) {}
 
   async login(
     @Body() body: BodyLogin,
@@ -53,7 +53,7 @@ export class AuthService {
         });
 
         return response.json({
-          ...returnData
+          ...returnData,
         });
       } else {
         throw new UnauthorizedException({
@@ -91,10 +91,16 @@ export class AuthService {
         })
         .then((value) => {
           if (value.statusCode !== 200)
-            throw new ConflictException(value.message);
+            return {
+              message: [value.message ?? 'Ismeretlen hiba'],
+              statusCode: 400,
+            };
         })
         .catch((error) => {
-          throw new ConflictException(error);
+          return {
+            message: [error ?? 'Ismeretlen hiba'],
+            statusCode: 400,
+          };
         });
 
       return {

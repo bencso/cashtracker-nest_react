@@ -65,7 +65,7 @@ export class UsersService {
       };
     } catch (err) {
       return {
-        message: err.message,
+        message: [err.message],
         statusCode: err.statusCode,
       };
     }

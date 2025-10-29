@@ -15,7 +15,7 @@ export declare class UsersService {
         password: string;
         userId: number;
     }): Promise<{
-        message: any;
+        message: any[];
         statusCode: any;
     }>;
     findUser(email: string): Promise<ReturnUserPassDto>;

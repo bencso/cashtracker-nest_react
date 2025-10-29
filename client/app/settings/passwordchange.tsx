@@ -4,18 +4,20 @@ import { ThemedView } from "@/components/themed-view";
 import { Colors } from "@/constants/theme";
 import { useAuth } from "@/contexts/auth-context";
 import { useTheme } from "@/contexts/theme-context";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Alert, StyleSheet, TextInput, View } from "react-native";
+import { Alert, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function PasswordChangeScreen() {
   const { scheme } = useTheme();
   const { isAuthenticated, passwordChange } = useAuth();
   const { t } = useTranslation();
-
   const [password, setPassword] = useState<string>("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const [rePassword, setRePassword] = useState<string>("");
+  const [showRepassword, setShowRepassword] = useState<boolean>(false);
 
   const disabledButton = password.length < 0 || rePassword.length < 0;
 
@@ -45,7 +47,7 @@ export default function PasswordChangeScreen() {
       borderRadius: 12,
       backgroundColor: `${Colors[scheme ?? "light"].primary}10`,
     },
-     input: {
+    input: {
       color: Colors[scheme ?? "light"].text,
       paddingTop: 16,
       paddingBottom: 16,
@@ -73,6 +75,9 @@ export default function PasswordChangeScreen() {
       fontSize: 20,
       opacity: !disabledButton ? 1 : 0.5,
     },
+    icon: {
+      color: `${Colors[scheme ?? "light"].buttomText}80`
+    }
   });
 
   async function onSubmit() {
@@ -98,41 +103,83 @@ export default function PasswordChangeScreen() {
             <ThemedText type="default">
               {t("auth.password")}:
             </ThemedText>
-            <TextInput
-              style={styles.input}
-              value={password}
-              maxLength={150}
-              placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
-              autoComplete="new-password"
-              autoCorrect={false}
-              keyboardType="visible-password"
-              secureTextEntry
-              textContentType="password"
-              autoCapitalize="none"
-              placeholder={t("forms.password")}
-              onChangeText={(text) => {
-                setPassword(text);
-              }}
-            />
+            <View style={{ position: "relative", justifyContent: "center" }}>
+              <TextInput
+                style={styles.input}
+                value={password}
+                maxLength={150}
+                placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
+                autoComplete="current-password"
+                autoCorrect={false}
+                keyboardType="default"
+                textContentType="password"
+                autoCapitalize="none"
+                enablesReturnKeyAutomatically
+                secureTextEntry={!showPassword}
+                placeholder={t("forms.password")}
+                onChangeText={setPassword}
+              />
+              <TouchableOpacity
+                style={{
+                  position: "absolute",
+                  right: 10,
+                  top: 0,
+                  bottom: 0,
+                  justifyContent: "center",
+                  height: "100%",
+                }}
+                onPress={() => {
+                  setShowPassword((prev) => !prev);
+                }}
+                activeOpacity={0.7}
+              >
+                <MaterialCommunityIcons
+                  name={showPassword ? 'eye-off' : 'eye'}
+                  size={24}
+                  style={styles.icon}
+                />
+              </TouchableOpacity>
+            </View>
             <ThemedText type="default">
               {t("auth.repassword")}:
             </ThemedText>
-            <TextInput
-              style={styles.input}
-              value={rePassword}
-              maxLength={150}
-              placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
-              autoComplete="new-password"
-              autoCorrect={false}
-              keyboardType="visible-password"
-              secureTextEntry
-              textContentType="password"
-              autoCapitalize="none"
-              placeholder={t("forms.repassword")}
-              onChangeText={(text) => {
-                setRePassword(text);
-              }}
-            />
+            <View style={{ position: "relative", justifyContent: "center" }}>
+              <TextInput
+                style={styles.input}
+                value={rePassword}
+                maxLength={150}
+                placeholderTextColor={`${Colors[scheme ?? "light"].text}80`}
+                autoComplete="current-password"
+                autoCorrect={false}
+                keyboardType="default"
+                textContentType="password"
+                autoCapitalize="none"
+                enablesReturnKeyAutomatically
+                secureTextEntry={!showRepassword}
+                placeholder={t("forms.repassword")}
+                onChangeText={setRePassword}
+              />
+              <TouchableOpacity
+                style={{
+                  position: "absolute",
+                  right: 10,
+                  top: 0,
+                  bottom: 0,
+                  justifyContent: "center",
+                  height: "100%",
+                }}
+                onPress={() => {
+                  setShowRepassword((prev) => !prev);
+                }}
+                activeOpacity={0.7}
+              >
+                <MaterialCommunityIcons
+                  name={showPassword ? 'eye-off' : 'eye'}
+                  size={24}
+                  style={styles.icon}
+                />
+              </TouchableOpacity>
+            </View>
             <Button
               label={t("auth.passwordChange")}
               action={onSubmit}

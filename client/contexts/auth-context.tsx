@@ -2,6 +2,7 @@ import api from "@/interceptor/api";
 import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import React, { createContext, ReactNode, useContext, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert } from "react-native";
 
 interface UserData {
@@ -28,6 +29,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState<UserData | null>(null);
+  const { t } = useTranslation();
 
 
   const loadAuth = async () => {
@@ -163,19 +165,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  //TODO: Nem jó az ellenörzés megnézni backend oldalon is
   const passwordChange = async ({ password }: { password: string }) => {
     try {
       const response = await api.post("/auth/passwordChange", { password });
-      if (response.data.statusCode === 200) {
-        router.back();
-        return true;
-      } else {
+      if (response.data.statusCode !== 200) {
         throw new Error(response.data?.message || "Ismeretlen hiba");
       }
-    } catch (error: any) {
-      console.error(error.message);
-      Alert.alert("HIBA", error?.message ?? "Ismeretlen hiba");
+      router.back();
+      return true;
+    } catch {
+      Alert.alert(t("auth.passwordChange.error"), t("auth.passwordChange.errorTitle"));
       return false;
     } finally {
       setIsLoading(false);

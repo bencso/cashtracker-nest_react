@@ -43,7 +43,7 @@ let AuthService = class AuthService {
                     secure: true,
                 });
                 return response.json({
-                    ...returnData
+                    ...returnData,
                 });
             }
             else {
@@ -76,10 +76,16 @@ let AuthService = class AuthService {
             })
                 .then((value) => {
                 if (value.statusCode !== 200)
-                    throw new common_1.ConflictException(value.message);
+                    return {
+                        message: [value.message ?? 'Ismeretlen hiba'],
+                        statusCode: 400,
+                    };
             })
                 .catch((error) => {
-                throw new common_1.ConflictException(error);
+                return {
+                    message: [error ?? 'Ismeretlen hiba'],
+                    statusCode: 400,
+                };
             });
             return {
                 message: ['Sikeres jelszóváltoztatás!'],
