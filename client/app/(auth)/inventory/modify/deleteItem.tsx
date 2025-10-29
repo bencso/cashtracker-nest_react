@@ -8,7 +8,7 @@ import { getInventoryModifyStyles } from "@/styles/inventory/modify";
 import Button from "@/components/button";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { Colors } from "@/constants/theme";
 
 type ItemType = {
@@ -59,6 +59,25 @@ export default function DeleteItemScreen() {
                     {t("inventory.deleteItem.title")}
                 </ThemedText>
                 <View style={{ flex: 1, height: "100%", gap: 16, marginTop: 16 }}>
+                    <View style={{ flexDirection: "row", gap: 16, width: "100%", justifyContent: "space-between" }}>
+                        {selectedItemsId.length < products.length && <TouchableOpacity style={{
+                            paddingStart: 8, paddingEnd: 8, paddingTop: 4, paddingBottom: 4, backgroundColor: Colors[scheme ?? "light"].border, borderRadius: 12, justifyContent: "center", alignItems: "center", width: "45%"
+                        }} onPress={() => {
+                            setSelectedItemsId(products.map((product: ItemType) => product.index));
+                        }}>
+                            <Text>Összes kijelölés</Text>
+                        </TouchableOpacity>
+                        }
+                        {
+                            selectedItemsId.length > 0 && <TouchableOpacity style={{
+                                paddingStart: 8, paddingEnd: 8, paddingTop: 4, paddingBottom: 4, backgroundColor: Colors[scheme ?? "light"].border, borderRadius: 12, width: "45%", justifyContent: "center", alignItems: "center"
+                            }} onPress={() => {
+                                setSelectedItemsId([])
+                            }}>
+                                <Text>Kijelölések törlése</Text>
+                            </TouchableOpacity>
+                        }
+                    </View>
                     {products?.map((product: ItemType, idx) => (
                         <TouchableOpacity
                             style={{
