@@ -157,8 +157,8 @@ export function PantryProvider({ children }: { children: ReactNode }) {
                 amount,
                 expiredAt,
             });
-        } catch (error) {
-            console.error(error);
+        } catch {
+            Alert.alert(t("inventory.addPantryItem.error"), t("inventory.addPantryItemitItem.errorTitle"));
         } finally {
             setScanned(false);
             loadPantry();
@@ -175,11 +175,9 @@ export function PantryProvider({ children }: { children: ReactNode }) {
             await deleteItem({
                 id
             });
-        } catch (error) {
-            Alert.alert("Hiba történt a törlés közben!", "Hiba");
-            console.error(error);
+        } catch {
+            Alert.alert(t("inventory.deleteItem.error"), t("inventory.deleteItem.errorTitle"));
         } finally {
-
             setIsLoading(false);
         }
     }
