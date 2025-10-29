@@ -42,7 +42,7 @@ export function PantryProvider({ children }: { children: ReactNode }) {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [scanned, setScanned] = useState<boolean>(false);
     const [product, setProduct] = useState<Product | null>(null);
-    const {t} = useTranslation();
+    const { t } = useTranslation();
 
     const loadPantry = async () => {
         try {
