@@ -161,6 +161,40 @@ let PantryService = class PantryService {
                 return { message: ['Sikertelen törlés'], statusCode: 404 };
         }
     }
+    async edit(request, id, amount) {
+        const requestUser = await this.sessionsService.validateAccessToken(request);
+        const user = await this.usersService.findUser(requestUser.email);
+        if (user) {
+            const product = await this.dataSource
+                .getRepository(pantry_entity_1.Pantry)
+                .createQueryBuilder()
+                .where({
+                id: id,
+                user: user,
+            })
+                .getCount();
+            if (product > 0) {
+                try {
+                    this.dataSource
+                        .getRepository(pantry_entity_1.Pantry)
+                        .createQueryBuilder()
+                        .update({
+                        amount: amount,
+                    })
+                        .where({
+                        id: id,
+                        user: user,
+                    });
+                    return { message: ['Sikeres módosítás'], statusCode: 200 };
+                }
+                catch {
+                    return { message: ['Sikertelen módosítás'], statusCode: 404 };
+                }
+            }
+            else
+                return { message: ['Sikertelen módosítás'], statusCode: 404 };
+        }
+    }
 };
 exports.PantryService = PantryService;
 exports.PantryService = PantryService = __decorate([

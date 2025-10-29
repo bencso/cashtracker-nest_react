@@ -36,4 +36,8 @@ export declare class PantryService {
         message: string[];
         statusCode: number;
     }>;
+    edit(request: Request, id: number, amount: number): Promise<{
+        message: string[];
+        statusCode: number;
+    }>;
 }
