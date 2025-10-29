@@ -7,7 +7,6 @@ import { usePantry } from "@/contexts/pantry-context";
 import { getInventoryModifyStyles } from "@/styles/inventory/modify";
 import Button from "@/components/button";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Alert, TouchableOpacity, View } from "react-native";
 import { Colors } from "@/constants/theme";
 
@@ -24,7 +23,7 @@ export default function DeleteItemScreen() {
     const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
     const [products, setProducts] = useState([]);
     const { scheme } = useTheme();
-    const { deletePantryItem } = usePantry();
+    const { editPantryItem, loadPantry } = usePantry();
     const { t } = useTranslation();
     const params = useLocalSearchParams();
     const { getItemsById } = usePantry();
@@ -92,7 +91,6 @@ export default function DeleteItemScreen() {
                     selectedItemId && <Button disabled={!selectedItemId} label={t("inventory.editItem.cta")} icon="pen" action={async () => {
                         if (selectedItemId) {
                             try {
-                                let amount = 0;
                                 Alert.prompt(
                                     t('inventory.editItem.amountInput.title'),
                                     t('inventory.editItem.amountInput.message'),
@@ -104,14 +102,18 @@ export default function DeleteItemScreen() {
                                         {
                                             text: t('inventory.editItem.amountInput.submit'),
                                             style: "default",
-                                            onPress: (value?: string) => {
-                                                amount = Number.parseInt(value ?? "0");
+                                            onPress: async (amount?: string) => {
+                                                    await editPantryItem({
+                                                        id: selectedItemId,
+                                                        amount: Number(amount)
+                                                    });
+                                                    await loadPantry();
+                                                    router.back();
                                             }
                                         }
                                     ],
                                     "plain-text"
                                 );
-                                console.log(amount);
                             } catch {
                                 console.log("Hiba történt a módosítás közben!");
                             }

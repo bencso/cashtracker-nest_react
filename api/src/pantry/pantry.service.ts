@@ -186,6 +186,12 @@ export class PantryService {
   }
 
   async edit(request: Request, id: number, amount: number) {
+    if (amount <= 0) {
+      return {
+        message: ['A mennyiség nem lehet kisebb vagy egyenlő nullával'],
+        statusCode: 400,
+      };
+    }
     const requestUser = await this.sessionsService.validateAccessToken(request);
     const user = await this.usersService.findUser(requestUser.email);
 
@@ -210,7 +216,8 @@ export class PantryService {
             .where({
               id: id,
               user: user,
-            });
+            })
+            .execute();
           return { message: ['Sikeres módosítás'], statusCode: 200 };
         } catch {
           return { message: ['Sikertelen módosítás'], statusCode: 404 };

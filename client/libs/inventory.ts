@@ -19,7 +19,7 @@ export async function addItem({
   try {
     if (!code || !product_name || !amount || !expiredAt) throw new Error();
 
-    await api.post(
+   const response = await api.post(
       "/pantry",
       {
         code: code,
@@ -30,15 +30,17 @@ export async function addItem({
       { withCredentials: true }
     );
 
+    if (response.data.statusCode !== 200) throw Error();
+
     return true;
   } catch {
-    return null;
+    throw Error("Hiba történt a hozzáadás közben");
   }
 }
 
 export async function deleteItem({ id }: { id: number[] }) {
   try {
-    await api.post(
+    const response = await api.post(
       "/pantry/delete",
       {
         id,
@@ -46,8 +48,26 @@ export async function deleteItem({ id }: { id: number[] }) {
       { withCredentials: true }
     );
 
+    if (response.data.statusCode !== 200) throw Error();
     return true;
   } catch {
-    return false;
+    throw Error("Hiba történt törlés közben");
+  }
+}
+
+export async function editItem({ id, amount }: { id: number; amount: number }) {
+  try {
+    const response = await api.post(
+      "/pantry/edit/" + id,
+      {
+        amount,
+      },
+      { withCredentials: true }
+    );
+
+    if (response.data.statusCode !== 200) throw Error();
+    return true;
+  } catch {
+    throw Error("Hiba történt módosítás közben");
   }
 }

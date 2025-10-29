@@ -1,5 +1,5 @@
 import api from "@/interceptor/api";
-import { addItem, deleteItem, getItems } from "@/libs/inventory";
+import { addItem, deleteItem, editItem, getItems } from "@/libs/inventory";
 import React, {
     createContext,
     ReactNode,
@@ -9,6 +9,7 @@ import React, {
 } from "react";
 import { Product } from "@/constants/product.interface"
 import { Alert } from "react-native";
+import { useTranslation } from "react-i18next";
 
 export type PantryType = {
     code: string;
@@ -23,6 +24,7 @@ type PantryContextType = {
     loadPantry: any;
     addPantryItem: any;
     deletePantryItem: any;
+    editPantryItem: any;
     isLoading: boolean;
     product: Product | null;
     setProductItemByCode: any;
@@ -40,6 +42,7 @@ export function PantryProvider({ children }: { children: ReactNode }) {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [scanned, setScanned] = useState<boolean>(false);
     const [product, setProduct] = useState<Product | null>(null);
+    const {t} = useTranslation();
 
     const loadPantry = async () => {
         try {
@@ -83,12 +86,12 @@ export function PantryProvider({ children }: { children: ReactNode }) {
     };
 
     const getItemsById = async (code: any) => {
-try {
+        try {
             const response = await api.get("/pantry/" + code.code);
             const item = response.data;
             return item;
         } catch {
-           return null
+            return null
         }
         finally {
             setIsLoading(false);
@@ -181,12 +184,31 @@ try {
         }
     }
 
+    const editPantryItem = async ({
+        id,
+        amount
+    }: {
+        id: number;
+        amount: number;
+    }) => {
+        try {
+            await editItem({
+                id,
+                amount
+            });
+        } catch {
+            Alert.alert(t("inventory.editItem.amountInput.error"), t("inventory.editItem.amountInput.errorTitle"));
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
     useEffect(() => {
         loadPantry();
     }, []);
 
     return (
-        <PantryContext.Provider value={{ pantry, loadPantry, isLoading, addPantryItem, deletePantryItem, product, getItemsById, setProductItemByCode, setProductItemByKeyword, scanned, setScanned, setProduct }}>
+        <PantryContext.Provider value={{ pantry, loadPantry, isLoading, addPantryItem, deletePantryItem, product, getItemsById, setProductItemByCode, setProductItemByKeyword, scanned, setScanned, setProduct, editPantryItem }}>
             {children}
         </PantryContext.Provider>
     );

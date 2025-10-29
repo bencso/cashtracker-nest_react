@@ -162,6 +162,12 @@ let PantryService = class PantryService {
         }
     }
     async edit(request, id, amount) {
+        if (amount <= 0) {
+            return {
+                message: ['A mennyiség nem lehet kisebb vagy egyenlő nullával'],
+                statusCode: 400,
+            };
+        }
         const requestUser = await this.sessionsService.validateAccessToken(request);
         const user = await this.usersService.findUser(requestUser.email);
         if (user) {
@@ -184,7 +190,8 @@ let PantryService = class PantryService {
                         .where({
                         id: id,
                         user: user,
-                    });
+                    })
+                        .execute();
                     return { message: ['Sikeres módosítás'], statusCode: 200 };
                 }
                 catch {
