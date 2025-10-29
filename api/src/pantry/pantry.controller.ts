@@ -59,6 +59,8 @@ export class PantryController {
     return this.pantryService.edit(request, id, amount);
   }
 
+  //? Hogy ne Bodyba kelljen az id-kat küldeni arra ez is jó megoldás lehet:
+  //? @Query('ids', new ParseArrayPipe({ items: Number, separator: ',' })) ids: number[]
   @Post('/delete')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
