@@ -80,7 +80,6 @@ let PantryService = class PantryService {
                     return acc;
                 }, {}),
             ];
-            console.log(returnProducts);
             return products.length > 0
                 ? {
                     message: ['Sikeres lekérdezés'],
@@ -115,7 +114,6 @@ let PantryService = class PantryService {
                 .andWhere('product.code = :code', { code })
                 .andWhere('pantry.expiredAt >= :now', { now: new Date() })
                 .getRawMany();
-            console.log(products);
             return products.length > 0
                 ? {
                     message: ['Sikeres lekérdezés'],

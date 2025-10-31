@@ -9,13 +9,14 @@ import Reanimated, {
   SharedValue,
   useAnimatedStyle,
 } from 'react-native-reanimated';
-import { PantryType, usePantry } from "@/contexts/pantry-context";
+import { usePantry } from "@/contexts/pantry-context";
 import { Fragment, useCallback } from "react";
 import getNavbarStyles from "@/styles/navbar";
 import { getInventoryStyle } from "@/styles/inventory";
 import { router, useFocusEffect } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Colors } from "@/constants/theme";
+import { PantryType } from "@/types/pantryType";
 
 export default function InventoryScreen() {
   const { scheme: colorScheme } = useTheme();

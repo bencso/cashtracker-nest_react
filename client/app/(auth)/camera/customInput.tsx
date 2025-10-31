@@ -66,8 +66,6 @@ export default function CustomInputScreen() {
 
     const styles = getCustomInputStyles({ scheme, disabledButton });
 
-    console.log(product);
-
     return (
         <ThemedView style={styles.mainContainer}>
             <ThemedView style={styles.titleContainer}>

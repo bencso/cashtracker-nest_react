@@ -34,8 +34,8 @@ export default function DeleteItemScreen() {
 
     useFocusEffect(() => {
         async function getItem() {
-            const code = params.code;
-            const items = await getItemsById({ code })
+            const code = params.code as any;
+            const items = await getItemsById(code)
             setProducts(items.products);
         }
 
@@ -103,12 +103,12 @@ export default function DeleteItemScreen() {
                                             text: t('inventory.editItem.amountInput.submit'),
                                             style: "default",
                                             onPress: async (amount?: string) => {
-                                                    await editPantryItem({
-                                                        id: selectedItemId,
-                                                        amount: Number(amount)
-                                                    });
-                                                    await loadPantry();
-                                                    router.back();
+                                                await editPantryItem({
+                                                    id: selectedItemId,
+                                                    amount: Number(amount)
+                                                });
+                                                await loadPantry();
+                                                router.back();
                                             }
                                         }
                                     ],

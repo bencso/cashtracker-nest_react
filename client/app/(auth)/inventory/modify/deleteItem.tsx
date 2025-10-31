@@ -35,14 +35,13 @@ export default function DeleteItemScreen() {
 
     useFocusEffect(() => {
         async function getItem() {
-            const code = params.code;
-            const items = await getItemsById({ code })
+            const code = params.code as any;
+            const items = await getItemsById(code)
             setProducts(items.products);
         }
 
         getItem();
     })
-
 
     function selectItem({
         productId

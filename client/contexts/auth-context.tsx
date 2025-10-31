@@ -1,25 +1,10 @@
 import api from "@/interceptor/api";
+import { AuthContextProp, UserData } from "@/types/authContextProp";
 import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import React, { createContext, ReactNode, useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert } from "react-native";
-
-interface UserData {
-  username: string;
-  email: string;
-}
-
-type AuthContextProp = {
-  isLoading: boolean;
-  login: any;
-  loadAuth: any;
-  logout: any;
-  isAuthenticated: boolean;
-  registration: any;
-  userData: UserData | null;
-  passwordChange: any;
-};
 
 const AuthContext = createContext<AuthContextProp | undefined>(undefined);
 
@@ -27,15 +12,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [userData, setUserData] = useState<UserData | null>(null);
   const { t } = useTranslation();
 
-
-  const loadAuth = async () => {
+  const loadAuth = async (): Promise<void> => {
     try {
       const accessToken = await SecureStore.getItemAsync("accessToken");
       const refreshToken = await SecureStore.getItemAsync("refreshToken");
+
       if (refreshToken && accessToken) {
         setAccessToken(accessToken);
         setRefreshToken(refreshToken);
@@ -59,7 +44,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const validateSession = async () => {
+  const validateSession = async (): Promise<boolean> => {
     try {
       if (!accessToken || !refreshToken) return false;
       const response = await api.get("/auth/valid");
@@ -76,7 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }: {
     email: string;
     password: string;
-  }) => {
+  }): Promise<boolean> => {
     try {
       const response = await api.post("/auth/login", {
         email: email,
@@ -101,8 +86,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error("Hiányzó bejelentkezési token");
       }
       return true;
-    } catch (error) {
-      return error;
+    } catch {
+      return false;
     } finally {
       setIsLoading(false);
     }
@@ -116,7 +101,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     username: string;
     email: string;
     password: string;
-  }) => {
+  }): Promise<boolean | undefined> => {
     try {
       const response = await api.post("/auth/registration", {
         email,
@@ -147,7 +132,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const logout = async () => {
+  const logout = async (): Promise<void> => {
     try {
       await api.post("/auth/logout");
       await SecureStore.deleteItemAsync("accessToken");
@@ -157,15 +142,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUserData(null);
       setIsAuthenticated(false);
       router.replace("/(notauth)/auth/login");
-    } catch (error) {
-      console.error(error);
+    } catch {
       setIsAuthenticated(false);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const passwordChange = async ({ password }: { password: string }) => {
+  const passwordChange = async ({ password }: { password: string }): Promise<boolean> => {
     try {
       const response = await api.post("/auth/passwordChange", { password });
       if (response.data.statusCode !== 200) {

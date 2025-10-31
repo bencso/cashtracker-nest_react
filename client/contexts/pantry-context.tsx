@@ -10,32 +10,10 @@ import React, {
 import { Product } from "@/constants/product.interface"
 import { Alert } from "react-native";
 import { useTranslation } from "react-i18next";
+import { PantryContextProp } from "@/types/pantryContextProp";
+import { PantryType } from "@/types/pantryType";
 
-export type PantryType = {
-    code: string;
-    name: string;
-    expiredAt: string[];
-    amount: number[];
-    products: number[] | [];
-}
-
-type PantryContextType = {
-    pantry: PantryType[];
-    loadPantry: any;
-    addPantryItem: any;
-    deletePantryItem: any;
-    editPantryItem: any;
-    isLoading: boolean;
-    product: Product | null;
-    setProductItemByCode: any;
-    setProductItemByKeyword: any;
-    scanned: boolean;
-    setScanned: any;
-    setProduct: any;
-    getItemsById: any;
-};
-
-const PantryContext = createContext<PantryContextType | undefined>(undefined);
+const PantryContext = createContext<PantryContextProp | undefined>(undefined);
 
 export function PantryProvider({ children }: { children: ReactNode }) {
     const [pantry, setPantry] = useState<PantryType[]>([]);
@@ -48,32 +26,25 @@ export function PantryProvider({ children }: { children: ReactNode }) {
         try {
             let returnItems = [] as PantryType[];
             const pantryItems = await getItems();
-            pantryItems.map((item: any) => {
-                //! Ez egy Group by, ami dátum alapján müködik az adott code-al rendelkező itemen belül, ezenfelül pedig sumolja is a dátumnak megfelelően
-                //! Az ok hogy nem SQL-ben csináljuk, hogy kell nekünk külön külön is, mert külön külön is módosítani kell majd :)
-                //TODO: Késöbbiekben ha van valami ötlet, akkor refaktorálni ezt a kód részletet
-                Object.keys(item).map((key) => {
-                    const dateGroupByItem = item[key].reduce((acc: any, curr: Product) => {
-                        const date = curr.expiredat ? new Date(curr.expiredat).toLocaleDateString() : new Date().toLocaleDateString();
-                        const code = curr.code ? curr.code : "";
-                        acc[code] = acc[code] || {};
-                        acc[code][date] = (acc[code][date] || 0) + curr.amount;
-                        return acc;
-                    }, {});
 
-                    const products =
-                        item[key].map((product: Product) => ({
-                            index: product.index,
-                            amount: product.amount,
-                            expiredAt: product.expiredat
-                        }));
+            pantryItems.map((item: any) => {
+                Object.keys(item).forEach((key) => {
+                    const dateMap: Record<string, number> = {};
+                    item[key].forEach((product: Product) => {
+                        const date = product.expiredat ? new Date(product.expiredat).toLocaleDateString() : new Date().toLocaleDateString();
+                        dateMap[date] = (dateMap[date] || 0) + Number(product.amount);
+                    });
 
                     returnItems.push({
                         code: key,
-                        products,
+                        products: item[key].map((product: Product) => ({
+                            index: product.index,
+                            amount: product.amount,
+                            expiredAt: product.expiredat
+                        })),
                         name: item[key][0].name,
-                        expiredAt: Object.keys(dateGroupByItem[key]),
-                        amount: Object.values(dateGroupByItem[key]),
+                        expiredAt: Object.keys(dateMap),
+                        amount: Object.values(dateMap),
                     });
                 });
             });
@@ -85,9 +56,9 @@ export function PantryProvider({ children }: { children: ReactNode }) {
         }
     };
 
-    const getItemsById = async (code: any) => {
+    const getItemsById = async (code: number): Promise<any | null> => {
         try {
-            const response = await api.get("/pantry/" + code.code);
+            const response = await api.get("/pantry/" + code);
             const item = response.data;
             return item;
         } catch {

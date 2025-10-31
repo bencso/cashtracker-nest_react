@@ -59,24 +59,6 @@ export class PantryService {
     const user = await this.usersService.findUser(requestUser.email);
 
     if (user) {
-      // const products = await this.dataSource
-      //   .getRepository(Pantry)
-      //   .createQueryBuilder('pantry')
-      //   .select([
-      //     'MIN(pantry.id) AS index',
-      //     'product.product_name AS name',
-      //     'SUM(pantry.amount) AS amount',
-      //     'pantry.expiredAt AS expiredAt',
-      //     'product.code AS code',
-      //   ])
-      //   .innerJoin('pantry.product', 'product')
-      //   .where('pantry.user = :userId', { userId: user.id })
-      //   .andWhere('pantry.expiredAt >= :now', { now: new Date() })
-      //   .groupBy('product.code')
-      //   .addGroupBy('pantry.expiredAt')
-      //   .addGroupBy('product.product_name')
-      //   .getRawMany();
-
       const products = await this.dataSource
         .getRepository(Pantry)
         .createQueryBuilder('pantry')
@@ -92,7 +74,6 @@ export class PantryService {
         .andWhere('pantry.expiredAt >= :now', { now: new Date() })
         .getRawMany();
 
-      // GROUP BY
       const returnProducts = [
         products.reduce((acc, curr) => {
           acc[curr.code] = acc[curr.code] || [];
@@ -101,7 +82,6 @@ export class PantryService {
         }, {}),
       ];
 
-      console.log(returnProducts);
 
       return products.length > 0
         ? {
@@ -137,8 +117,6 @@ export class PantryService {
         .andWhere('product.code = :code', { code })
         .andWhere('pantry.expiredAt >= :now', { now: new Date() })
         .getRawMany();
-
-      console.log(products);
 
       return products.length > 0
         ? {

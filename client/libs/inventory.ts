@@ -1,9 +1,10 @@
+import { Product } from "@/constants/product.interface";
 import api from "@/interceptor/api";
 
-export async function getItems() {
+export const getItems = async (): Promise<[] | Product[]> => {
   const items = await api.get("/pantry", { withCredentials: true });
-  return items.data.products ? items.data.products : [];
-}
+  return items.data.products ? (items.data.products as Product[]) : [];
+};
 
 export async function addItem({
   code,
@@ -19,7 +20,7 @@ export async function addItem({
   try {
     if (!code || !product_name || !amount || !expiredAt) throw new Error();
 
-   const response = await api.post(
+    const response = await api.post(
       "/pantry",
       {
         code: code,
