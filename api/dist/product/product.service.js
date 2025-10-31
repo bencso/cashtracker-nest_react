@@ -38,10 +38,16 @@ let ProductService = class ProductService {
             .getRepository(product_entity_1.Product)
             .createQueryBuilder()
             .select()
-            .where('product_name LIKE :keyword', { keyword: `%${keyword}%` })
-            .getOne();
+            .where('LOWER(product_name) LIKE LOWER(:keyword)', {
+            keyword: `%${keyword}%`,
+        })
+            .getMany();
+        console.log(product);
         if (product)
-            return product;
+            return product.map((product) => ({
+                name: product.product_name,
+                code: product.code,
+            }));
         else
             return null;
     }

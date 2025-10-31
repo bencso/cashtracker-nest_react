@@ -90,20 +90,13 @@ export function PantryProvider({ children }: { children: ReactNode }) {
         }
     }
 
-    const setProductItemByKeyword = async (keyword: string) => {
+    const searchProductByKeyword = async (keyword: string) => {
         try {
             const response = await api.get("/product/items/keyword/" + keyword);
             const item = response.data;
-            setProduct({
-                code: item.code || null,
-                name: item.product_name || null,
-            });
+            return item;
         } catch {
-            if (keyword) setProduct({
-                name: keyword,
-                code: null
-            })
-            else setProduct(null)
+           return null;
         }
         finally {
             setIsLoading(false);
@@ -177,7 +170,7 @@ export function PantryProvider({ children }: { children: ReactNode }) {
     }, []);
 
     return (
-        <PantryContext.Provider value={{ pantry, loadPantry, isLoading, addPantryItem, deletePantryItem, product, getItemsById, setProductItemByCode, setProductItemByKeyword, scanned, setScanned, setProduct, editPantryItem }}>
+        <PantryContext.Provider value={{ pantry, loadPantry, isLoading, addPantryItem, deletePantryItem, product, getItemsById, setProductItemByCode, searchProductByKeyword, scanned, setScanned, setProduct, editPantryItem }}>
             {children}
         </PantryContext.Provider>
     );

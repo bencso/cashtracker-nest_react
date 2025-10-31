@@ -10,7 +10,7 @@ export type PantryContextProp = {
   isLoading: boolean;
   product: Product | null;
   setProductItemByCode: any;
-  setProductItemByKeyword: any;
+  searchProductByKeyword: any;
   scanned: boolean;
   setScanned: any;
   setProduct: any;

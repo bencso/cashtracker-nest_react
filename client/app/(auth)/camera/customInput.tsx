@@ -4,27 +4,35 @@ import {
     TextInput,
     TouchableOpacity,
     View,
+    ScrollView
 } from "react-native";
-
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { Colors } from "@/constants/theme";
 import { useTheme } from "@/contexts/theme-context";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { usePantry } from "@/contexts/pantry-context";
 import { router } from "expo-router";
 import { getCustomInputStyles } from "@/styles/camera/customInput";
+import { Product } from "@/constants/product.interface";
 
 export default function CustomInputScreen() {
     const [productName, setProductName] = useState<string>("");
     const [productCode, setProductCode] = useState<string>("");
+    const [filtered, setFiltered] = useState<Product[]>([]);
     const [expired, setExpired] = useState<Date>(new Date());
+    const [focusedInput, setFocusedInput] = useState<boolean>(false);
     const [amount, setAmount] = useState<number>(1);
     const { scheme } = useTheme();
-    const { addPantryItem, product, setProduct, loadPantry, setScanned, setProductItemByKeyword, setProductItemByCode } = usePantry();
+    const { addPantryItem, product, setProduct, loadPantry, setScanned, searchProductByKeyword } = usePantry();
     const { t } = useTranslation();
+
+    const showSearch = (filtered
+        && filtered.length > 0
+        && !!focusedInput)
+        && !(productCode.length && productName.length);
 
     useEffect(() => {
         if (product?.code) setProductCode(product.code);
@@ -41,7 +49,6 @@ export default function CustomInputScreen() {
         if (amount && amount <= 1) setAmount(1);
     }, [amount]);
 
-    {/* TODO: A translationok beirása a HU-ENbe :) */ }
     async function onSubmit() {
         try {
             if (productCode && productName && amount)
@@ -56,7 +63,7 @@ export default function CustomInputScreen() {
             router.navigate("/(auth)/inventory");
             loadPantry();
         } catch {
-            Alert.alert(t("alerts.addPantryItemErrorTitle"),t("alerts.addPantryItemError"));
+            Alert.alert(t("alerts.addPantryItemErrorTitle"), t("alerts.addPantryItemError"));
         }
         finally {
             setProduct(null);
@@ -85,15 +92,58 @@ export default function CustomInputScreen() {
                         autoCapitalize="none"
                         returnKeyType="next"
                         editable={product?.name === null || product?.name === undefined}
-                        onBlur={() => {
-                            setProductItemByKeyword(productName);
-                        }}
                         returnKeyLabel={t("buttons.next")}
-                        onChangeText={(text) => {
+                        onChangeText={async (text) => {
                             productNameOnChange(text);
+                            setFiltered(await searchProductByKeyword(text.toLowerCase()));
+                        }}
+                        onFocus={() => {
+                            setFocusedInput(true);
+                        }}
+                        onBlur={() => {
+                            setFocusedInput(false);
                         }}
                         placeholder={t("customInput.productName")}
                     />
+                    {showSearch && (
+                        <Fragment>
+                            <Text>{t("customInput.searchLabel")}</Text><ScrollView
+                                showsVerticalScrollIndicator={true}
+                                style={{
+                                    maxHeight: 50,
+                                }}
+                                contentContainerStyle={{
+                                    gap: 8,
+                                }}
+                            >
+                                {filtered.map((filteredItem: Product, idx: number) => (
+                                    <TouchableOpacity
+                                        key={idx}
+                                        style={{
+                                            backgroundColor: Colors[scheme ?? "light"].border,
+                                            borderRadius: 12,
+                                            paddingLeft: 12,
+                                            paddingRight: 12,
+                                            paddingTop: 6,
+                                            paddingBottom: 6
+                                        }}
+                                        onPress={() => {
+                                            setProductName(filteredItem?.name || "");
+                                            setProductCode(filteredItem?.code || "");
+                                        }}
+                                    >
+                                        <Text
+                                            style={{
+                                                color: "black"
+                                            }}
+                                        >
+                                            {filteredItem?.name}
+                                        </Text>
+                                    </TouchableOpacity>
+                                ))}
+                            </ScrollView>
+                        </Fragment>
+                    )}
                     <TextInput
                         style={{ ...styles.input, color: (product?.code === null || product?.code === undefined) ? Colors[scheme ?? "light"].text : `${Colors[scheme ?? "light"].text}80` }}
                         value={productCode}
@@ -105,12 +155,10 @@ export default function CustomInputScreen() {
                         editable={product?.code === null || product?.code === undefined}
                         returnKeyLabel={t("buttons.next")}
                         autoCapitalize="none"
-                        onBlur={() => {
-                            setProductItemByCode(productCode);
-                        }}
                         placeholder={t("customInput.productCode")}
                         onChangeText={(text) => {
                             setProductCode(text);
+                            setFiltered(searchProductByKeyword(text));
                         }}
                     />
                     <TextInput

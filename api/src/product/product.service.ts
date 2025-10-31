@@ -6,6 +6,7 @@ import { CreateProductDto } from './dto/CreateProductDto';
 import { SessionService } from 'src/sessions/sessions.service';
 import { UsersService } from 'src/users/users.service';
 import { Request } from 'express';
+import { SearchProductDto } from './dto/SearchProductDto';
 
 @Injectable()
 export class ProductService {
@@ -27,15 +28,22 @@ export class ProductService {
     else return null;
   }
 
-  async getItemByKeyword(keyword: string): Promise<ProductDto> {
+  async getItemByKeyword(keyword: string): Promise<SearchProductDto[]> {
     const product = await this.dataSource
       .getRepository(Product)
       .createQueryBuilder()
       .select()
-      .where('product_name LIKE :keyword', { keyword: `%${keyword}%` })
-      .getOne();
+      .where('LOWER(product_name) LIKE LOWER(:keyword)', {
+        keyword: `%${keyword}%`,
+      })
+      .getMany();
 
-    if (product) return product;
+    console.log(product);
+    if (product)
+      return product.map((product: ProductDto) => ({
+        name: product.product_name,
+        code: product.code,
+      }));
     else return null;
   }
 
