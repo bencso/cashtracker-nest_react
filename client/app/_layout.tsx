@@ -21,8 +21,6 @@ import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import "react-native-reanimated";
 import SplashScreenController from "./splash";
 
-//TODO: Folyamatos hiba a splash screen miatt ez után utánnézni
-
 export const unstable_settings = {
   anchor: "(tabs)",
 };
@@ -83,7 +81,7 @@ function AppContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authLoading]);
 
-  if (!loaded && !error && languageLoading && themeLoading && authLoading) {
+  if (authLoading || !loaded || error || languageLoading || themeLoading) {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <ActivityIndicator

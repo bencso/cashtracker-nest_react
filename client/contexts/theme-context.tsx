@@ -20,7 +20,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const loadScheme = async () => {
+    const loadScheme = async (): Promise<void> => {
       try {
         const value = await AsyncStorage.getItem("colorScheme");
         if (value === "dark" || value === "light") {
@@ -35,7 +35,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     loadScheme();
   }, []);
 
-  const setScheme = async (newScheme: "light" | "dark") => {
+  const setScheme = async (newScheme: "light" | "dark"): Promise<void> => {
     try {
       await AsyncStorage.setItem("colorScheme", newScheme);
       setSchemeState(newScheme);

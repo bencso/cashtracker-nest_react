@@ -1,50 +1,23 @@
 "use client";
 
-import { Colors } from "@/constants/theme";
 import { useTheme } from "@/contexts/theme-context";
 import { t } from "i18next";
 import { useEffect, useState } from "react";
-import { ColorSchemeName, StyleSheet, View } from "react-native";
+import { ColorSchemeName, View } from "react-native";
 import { RadioButtons } from "../radiobutton";
 import { ThemedText } from "../themed-text";
+import { getThemeButtonStyle } from "@/styles/themeButton";
 
 export default function ThemeButton() {
   const [selectedTheme, setSelectedTheme] = useState<ColorSchemeName>();
   const { scheme, setScheme } = useTheme();
-  const styles = StyleSheet.create({
-    icon: {
-      marginRight: 12,
-    },
-    group: {
-      flexDirection: "column",
-      gap: 12,
-      justifyContent: "space-between",
-      paddingVertical: 16,
-      paddingHorizontal: 16,
-      borderRadius: 24,
-      backgroundColor: `${Colors[scheme ?? "light"].primary}40`,
-    },
-    groupLeft: {
-      flexDirection: "row",
-      alignItems: "center",
-    },
-    groupBottom: {
-      display: "flex",
-      flexDirection: "column",
-      gap: 12,
-    },
-    chevron: {
-      opacity: 0.5,
-    },
-  });
-  
+  const styles = getThemeButtonStyle(scheme);
+
   useEffect(() => {
-    if (selectedTheme !== scheme) {
-      setSelectedTheme(scheme);
-    }
+    if (selectedTheme !== scheme) setSelectedTheme(scheme);
   }, [scheme, selectedTheme]);
 
-  const handleChange = (value: ColorSchemeName) => {
+  const handleChange = (value: ColorSchemeName): void => {
     setSelectedTheme(value);
     setScheme(value ?? "light");
   };
